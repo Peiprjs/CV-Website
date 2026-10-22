@@ -1,0 +1,1846 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interactive CV & Portfolio | Alex Morgan</title>
+  <meta name="description" content="Modern, responsive, single-page interactive CV and portfolio with granular link-based filtering and custom view generator.">
+  <meta name="color-scheme" content="light dark">
+
+  <!-- Google Fonts: Inter & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+            mono: ['JetBrains Mono', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'monospace'],
+          },
+          colors: {
+            brand: {
+              50: '#eef2ff',
+              100: '#e0e7ff',
+              200: '#c7d2fe',
+              300: '#a5b4fc',
+              400: '#818cf8',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+              800: '#3730a3',
+              900: '#312e81',
+              950: '#1e1b4b',
+            }
+          }
+        }
+      }
+    };
+  </script>
+
+  <!-- Prevent FOUC: Apply Dark/Light theme before first paint -->
+  <script>
+    (function () {
+      try {
+        const storedTheme = localStorage.getItem('cv_theme') || 'system';
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const isDark = storedTheme === 'dark' || (storedTheme === 'system' && prefersDark);
+        if (isDark) {
+          document.documentElement.classList.add('dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+        }
+      } catch (e) {
+        console.error('Error applying theme early:', e);
+      }
+    })();
+  </script>
+
+  <!-- Custom Styles & Print Stylesheet -->
+  <style>
+    /* Smooth theme transitions */
+    body {
+      transition: background-color 0.2s ease, color 0.2s ease;
+    }
+
+    /* Modal Backdrop & Overscroll Containment per modern web guidance */
+    dialog:modal {
+      overscroll-behavior: contain;
+    }
+    dialog::backdrop {
+      overflow: hidden;
+      overscroll-behavior: contain;
+      background-color: rgba(15, 23, 42, 0.65);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+    }
+
+    /* Custom subtle scrollbars */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(148, 163, 184, 0.4);
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(148, 163, 184, 0.6);
+    }
+
+    /* Print Stylesheet */
+    @media print {
+      body {
+        background: #ffffff !important;
+        color: #0f172a !important;
+        font-size: 10pt;
+      }
+      .no-print,
+      header nav,
+      #filter-controls,
+      #share-modal,
+      #toast-container,
+      .theme-toggle-btn,
+      .action-btn,
+      .copy-btn,
+      .jump-nav {
+        display: none !important;
+      }
+      .print-only {
+        display: block !important;
+      }
+      .page-break-avoid {
+        break-inside: avoid;
+        page-break-inside: avoid;
+      }
+      .shadow-sm, .shadow-md, .shadow-lg, .shadow-xl {
+        box-shadow: none !important;
+      }
+      a {
+        text-decoration: none !important;
+        color: inherit !important;
+      }
+      /* Clean card borders for print */
+      .cv-card {
+        border-color: #cbd5e1 !important;
+        background: #ffffff !important;
+        margin-bottom: 0.75rem !important;
+        padding: 0.75rem !important;
+      }
+      /* Print Header layout */
+      .print-header {
+        border-bottom: 2px solid #0f172a;
+        padding-bottom: 12px;
+        margin-bottom: 16px;
+      }
+    }
+  </style>
+</head>
+
+<body class="bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-100 min-h-screen font-sans selection:bg-brand-500 selection:text-white antialiased">
+
+  <!-- TOP BAR / NAVIGATION -->
+  <header class="sticky top-0 z-40 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200/80 dark:border-slate-800/80 transition-colors">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
+      
+      <!-- Brand & Name -->
+      <a href="#" class="flex items-center gap-3 group focus:outline-none focus:ring-2 focus:ring-brand-500 rounded-lg p-1" onclick="resetFilters(event)">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-500 to-indigo-700 flex items-center justify-center text-white font-bold text-lg shadow-md shadow-brand-500/20 group-hover:scale-105 transition-transform">
+          AM
+        </div>
+        <div>
+          <span class="font-bold text-slate-900 dark:text-white tracking-tight text-base sm:text-lg block leading-tight">Alex Morgan</span>
+          <span class="text-xs text-slate-500 dark:text-slate-400 font-mono tracking-wide">Interactive CV & Portfolio</span>
+        </div>
+      </a>
+
+      <!-- Quick Actions -->
+      <div class="flex items-center gap-2 sm:gap-3">
+        <!-- Share Custom View Button -->
+        <button id="open-share-btn" type="button" aria-label="Share Custom View" class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-medium bg-brand-50 dark:bg-brand-950/60 text-brand-700 dark:text-brand-300 border border-brand-200 dark:border-brand-800/70 hover:bg-brand-100 dark:hover:bg-brand-900/50 hover:border-brand-300 dark:hover:border-brand-700 transition shadow-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+          <svg class="w-4 h-4 text-brand-600 dark:text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/>
+          </svg>
+          <span class="hidden sm:inline">Share Custom View</span>
+          <span class="sm:hidden">Share</span>
+        </button>
+
+        <!-- Print / PDF Export Button -->
+        <button id="print-cv-btn" type="button" aria-label="Print or Export CV to PDF" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:bg-slate-200 dark:hover:bg-slate-700 transition shadow-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/>
+          </svg>
+          <span class="hidden md:inline">Print / PDF</span>
+        </button>
+
+        <!-- Theme Mode Switcher -->
+        <div class="relative" id="theme-menu-container">
+          <button id="theme-toggle-btn" type="button" aria-label="Toggle Theme Menu" aria-haspopup="true" aria-expanded="false" class="p-2 rounded-lg text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 transition focus:outline-none focus:ring-2 focus:ring-brand-500">
+            <!-- Sun Icon (Light) -->
+            <svg id="theme-icon-light" class="w-4 h-4 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 9H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
+            </svg>
+            <!-- Moon Icon (Dark) -->
+            <svg id="theme-icon-dark" class="w-4 h-4 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+            </svg>
+            <!-- Computer / System Icon -->
+            <svg id="theme-icon-system" class="w-4 h-4 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+            </svg>
+          </button>
+
+          <!-- Theme Dropdown Menu -->
+          <div id="theme-dropdown" class="hidden absolute right-0 mt-2 w-36 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xl py-1 text-xs font-medium z-50 animate-in fade-in zoom-in-95">
+            <button type="button" onclick="setTheme('light')" class="w-full text-left px-3 py-2 flex items-center justify-between text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+              <span class="flex items-center gap-2">
+                <svg class="w-3.5 h-3.5 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 9H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+                Light
+              </span>
+              <span id="check-light" class="text-brand-600 hidden font-bold">✓</span>
+            </button>
+            <button type="button" onclick="setTheme('dark')" class="w-full text-left px-3 py-2 flex items-center justify-between text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+              <span class="flex items-center gap-2">
+                <svg class="w-3.5 h-3.5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+                Dark
+              </span>
+              <span id="check-dark" class="text-brand-600 hidden font-bold">✓</span>
+            </button>
+            <button type="button" onclick="setTheme('system')" class="w-full text-left px-3 py-2 flex items-center justify-between text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+              <span class="flex items-center gap-2">
+                <svg class="w-3.5 h-3.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                System
+              </span>
+              <span id="check-system" class="text-brand-600 hidden font-bold">✓</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+
+    <!-- CUSTOM FILTERED VIEW ALERT BANNER (Only shown when ?ids= or ?categories= or ?recipient= is present) -->
+    <div id="tailored-view-banner" class="hidden rounded-2xl bg-gradient-to-r from-brand-600/10 via-indigo-600/10 to-purple-600/10 border-2 border-brand-500/30 dark:border-brand-400/30 p-5 sm:p-6 shadow-sm transition-all">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div class="space-y-1">
+          <div class="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-brand-500 text-white tracking-wide uppercase">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+            Curated View Active
+          </div>
+          <h2 id="tailored-banner-title" class="text-lg sm:text-xl font-bold text-slate-900 dark:text-white tracking-tight">
+            Custom Tailored CV View
+          </h2>
+          <p id="tailored-banner-subtitle" class="text-xs sm:text-sm text-slate-600 dark:text-slate-300">
+            Showing specific handpicked entries tailored for this presentation.
+          </p>
+        </div>
+        <div class="flex items-center gap-2.5 self-start sm:self-auto">
+          <button type="button" onclick="openShareModal()" class="px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700/60 shadow-sm transition focus:outline-none focus:ring-2 focus:ring-brand-500">
+            Adjust Filters
+          </button>
+          <button type="button" onclick="resetFilters(event)" class="px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-brand-600 text-white hover:bg-brand-700 shadow-sm transition focus:outline-none focus:ring-2 focus:ring-brand-500">
+            View Full CV
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROFILE HERO SECTION -->
+    <section class="rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 p-6 sm:p-8 lg:p-10 shadow-sm relative overflow-hidden transition-colors">
+      <!-- Decorative background glow -->
+      <div class="absolute -right-24 -top-24 w-80 h-80 bg-brand-500/10 dark:bg-brand-500/15 rounded-full blur-3xl pointer-events-none" aria-hidden="true"></div>
+      
+      <div class="relative z-10 flex flex-col md:flex-row gap-8 items-start justify-between">
+        
+        <!-- Left: Avatar & Intro -->
+        <div class="flex-1 space-y-4">
+          <div class="flex flex-wrap items-center gap-3">
+            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/60">
+              <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+              Available for Staff/Lead Roles & Advisory
+            </span>
+            <span class="text-xs text-slate-500 dark:text-slate-400 font-mono flex items-center gap-1">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+              Zurich, Switzerland (Open to Remote)
+            </span>
+          </div>
+
+          <div>
+            <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+              Alex Morgan, <span class="text-brand-600 dark:text-brand-400 text-2xl sm:text-3xl lg:text-4xl font-semibold">M.Sc.</span>
+            </h1>
+            <p class="mt-2 text-lg sm:text-xl font-medium text-slate-600 dark:text-slate-300">
+              Senior AI Systems Engineer & Open Source Researcher
+            </p>
+          </div>
+
+          <p class="text-sm sm:text-base text-slate-600 dark:text-slate-400 max-w-3xl leading-relaxed">
+            Specializing in high-throughput distributed AI pipelines, autonomous agentic runtimes, and low-latency systems. Over 8 years of engineering experience bridging research prototypes into mission-critical cloud infrastructure. Active open-source maintainer and conference speaker.
+          </p>
+
+          <!-- Contact & Social Pills -->
+          <div class="flex flex-wrap items-center gap-2 pt-2 text-xs sm:text-sm">
+            <a href="mailto:alex.morgan@example.com" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition">
+              <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+              alex.morgan@example.com
+            </a>
+            <a href="https://github.com" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition">
+              <svg class="w-4 h-4 text-slate-500" fill="currentColor" viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+              GitHub / alexmorgan
+            </a>
+            <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition">
+              <svg class="w-4 h-4 text-slate-500" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+              LinkedIn
+            </a>
+            <a href="https://scholar.google.com" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition">
+              <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/></svg>
+              Google Scholar
+            </a>
+          </div>
+        </div>
+
+        <!-- Right: Metrics / Highlights Card -->
+        <div class="w-full md:w-72 lg:w-80 grid grid-cols-2 gap-3 p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/70 border border-slate-200/80 dark:border-slate-700/80">
+          <div class="p-3 bg-white dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800">
+            <span class="text-2xl font-black text-brand-600 dark:text-brand-400 font-mono block">8+</span>
+            <span class="text-xs font-medium text-slate-500 dark:text-slate-400">Years Experience</span>
+          </div>
+          <div class="p-3 bg-white dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800">
+            <span class="text-2xl font-black text-brand-600 dark:text-brand-400 font-mono block">4.2k</span>
+            <span class="text-xs font-medium text-slate-500 dark:text-slate-400">GitHub Stars</span>
+          </div>
+          <div class="p-3 bg-white dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800">
+            <span class="text-2xl font-black text-brand-600 dark:text-brand-400 font-mono block">25+</span>
+            <span class="text-xs font-medium text-slate-500 dark:text-slate-400">Prod Models / APIs</span>
+          </div>
+          <div class="p-3 bg-white dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800">
+            <span class="text-2xl font-black text-brand-600 dark:text-brand-400 font-mono block">7</span>
+            <span class="text-xs font-medium text-slate-500 dark:text-slate-400">Papers & Patents</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- STICKY CONTROL & FILTER PANEL -->
+    <section id="filter-controls" class="sticky top-16 z-30 py-3 bg-slate-50/90 dark:bg-slate-950/90 backdrop-blur-md border-y border-slate-200 dark:border-slate-800 transition-colors">
+      <div class="space-y-3">
+        
+        <!-- Search & Quick Toggles Row -->
+        <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+          
+          <!-- Live Search Input -->
+          <div class="relative flex-1 max-w-md">
+            <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+            </div>
+            <input type="text" id="search-input" placeholder="Search by role, company, technology or tag (e.g. Python, AI)..." 
+              class="w-full pl-10 pr-9 py-2 rounded-xl text-xs sm:text-sm bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 shadow-sm transition">
+            <button id="clear-search-btn" type="button" aria-label="Clear Search" class="hidden absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+            </button>
+          </div>
+
+          <!-- Featured Switch & Active Filter Summary -->
+          <div class="flex items-center gap-3">
+            <label class="inline-flex items-center gap-2 cursor-pointer select-none text-xs sm:text-sm font-medium text-slate-700 dark:text-slate-300 px-3 py-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm hover:border-slate-300 dark:hover:border-slate-700 transition">
+              <input type="checkbox" id="featured-toggle" class="sr-only peer">
+              <div class="w-8 h-4 bg-slate-300 dark:bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:bg-brand-600 relative"></div>
+              <span>Featured Only</span>
+            </label>
+
+            <!-- Reset Filters Pill -->
+            <button id="reset-all-btn" type="button" onclick="resetFilters(event)" class="text-xs text-brand-600 dark:text-brand-400 hover:underline font-medium px-2 py-1">
+              Reset All
+            </button>
+          </div>
+
+        </div>
+
+        <!-- Category Filter Tabs / Jump Links -->
+        <div class="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1 text-xs sm:text-sm font-medium" id="category-tabs" role="tablist">
+          <button type="button" data-category="all" class="category-pill active shrink-0 px-3.5 py-1.5 rounded-lg border transition">
+            All (<span id="count-all">0</span>)
+          </button>
+          <button type="button" data-category="work" class="category-pill shrink-0 px-3.5 py-1.5 rounded-lg border transition">
+            Work (<span id="count-work">0</span>)
+          </button>
+          <button type="button" data-category="projects" class="category-pill shrink-0 px-3.5 py-1.5 rounded-lg border transition">
+            Projects (<span id="count-projects">0</span>)
+          </button>
+          <button type="button" data-category="learning" class="category-pill shrink-0 px-3.5 py-1.5 rounded-lg border transition">
+            Learning (<span id="count-learning">0</span>)
+          </button>
+          <button type="button" data-category="certifications" class="category-pill shrink-0 px-3.5 py-1.5 rounded-lg border transition">
+            Certifications (<span id="count-certifications">0</span>)
+          </button>
+          <button type="button" data-category="volunteering" class="category-pill shrink-0 px-3.5 py-1.5 rounded-lg border transition">
+            Volunteering (<span id="count-volunteering">0</span>)
+          </button>
+          <button type="button" data-category="hobbies" class="category-pill shrink-0 px-3.5 py-1.5 rounded-lg border transition">
+            Hobbies (<span id="count-hobbies">0</span>)
+          </button>
+        </div>
+
+        <!-- Active Filter Badges Bar (Shows active tag filters or ID filters) -->
+        <div id="active-tags-bar" class="hidden flex flex-wrap items-center gap-2 pt-1 text-xs">
+          <span class="text-slate-400">Filtering by:</span>
+          <div id="active-filter-chips" class="flex flex-wrap gap-1.5"></div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- CONTENT SECTIONS CONTAINER -->
+    <div id="cv-content-area" class="space-y-12">
+      <!-- Sections will be rendered dynamically by JavaScript -->
+    </div>
+
+    <!-- EMPTY STATE MESSAGE (When filters yield 0 results) -->
+    <div id="empty-state" class="hidden text-center py-16 px-4 space-y-4">
+      <div class="w-16 h-16 mx-auto rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-400">
+        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+      </div>
+      <h3 class="text-lg font-bold text-slate-900 dark:text-white">No entries match your active filters</h3>
+      <p class="text-sm text-slate-500 max-w-sm mx-auto">Try clearing your search query, unchecking "Featured only", or switching categories.</p>
+      <button type="button" onclick="resetFilters(event)" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold bg-brand-600 text-white hover:bg-brand-700 transition">
+        Reset All Filters
+      </button>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="pt-12 pb-8 border-t border-slate-200 dark:border-slate-800 text-xs text-slate-500 dark:text-slate-400 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div>
+        <p>© 2026 Alex Morgan. Built with HTML, Tailwind CSS, & Vanilla JS.</p>
+        <p class="text-slate-400 dark:text-slate-500 mt-0.5">Designed for high-impact readability, instant filtering, and clean PDF exports.</p>
+      </div>
+      <div class="flex items-center gap-4">
+        <button type="button" onclick="openShareModal()" class="hover:text-brand-600 dark:hover:text-brand-400 transition font-medium">
+          Create Custom Link
+        </button>
+        <span class="text-slate-300 dark:text-slate-700">|</span>
+        <button type="button" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" class="hover:text-brand-600 dark:hover:text-brand-400 transition">
+          Back to Top ↑
+        </button>
+      </div>
+    </footer>
+
+  </main>
+
+  <!-- SHARE CUSTOM VIEW BUILDER MODAL (Native <dialog> element per modern web guidance) -->
+  <dialog id="share-modal" closedby="any" aria-labelledby="share-modal-title" class="rounded-3xl bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 p-0 border border-slate-200 dark:border-slate-800 shadow-2xl max-w-2xl w-[92vw] overflow-hidden focus:outline-none">
+    
+    <!-- Modal Header -->
+    <div class="p-6 border-b border-slate-200 dark:border-slate-800 flex items-start justify-between gap-4 bg-slate-50/50 dark:bg-slate-800/40">
+      <div>
+        <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-brand-100 dark:bg-brand-950 text-brand-700 dark:text-brand-300 mb-1.5">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
+          Granular Link Generator
+        </div>
+        <h2 id="share-modal-title" class="text-xl font-bold text-slate-900 dark:text-white tracking-tight">Share Custom CV View</h2>
+        <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
+          Pick exactly which entries or categories to include. Generate a tailored link for a specific company, recruiter, or pitch.
+        </p>
+      </div>
+      <button type="button" onclick="closeShareModal()" aria-label="Close dialog" class="p-2 rounded-xl text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+
+    <!-- Modal Body: Scrollable selection area -->
+    <div class="p-6 space-y-6 max-h-[60vh] overflow-y-auto overscroll-contain">
+      
+      <!-- Optional Recipient / Role Label -->
+      <div class="space-y-1.5">
+        <label for="modal-recipient-input" class="block text-xs font-semibold text-slate-700 dark:text-slate-300">
+          Target Recipient or Context (Optional)
+        </label>
+        <div class="relative">
+          <input type="text" id="modal-recipient-input" placeholder="e.g. Acme AI Team, Y Combinator, Zurich Quantum Lab"
+            class="w-full px-3.5 py-2 rounded-xl text-xs sm:text-sm bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500">
+        </div>
+        <p class="text-[11px] text-slate-400 dark:text-slate-500">
+          When filled, a custom personalized banner will be displayed at the top for the recipient.
+        </p>
+      </div>
+
+      <!-- Quick Preset Selection Buttons -->
+      <div class="space-y-2">
+        <span class="block text-xs font-semibold text-slate-700 dark:text-slate-300">Quick Presets:</span>
+        <div class="flex flex-wrap gap-1.5">
+          <button type="button" onclick="applySharePreset('all')" class="px-2.5 py-1 rounded-lg text-xs font-medium bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition">
+            Select All
+          </button>
+          <button type="button" onclick="applySharePreset('featured')" class="px-2.5 py-1 rounded-lg text-xs font-medium bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition">
+            ★ Featured Only
+          </button>
+          <button type="button" onclick="applySharePreset('engineering')" class="px-2.5 py-1 rounded-lg text-xs font-medium bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition">
+            Code & Tech (Work + Projects)
+          </button>
+          <button type="button" onclick="applySharePreset('academic')" class="px-2.5 py-1 rounded-lg text-xs font-medium bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition">
+            Research & Edu (Learning + Certs)
+          </button>
+          <button type="button" onclick="applySharePreset('community')" class="px-2.5 py-1 rounded-lg text-xs font-medium bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition">
+            Leadership & Volunteering
+          </button>
+          <button type="button" onclick="applySharePreset('none')" class="px-2.5 py-1 rounded-lg text-xs font-medium text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-950/40 hover:bg-rose-100 transition">
+            Clear All
+          </button>
+        </div>
+      </div>
+
+      <!-- Item Checklist by Category -->
+      <div class="space-y-4" id="modal-checklist-container">
+        <!-- Generated by JavaScript -->
+      </div>
+
+    </div>
+
+    <!-- Modal Footer: Live URL & Copy Action -->
+    <div class="p-6 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/40 space-y-3">
+      
+      <div class="flex items-center justify-between text-xs font-semibold text-slate-700 dark:text-slate-300">
+        <span class="flex items-center gap-1.5">
+          <span class="w-2 h-2 rounded-full bg-brand-500"></span>
+          Live Generated Share Link
+        </span>
+        <span id="modal-selection-count" class="font-mono text-brand-600 dark:text-brand-400">
+          0 items selected
+        </span>
+      </div>
+
+      <!-- URL Input & Copy Button Group -->
+      <div class="flex items-center gap-2">
+        <input type="text" id="modal-url-output" readonly 
+          class="flex-1 px-3.5 py-2.5 rounded-xl text-xs font-mono bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 select-all focus:outline-none focus:ring-2 focus:ring-brand-500">
+        
+        <button id="modal-copy-btn" type="button" onclick="copyShareUrl()" class="px-4 py-2.5 rounded-xl text-xs font-bold bg-brand-600 hover:bg-brand-700 text-white shadow-md shadow-brand-600/20 flex items-center gap-1.5 shrink-0 transition focus:outline-none focus:ring-2 focus:ring-brand-500">
+          <svg id="copy-icon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
+          <span id="copy-text">Copy Link</span>
+        </button>
+
+        <button type="button" onclick="openShareUrlInNewTab()" aria-label="Open link in new tab" title="Test link in new tab" class="p-2.5 rounded-xl text-slate-600 dark:text-slate-300 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+        </button>
+      </div>
+
+    </div>
+
+  </dialog>
+
+  <!-- TOAST NOTIFICATION CONTAINER -->
+  <div id="toast-container" class="fixed bottom-6 right-6 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+  <!-- CORE JAVASCRIPT APPLICATION -->
+  <script>
+    /**
+     * =========================================================================
+     * 1. CENTRALIZED DATA STORE (CV ENTRIES & PROFILE)
+     * Easily editable JavaScript array containing all CV entries.
+     * =========================================================================
+     */
+    const CV_DATA = [
+      // ---------------- WORK ----------------
+      {
+        id: "work-staff-ai-systems",
+        category: "work",
+        title: "Staff AI Systems Engineer & Tech Lead",
+        organization: "Cerebral Systems Labs",
+        date: "2023 – Present",
+        location: "Zurich, CH / Hybrid",
+        description: "Leading the distributed systems team responsible for training and serving large reasoning models. Architected a multi-region inference gateway serving **45M+ daily requests** with sub-40ms P99 latency. Engineered speculative decoding pipelines cutting LLM inference costs by **38%**.",
+        tags: ["Python", "Rust", "Distributed Systems", "vLLM", "Kubernetes", "PyTorch", "gRPC"],
+        featured: true,
+        link: "https://cerebralsystems.example.com"
+      },
+      {
+        id: "work-senior-cloud-architect",
+        category: "work",
+        title: "Senior Cloud & Infrastructure Architect",
+        organization: "Aether Cloud Infrastructure",
+        date: "2020 – 2023",
+        location: "Geneva, CH",
+        description: "Spearheaded the migration of monolithic microservices into modular Kubernetes clusters with Istio service mesh. Mentored a team of 14 engineers across SRE and platform teams. Designed real-time event streaming architectures using Kafka handling **1.2 TB/hour**.",
+        tags: ["Go", "Kubernetes", "Terraform", "Kafka", "AWS", "Prometheus", "Architecture"],
+        featured: true,
+        link: "https://aethercloud.example.com"
+      },
+      {
+        id: "work-ml-engineer-nova",
+        category: "work",
+        title: "Machine Learning Engineer",
+        organization: "Nova Data Intelligence",
+        date: "2018 – 2020",
+        location: "Berlin, DE",
+        description: "Implemented high-precision NLP classification and entity-resolution models for financial intelligence. Built automated CI/CD evaluation pipelines with MLflow and Docker, reducing model deployment cycles from 2 weeks to under **3 hours**.",
+        tags: ["Python", "Transformers", "NLP", "MLflow", "Docker", "PostgreSQL"],
+        featured: false,
+        link: "https://novaintelligence.example.com"
+      },
+      {
+        id: "work-systems-intern",
+        category: "work",
+        title: "Systems Engineering Intern",
+        organization: "Starlight Analytics",
+        date: "Summer 2017",
+        location: "Edinburgh, UK",
+        description: "Developed optimized C++ data parser utilities for time-series sensor telemetry. Benchmarked database indexing strategies across ClickHouse and TimescaleDB, resulting in a **4x query speedup** for historical aggregations.",
+        tags: ["C++", "Time Series", "ClickHouse", "Linux", "Benchmarking"],
+        featured: false
+      },
+
+      // ---------------- PROJECTS ----------------
+      {
+        id: "project-omniagent-runtime",
+        category: "projects",
+        title: "OmniAgent: Distributed Multi-Agent Runtime",
+        organization: "Open Source Initiative",
+        date: "2025 – 2026",
+        description: "An open-source asynchronous orchestration runtime for autonomous AI agent networks with verifiable execution traces and cryptographic state checkpoints. Reached **2.8k GitHub stars** and actively used in production by 3 fintech startups.",
+        tags: ["Rust", "TypeScript", "AI Agents", "WebSockets", "Docker", "Open Source"],
+        featured: true,
+        link: "https://github.com/alexmorgan/omniagent"
+      },
+      {
+        id: "project-hyperindex-vectordb",
+        category: "projects",
+        title: "HyperIndex: Ultra-Low Latency Embedded Vector Index",
+        organization: "Personal Project",
+        date: "2024",
+        description: "SIMD-accelerated Hierarchical Navigable Small World (HNSW) vector search engine written in Rust with Python and WebAssembly bindings. Achieved **15% higher recall** than standard FAISS on 1M 768-dim embedding benchmarks.",
+        tags: ["Rust", "SIMD", "Vector Search", "WASM", "Information Retrieval"],
+        featured: true,
+        link: "https://github.com/alexmorgan/hyperindex"
+      },
+      {
+        id: "project-syntaxlens-ast",
+        category: "projects",
+        title: "SyntaxLens: Interactive AST & Compiler Visualizer",
+        organization: "Dev Tools Community",
+        date: "2023",
+        description: "Browser-based developer tool for live abstract syntax tree introspection and bytecode comparison across V8, PyPy, and Cranelift. Featured in *JavaScript Weekly* and *Hacker News* front page.",
+        tags: ["TypeScript", "WebAssembly", "Compilers", "Tailwind CSS", "Canvas API"],
+        featured: false,
+        link: "https://syntaxlens.dev"
+      },
+      {
+        id: "project-microvoice-tts",
+        category: "projects",
+        title: "MicroVoice: Local Edge Neural Speech Synthesizer",
+        organization: "Research Build",
+        date: "2022",
+        description: "Zero-dependency pure browser neural text-to-speech synthesizer running entirely clientside via ONNX Runtime Web. Performs realtime acoustic modeling without transmitting voice data to remote servers.",
+        tags: ["WebAudio API", "ONNX", "Edge AI", "Privacy", "JavaScript"],
+        featured: false,
+        link: "https://github.com/alexmorgan/microvoice"
+      },
+
+      // ---------------- LEARNING ----------------
+      {
+        id: "edu-msc-eth-zurich",
+        category: "learning",
+        title: "Master of Science in Computer Science (Distributed Systems)",
+        organization: "ETH Zürich",
+        date: "2018 – 2020",
+        location: "Zurich, Switzerland",
+        description: "Graduated with Distinction (**GPA 5.8 / 6.0**). Master's thesis on *'Asynchronous Consensus under Network Partitions for Byzantine-Tolerant Replicated State Machines'*, supervised by Prof. T. Hoare Chair. Core coursework in High Performance Computing, Machine Learning, and Cryptographic Protocols.",
+        tags: ["Distributed Systems", "Consensus", "Formal Verification", "Algorithms"],
+        featured: true
+      },
+      {
+        id: "edu-bsc-edinburgh",
+        category: "learning",
+        title: "Bachelor of Science in Computer Science & Mathematics",
+        organization: "University of Edinburgh",
+        date: "2014 – 2018",
+        location: "Edinburgh, United Kingdom",
+        description: "First Class Honours. Awarded the *Class Medal in Systems Programming*. Served as Undergraduate Teaching Assistant for Data Structures & Algorithms and Operating Systems courses.",
+        tags: ["Computer Science", "Discrete Math", "Operating Systems", "C"],
+        featured: false
+      },
+      {
+        id: "course-stanford-distributed-ml",
+        category: "learning",
+        title: "Advanced Distributed Machine Learning Systems (CS 329)",
+        organization: "Stanford Online / Center for Professional Development",
+        date: "2022",
+        description: "Intensive 10-week post-graduate curriculum covering parameter servers, pipeline parallelism, tensor parallelism (Megatron-LM), and RDMA networking.",
+        tags: ["Distributed ML", "Parallelism", "NCCL", "GPU Clusters"],
+        featured: false
+      },
+
+      // ---------------- CERTIFICATIONS ----------------
+      {
+        id: "cert-aws-solutions-architect",
+        category: "certifications",
+        title: "AWS Certified Solutions Architect – Professional (SAP-C02)",
+        organization: "Amazon Web Services",
+        date: "2024 – 2027",
+        description: "Comprehensive validation of multi-tier resilient cloud architecture, automated disaster recovery, enterprise security governance, and multi-account cloud topologies.",
+        tags: ["AWS", "Cloud Architecture", "Security", "High Availability"],
+        featured: true,
+        link: "https://aws.amazon.com/verification"
+      },
+      {
+        id: "cert-cncf-cka",
+        category: "certifications",
+        title: "Certified Kubernetes Administrator (CKA)",
+        organization: "Cloud Native Computing Foundation (CNCF)",
+        date: "2023 – 2026",
+        description: "Hands-on performance exam evaluating cluster lifecycle administration, storage networking, ingress controllers, troubleshooting, and production workload orchestration.",
+        tags: ["Kubernetes", "DevOps", "Containers", "CNCF"],
+        featured: true,
+        link: "https://cncf.io/certification/cka"
+      },
+      {
+        id: "cert-deeplearning-specialization",
+        category: "certifications",
+        title: "Deep Learning Specialization",
+        organization: "DeepLearning.AI & Coursera",
+        date: "2021",
+        description: "Five-course sequence covering neural network fundamentals, hyperparameter tuning, structuring ML projects, convolutional models, and sequence sequence models.",
+        tags: ["Deep Learning", "TensorFlow", "Math", "Optimization"],
+        featured: false,
+        link: "https://coursera.org"
+      },
+
+      // ---------------- VOLUNTEERING ----------------
+      {
+        id: "vol-ai-safety-mentor",
+        category: "volunteering",
+        title: "Technical Mentor & Grant Application Reviewer",
+        organization: "AI Safety & Alignment Open Network",
+        date: "2023 – Present",
+        description: "Providing 1-on-1 technical coaching for junior researchers investigating mechanistic interpretability and model red-teaming. Evaluated over 30 micro-grant submissions for compute resources.",
+        tags: ["Mentorship", "AI Safety", "Community", "Research"],
+        featured: true
+      },
+      {
+        id: "vol-pyladies-workshop-lead",
+        category: "volunteering",
+        title: "Open Workshop Lead & Python Instructor",
+        organization: "PyLadies & Women Who Code Zurich",
+        date: "2021 – Present",
+        description: "Organized and delivered 8 free weekend workshops introducing modern Python, Git, and web API development to over 240 career switchers and underrepresented engineers.",
+        tags: ["Teaching", "Python", "Diversity in Tech", "Community"],
+        featured: false
+      },
+      {
+        id: "vol-crisis-mapping-foss",
+        category: "volunteering",
+        title: "Core Contributor & Relief Mapping Engineer",
+        organization: "CrisisResponse Open Source GIS",
+        date: "2019 – 2022",
+        description: "Volunteered emergency map layer data-pipelines during natural disaster responses to assist humanitarian logistics coordinators in real-time routing.",
+        tags: ["GIS", "OpenStreetMap", "Python", "Public Good"],
+        featured: false
+      },
+
+      // ---------------- HOBBIES ----------------
+      {
+        id: "hobby-ultra-trail-running",
+        category: "hobbies",
+        title: "Alpine Trail Running & Ultra-Marathons",
+        organization: "Swiss Alpine Runners Club",
+        date: "2019 – Present",
+        description: "Finisher of the Eiger Ultra Trail 51k and Scenic Trail 54k with over 3,800m vertical ascent. Enduring discipline, pacing strategies, and mental resilience applied directly to long-term engineering challenges.",
+        tags: ["Endurance", "Trail Running", "Outdoors", "Mindset"],
+        featured: true
+      },
+      {
+        id: "hobby-modular-synth",
+        category: "hobbies",
+        title: "Generative Audio & Eurorack Modular Synthesis",
+        organization: "Independent Sound Design",
+        date: "2020 – Present",
+        description: "Designing stochastic generative music patches utilizing control voltage (CV), algorithmic step sequencers, and analog filtering circuits. Exploring the intersection of mathematics and harmony.",
+        tags: ["Music", "Sound Synthesis", "Analog Circuits", "Creativity"],
+        featured: false
+      },
+      {
+        id: "hobby-ergonomic-keyboards",
+        category: "hobbies",
+        title: "Custom Ergonomic Keyboard Design & Micro-soldering",
+        organization: "Maker Community",
+        date: "2022 – Present",
+        description: "Hand-soldered split ergonomic mechanical keyboards (Corne & Dactyl ManuForm) with custom ZMK wireless firmware, Colemak-DH layouts, and micro-controller integration.",
+        tags: ["Hardware", "Soldering", "Ergonomics", "ZMK Firmware"],
+        featured: false
+      }
+    ];
+
+    /**
+     * Category Metadata Configuration (Titles, Descriptions, Colors, Icons)
+     */
+    const CATEGORIES_META = {
+      work: {
+        title: "Professional Experience",
+        badge: "Work",
+        icon: `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>`,
+        accentColor: "indigo"
+      },
+      projects: {
+        title: "Key Projects & Builds",
+        badge: "Projects",
+        icon: `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>`,
+        accentColor: "violet"
+      },
+      learning: {
+        title: "Education & Learning",
+        badge: "Learning",
+        icon: `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/></svg>`,
+        accentColor: "blue"
+      },
+      certifications: {
+        title: "Certifications & Credentials",
+        badge: "Certifications",
+        icon: `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/></svg>`,
+        accentColor: "emerald"
+      },
+      volunteering: {
+        title: "Community & Volunteering",
+        badge: "Volunteering",
+        icon: `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>`,
+        accentColor: "rose"
+      },
+      hobbies: {
+        title: "Interests & Pursuits",
+        badge: "Hobbies",
+        icon: `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>`,
+        accentColor: "amber"
+      }
+    };
+
+    /**
+     * Ordered category keys for standard rendering
+     */
+    const CATEGORY_ORDER = ['work', 'projects', 'learning', 'certifications', 'volunteering', 'hobbies'];
+
+    /**
+     * =========================================================================
+     * 2. STATE MANAGEMENT & URL PARAMETER PARSING
+     * =========================================================================
+     */
+    const state = {
+      activeCategory: 'all',     // 'all' or one of the 6 categories
+      searchQuery: '',           // live text filter
+      featuredOnly: false,       // boolean
+      selectedTag: null,         // optional tag filter
+      urlCategoryFilter: [],     // categories specified in ?categories=...
+      urlIdFilter: [],           // ids specified in ?ids=...
+      recipientName: '',         // ?recipient=...
+      customContext: ''          // ?context=...
+    };
+
+    /**
+     * Parse URL search parameters on initialization
+     */
+    function parseUrlParameters() {
+      const params = new URLSearchParams(window.location.search);
+      
+      // ?categories=work,projects
+      if (params.has('categories')) {
+        const rawCategories = params.get('categories')
+          .split(',')
+          .map(c => c.trim().toLowerCase())
+          .filter(c => CATEGORIES_META[c]);
+        state.urlCategoryFilter = rawCategories;
+      }
+
+      // ?ids=job-1,project-x,cert-2
+      if (params.has('ids')) {
+        const rawIds = params.get('ids')
+          .split(',')
+          .map(id => id.trim())
+          .filter(Boolean);
+        state.urlIdFilter = rawIds;
+      }
+
+      // ?featured=true
+      if (params.get('featured') === 'true') {
+        state.featuredOnly = true;
+        const toggle = document.getElementById('featured-toggle');
+        if (toggle) toggle.checked = true;
+      }
+
+      // ?tag=Python
+      if (params.has('tag')) {
+        state.selectedTag = params.get('tag').trim();
+      }
+
+      // ?recipient=Google or ?context=AI%20Staff%20Role
+      if (params.has('recipient')) {
+        state.recipientName = params.get('recipient').trim();
+      }
+      if (params.has('context')) {
+        state.customContext = params.get('context').trim();
+      }
+
+      updateTailoredBanner();
+    }
+
+    /**
+     * Checks if a custom link filter is currently active
+     */
+    function isCustomFilteredView() {
+      return state.urlIdFilter.length > 0 || state.urlCategoryFilter.length > 0 || Boolean(state.recipientName) || Boolean(state.customContext);
+    }
+
+    /**
+     * Displays or hides the tailored view banner
+     */
+    function updateTailoredBanner() {
+      const banner = document.getElementById('tailored-view-banner');
+      const titleEl = document.getElementById('tailored-banner-title');
+      const subtitleEl = document.getElementById('tailored-banner-subtitle');
+
+      if (!banner) return;
+
+      if (isCustomFilteredView()) {
+        banner.classList.remove('hidden');
+
+        // Personalize the title
+        let titleText = "Custom Curated Portfolio View";
+        if (state.recipientName && state.customContext) {
+          titleText = `Custom CV View for ${state.recipientName} (${state.customContext})`;
+        } else if (state.recipientName) {
+          titleText = `Custom CV View for ${state.recipientName}`;
+        } else if (state.customContext) {
+          titleText = `Custom CV View: ${state.customContext}`;
+        }
+        titleEl.textContent = titleText;
+
+        // Subtitle explanation
+        const filteredEntries = getFilteredEntries();
+        let subtitle = `Displaying ${filteredEntries.length} hand-selected entries`;
+        if (state.urlCategoryFilter.length > 0) {
+          const catNames = state.urlCategoryFilter.map(c => CATEGORIES_META[c]?.badge || c).join(', ');
+          subtitle += ` within: ${catNames}`;
+        }
+        subtitleEl.textContent = subtitle + ".";
+      } else {
+        banner.classList.add('hidden');
+      }
+    }
+
+    /**
+     * Helper to parse inline markdown (bold, italic, code, links)
+     */
+    function parseMarkdown(text) {
+      if (!text) return '';
+      let escaped = text
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+
+      // Code: `code`
+      escaped = escaped.replace(/`([^`]+)`/g, '<code class="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-brand-600 dark:text-brand-300 font-mono text-xs">$1</code>');
+      
+      // Bold: **text**
+      escaped = escaped.replace(/\*\*([^*]+)\*\*/g, '<strong class="font-semibold text-slate-900 dark:text-white">$1</strong>');
+      
+      // Italic: *text*
+      escaped = escaped.replace(/\*([^*]+)\*/g, '<em class="italic">$1</em>');
+      
+      // Link: [text](url)
+      escaped = escaped.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" class="text-brand-600 dark:text-brand-400 underline underline-offset-2 hover:text-brand-700 transition">$1</a>');
+
+      return escaped;
+    }
+
+    /**
+     * =========================================================================
+     * 3. FILTERING ENGINE & RENDERER
+     * =========================================================================
+     */
+    function getFilteredEntries() {
+      return CV_DATA.filter(item => {
+        // 1. URL ID filter takes priority if present
+        if (state.urlIdFilter.length > 0) {
+          if (!state.urlIdFilter.includes(item.id)) {
+            return false;
+          }
+        }
+
+        // 2. URL Category filter
+        if (state.urlCategoryFilter.length > 0) {
+          if (!state.urlCategoryFilter.includes(item.category)) {
+            return false;
+          }
+        }
+
+        // 3. UI Active Category Tab
+        if (state.activeCategory !== 'all' && item.category !== state.activeCategory) {
+          return false;
+        }
+
+        // 4. Featured Only Toggle
+        if (state.featuredOnly && !item.featured) {
+          return false;
+        }
+
+        // 5. Selected Tag filter
+        if (state.selectedTag && !item.tags.some(t => t.toLowerCase() === state.selectedTag.toLowerCase())) {
+          return false;
+        }
+
+        // 6. Search Query (Title, Org, Description, Tags)
+        if (state.searchQuery) {
+          const q = state.searchQuery.toLowerCase();
+          const matchTitle = item.title.toLowerCase().includes(q);
+          const matchOrg = item.organization.toLowerCase().includes(q);
+          const matchDesc = item.description.toLowerCase().includes(q);
+          const matchTags = item.tags.some(t => t.toLowerCase().includes(q));
+          if (!matchTitle && !matchOrg && !matchDesc && !matchTags) {
+            return false;
+          }
+        }
+
+        return true;
+      });
+    }
+
+    /**
+     * Update Category count badges in the filter bar
+     */
+    function updateCategoryCounts() {
+      const counts = { all: 0 };
+      CATEGORY_ORDER.forEach(cat => counts[cat] = 0);
+
+      // Compute counts based on the base dataset adhering to active URL filters if any
+      CV_DATA.forEach(item => {
+        if (state.urlIdFilter.length > 0 && !state.urlIdFilter.includes(item.id)) return;
+        if (state.urlCategoryFilter.length > 0 && !state.urlCategoryFilter.includes(item.category)) return;
+        
+        counts.all++;
+        if (counts[item.category] !== undefined) {
+          counts[item.category]++;
+        }
+      });
+
+      document.getElementById('count-all').textContent = counts.all;
+      CATEGORY_ORDER.forEach(cat => {
+        const el = document.getElementById(`count-${cat}`);
+        if (el) el.textContent = counts[cat];
+      });
+    }
+
+    /**
+     * Render CV content cards grouped by Category
+     */
+    function renderCV() {
+      const container = document.getElementById('cv-content-area');
+      const emptyState = document.getElementById('empty-state');
+      const activeTagsBar = document.getElementById('active-tags-bar');
+      const activeFilterChips = document.getElementById('active-filter-chips');
+
+      if (!container) return;
+      container.innerHTML = '';
+
+      // Update active tag filter chip display
+      if (state.selectedTag || state.urlIdFilter.length > 0 || state.urlCategoryFilter.length > 0) {
+        activeTagsBar.classList.remove('hidden');
+        activeFilterChips.innerHTML = '';
+
+        if (state.selectedTag) {
+          activeFilterChips.innerHTML += `
+            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-brand-100 dark:bg-brand-950 text-brand-700 dark:text-brand-300 border border-brand-200 dark:border-brand-800">
+              Tag: ${state.selectedTag}
+              <button type="button" onclick="clearTagFilter()" class="hover:text-brand-900 dark:hover:text-white" aria-label="Remove tag filter">✕</button>
+            </span>
+          `;
+        }
+
+        if (state.urlIdFilter.length > 0) {
+          activeFilterChips.innerHTML += `
+            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800">
+              ${state.urlIdFilter.length} Curated Items
+              <button type="button" onclick="clearUrlIdFilter()" class="hover:text-indigo-900 dark:hover:text-white" aria-label="Clear ID filter">✕</button>
+            </span>
+          `;
+        }
+      } else {
+        activeTagsBar.classList.add('hidden');
+      }
+
+      const filtered = getFilteredEntries();
+
+      if (filtered.length === 0) {
+        emptyState.classList.remove('hidden');
+        return;
+      } else {
+        emptyState.classList.add('hidden');
+      }
+
+      // Determine which categories should be shown
+      const categoriesToShow = state.activeCategory === 'all'
+        ? CATEGORY_ORDER
+        : [state.activeCategory];
+
+      categoriesToShow.forEach(catKey => {
+        const catMeta = CATEGORIES_META[catKey];
+        const itemsInCat = filtered.filter(item => item.category === catKey);
+
+        if (itemsInCat.length === 0) return;
+
+        // Create Section Element
+        const sectionEl = document.createElement('section');
+        sectionEl.id = `section-${catKey}`;
+        sectionEl.className = 'space-y-4';
+
+        // Section Header
+        sectionEl.innerHTML = `
+          <div class="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-800">
+            <div class="flex items-center gap-3">
+              <div class="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-brand-600 dark:text-brand-400">
+                ${catMeta.icon}
+              </div>
+              <div>
+                <h3 class="text-xl font-bold text-slate-900 dark:text-white tracking-tight">${catMeta.title}</h3>
+                <span class="text-xs text-slate-500 font-medium">${itemsInCat.length} ${itemsInCat.length === 1 ? 'entry' : 'entries'}</span>
+              </div>
+            </div>
+            
+            <button type="button" onclick="shareCategoryDirectly('${catKey}')" title="Share only this category" class="text-xs font-medium text-slate-500 hover:text-brand-600 dark:hover:text-brand-400 flex items-center gap-1.5 px-2.5 py-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/></svg>
+              Share ${catMeta.badge}
+            </button>
+          </div>
+          <div class="grid grid-cols-1 gap-4 pt-2" id="grid-${catKey}"></div>
+        `;
+
+        const grid = sectionEl.querySelector(`#grid-${catKey}`);
+
+        // Render Cards
+        itemsInCat.forEach(item => {
+          const card = document.createElement('article');
+          card.id = `card-${item.id}`;
+          card.className = "cv-card page-break-avoid rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 p-5 sm:p-6 shadow-sm hover:shadow-md hover:border-slate-300 dark:hover:border-slate-700 transition relative group";
+
+          // Format description markdown
+          const descHtml = parseMarkdown(item.description);
+
+          // Tags pill HTML
+          const tagsHtml = item.tags.map(tag => `
+            <button type="button" onclick="filterByTag('${tag}')" class="text-xs px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-brand-50 hover:text-brand-700 dark:hover:bg-brand-950/60 dark:hover:text-brand-300 transition font-mono">
+              #${tag}
+            </button>
+          `).join('');
+
+          card.innerHTML = `
+            <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
+              <div class="space-y-1 flex-1">
+                <div class="flex flex-wrap items-center gap-2">
+                  <h4 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white tracking-tight">
+                    ${item.title}
+                  </h4>
+                  ${item.featured ? `
+                    <span class="inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800">
+                      ★ Featured
+                    </span>
+                  ` : ''}
+                </div>
+                
+                <div class="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs sm:text-sm font-medium text-slate-600 dark:text-slate-300">
+                  <span class="font-semibold text-brand-600 dark:text-brand-400">${item.organization}</span>
+                  ${item.location ? `<span class="text-slate-400 dark:text-slate-600">•</span><span class="text-slate-500">${item.location}</span>` : ''}
+                </div>
+              </div>
+
+              <!-- Date Badge & Item Share Action -->
+              <div class="flex items-center gap-2 shrink-0 self-start sm:self-auto">
+                <span class="text-xs font-mono font-medium text-slate-500 dark:text-slate-400 px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800">
+                  ${item.date}
+                </span>
+
+                <button type="button" onclick="shareSingleItem('${item.id}', event)" title="Copy direct link to this entry" class="p-1.5 rounded-lg text-slate-400 hover:text-brand-600 dark:hover:text-brand-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition focus:outline-none" aria-label="Share this entry">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
+                </button>
+
+                ${item.link ? `
+                  <a href="${item.link}" target="_blank" rel="noopener noreferrer" title="Visit project or verification link" class="p-1.5 rounded-lg text-slate-400 hover:text-brand-600 dark:hover:text-brand-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition focus:outline-none" aria-label="Open link">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                  </a>
+                ` : ''}
+              </div>
+            </div>
+
+            <!-- Description -->
+            <div class="mt-3 text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed space-y-2">
+              <p>${descHtml}</p>
+            </div>
+
+            <!-- Tags Container -->
+            <div class="mt-4 flex flex-wrap gap-1.5 pt-2 border-t border-slate-100 dark:border-slate-800/80">
+              ${tagsHtml}
+            </div>
+          `;
+
+          grid.appendChild(card);
+        });
+
+        container.appendChild(sectionEl);
+      });
+    }
+
+    /**
+     * =========================================================================
+     * 4. DYNAMIC LINK GENERATOR UI (MODAL & BUILDER)
+     * =========================================================================
+     */
+    const shareModal = document.getElementById('share-modal');
+    const modalChecklistContainer = document.getElementById('modal-checklist-container');
+    const modalRecipientInput = document.getElementById('modal-recipient-input');
+    const modalUrlOutput = document.getElementById('modal-url-output');
+    const modalSelectionCount = document.getElementById('modal-selection-count');
+
+    // Track checked item IDs in the modal
+    let modalSelectedIds = new Set();
+
+    /**
+     * Initialize modal checklist structure
+     */
+    function initModalChecklist() {
+      if (!modalChecklistContainer) return;
+      modalChecklistContainer.innerHTML = '';
+
+      CATEGORY_ORDER.forEach(catKey => {
+        const catMeta = CATEGORIES_META[catKey];
+        const catItems = CV_DATA.filter(item => item.category === catKey);
+        if (catItems.length === 0) return;
+
+        const groupEl = document.createElement('div');
+        groupEl.className = 'border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden bg-white dark:bg-slate-900';
+
+        // Category Master Header with bulk toggle
+        groupEl.innerHTML = `
+          <div class="px-4 py-3 bg-slate-50 dark:bg-slate-800/60 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+            <label class="inline-flex items-center gap-2 cursor-pointer font-bold text-xs sm:text-sm text-slate-800 dark:text-slate-200 select-none">
+              <input type="checkbox" data-cat-master="${catKey}" class="rounded border-slate-300 dark:border-slate-700 text-brand-600 focus:ring-brand-500 w-4 h-4">
+              <span>${catMeta.title}</span>
+            </label>
+            <span class="text-xs text-slate-400 font-mono" id="cat-tally-${catKey}">0 / ${catItems.length}</span>
+          </div>
+          <div class="p-3 divide-y divide-slate-100 dark:divide-slate-800/60" id="cat-items-${catKey}"></div>
+        `;
+
+        const itemsBox = groupEl.querySelector(`#cat-items-${catKey}`);
+
+        catItems.forEach(item => {
+          const row = document.createElement('div');
+          row.className = 'py-2 px-1 flex items-start gap-3 hover:bg-slate-50 dark:hover:bg-slate-800/30 rounded-lg transition';
+          row.innerHTML = `
+            <input type="checkbox" id="check-${item.id}" value="${item.id}" data-category="${catKey}"
+              class="item-checkbox mt-1 rounded border-slate-300 dark:border-slate-700 text-brand-600 focus:ring-brand-500 w-4 h-4 cursor-pointer">
+            <label for="check-${item.id}" class="flex-1 cursor-pointer select-none">
+              <div class="flex items-center justify-between text-xs sm:text-sm font-semibold text-slate-800 dark:text-slate-200">
+                <span>${item.title}</span>
+                <span class="text-xs font-mono text-slate-400">${item.date}</span>
+              </div>
+              <div class="text-xs text-slate-500">${item.organization}</div>
+            </label>
+          `;
+
+          itemsBox.appendChild(row);
+        });
+
+        modalChecklistContainer.appendChild(groupEl);
+      });
+
+      // Bind listeners on master category checkboxes
+      document.querySelectorAll('[data-cat-master]').forEach(masterCheck => {
+        masterCheck.addEventListener('change', (e) => {
+          const cat = e.target.getAttribute('data-cat-master');
+          const isChecked = e.target.checked;
+          document.querySelectorAll(`.item-checkbox[data-category="${cat}"]`).forEach(cb => {
+            cb.checked = isChecked;
+            if (isChecked) {
+              modalSelectedIds.add(cb.value);
+            } else {
+              modalSelectedIds.delete(cb.value);
+            }
+          });
+          updateModalUrl();
+        });
+      });
+
+      // Bind listeners on individual item checkboxes
+      document.querySelectorAll('.item-checkbox').forEach(cb => {
+        cb.addEventListener('change', (e) => {
+          if (e.target.checked) {
+            modalSelectedIds.add(e.target.value);
+          } else {
+            modalSelectedIds.delete(e.target.value);
+          }
+          syncMasterCheckboxes();
+          updateModalUrl();
+        });
+      });
+
+      // Bind recipient input listener
+      if (modalRecipientInput) {
+        modalRecipientInput.addEventListener('input', () => {
+          updateModalUrl();
+        });
+      }
+    }
+
+    /**
+     * Keep master category checkboxes in sync with item checks
+     */
+    function syncMasterCheckboxes() {
+      CATEGORY_ORDER.forEach(cat => {
+        const catCheckboxes = Array.from(document.querySelectorAll(`.item-checkbox[data-category="${cat}"]`));
+        const master = document.querySelector(`[data-cat-master="${cat}"]`);
+        const tally = document.getElementById(`cat-tally-${cat}`);
+        if (!master || catCheckboxes.length === 0) return;
+
+        const checkedCount = catCheckboxes.filter(cb => cb.checked).length;
+        master.checked = checkedCount === catCheckboxes.length;
+        master.indeterminate = checkedCount > 0 && checkedCount < catCheckboxes.length;
+        if (tally) tally.textContent = `${checkedCount} / ${catCheckboxes.length}`;
+      });
+    }
+
+    /**
+     * Generate the share URL string based on modal state
+     */
+    function generateShareUrl() {
+      const baseUrl = window.location.origin + window.location.pathname;
+      const params = new URLSearchParams();
+
+      const recipient = modalRecipientInput ? modalRecipientInput.value.trim() : '';
+      if (recipient) {
+        params.set('recipient', recipient);
+      }
+
+      // Check if all items in whole categories are selected
+      const selectedCategories = [];
+      const leftoverIds = [];
+
+      CATEGORY_ORDER.forEach(cat => {
+        const allInCat = CV_DATA.filter(i => i.category === cat);
+        const selectedInCat = allInCat.filter(i => modalSelectedIds.has(i.id));
+
+        if (selectedInCat.length === allInCat.length && allInCat.length > 0) {
+          selectedCategories.push(cat);
+        } else {
+          selectedInCat.forEach(i => leftoverIds.push(i.id));
+        }
+      });
+
+      // If all items of every category are selected, clean URL
+      if (modalSelectedIds.size === CV_DATA.length) {
+        if (recipient) {
+          return `${baseUrl}?${params.toString()}`;
+        }
+        return baseUrl;
+      }
+
+      // If whole categories are checked and no individual leftovers, use clean ?categories=...
+      if (selectedCategories.length > 0 && leftoverIds.length === 0) {
+        params.set('categories', selectedCategories.join(','));
+      } else {
+        // Otherwise specify precise IDs for exact curation
+        if (modalSelectedIds.size > 0) {
+          params.set('ids', Array.from(modalSelectedIds).join(','));
+        }
+      }
+
+      const queryString = params.toString();
+      return queryString ? `${baseUrl}?${queryString}` : baseUrl;
+    }
+
+    /**
+     * Update the live preview URL inside the modal
+     */
+    function updateModalUrl() {
+      if (!modalUrlOutput) return;
+      const url = generateShareUrl();
+      modalUrlOutput.value = url;
+      modalSelectionCount.textContent = `${modalSelectedIds.size} of ${CV_DATA.length} items selected`;
+    }
+
+    /**
+     * Apply quick selection presets in the modal
+     */
+    function applySharePreset(preset) {
+      modalSelectedIds.clear();
+
+      if (preset === 'all') {
+        CV_DATA.forEach(i => modalSelectedIds.add(i.id));
+      } else if (preset === 'featured') {
+        CV_DATA.filter(i => i.featured).forEach(i => modalSelectedIds.add(i.id));
+      } else if (preset === 'engineering') {
+        CV_DATA.filter(i => ['work', 'projects'].includes(i.category)).forEach(i => modalSelectedIds.add(i.id));
+      } else if (preset === 'academic') {
+        CV_DATA.filter(i => ['learning', 'certifications'].includes(i.category)).forEach(i => modalSelectedIds.add(i.id));
+      } else if (preset === 'community') {
+        CV_DATA.filter(i => ['work', 'volunteering'].includes(i.category)).forEach(i => modalSelectedIds.add(i.id));
+      } else if (preset === 'none') {
+        // modalSelectedIds already cleared
+      }
+
+      // Update checkboxes in UI
+      document.querySelectorAll('.item-checkbox').forEach(cb => {
+        cb.checked = modalSelectedIds.has(cb.value);
+      });
+
+      syncMasterCheckboxes();
+      updateModalUrl();
+    }
+
+    /**
+     * Open Share Modal
+     */
+    function openShareModal() {
+      if (!shareModal) return;
+
+      // Populate current selection into the modal based on active page state
+      modalSelectedIds.clear();
+
+      if (state.urlIdFilter.length > 0) {
+        state.urlIdFilter.forEach(id => modalSelectedIds.add(id));
+      } else if (state.urlCategoryFilter.length > 0) {
+        CV_DATA.filter(i => state.urlCategoryFilter.includes(i.category)).forEach(i => modalSelectedIds.add(i.id));
+      } else if (state.activeCategory !== 'all') {
+        CV_DATA.filter(i => i.category === state.activeCategory).forEach(i => modalSelectedIds.add(i.id));
+      } else {
+        // Default to all or featured
+        CV_DATA.forEach(i => modalSelectedIds.add(i.id));
+      }
+
+      if (modalRecipientInput) {
+        modalRecipientInput.value = state.recipientName || '';
+      }
+
+      document.querySelectorAll('.item-checkbox').forEach(cb => {
+        cb.checked = modalSelectedIds.has(cb.value);
+      });
+
+      syncMasterCheckboxes();
+      updateModalUrl();
+
+      // Show native modal
+      shareModal.showModal();
+    }
+
+    /**
+     * Close Share Modal
+     */
+    function closeShareModal() {
+      if (shareModal) shareModal.close();
+    }
+
+    /**
+     * Fallback for closedby on non-supporting browsers per modern web guidance
+     */
+    if (shareModal && !('closedBy' in HTMLDialogElement.prototype)) {
+      shareModal.addEventListener('click', (event) => {
+        if (event.target !== shareModal) return;
+        const rect = shareModal.getBoundingClientRect();
+        const isInContent = (
+          rect.top <= event.clientY &&
+          event.clientY <= rect.top + rect.height &&
+          rect.left <= event.clientX &&
+          event.clientX <= rect.left + rect.width
+        );
+        if (!isInContent) {
+          shareModal.close();
+        }
+      });
+    }
+
+    /**
+     * Copy share URL to clipboard
+     */
+    function copyShareUrl() {
+      const url = modalUrlOutput.value;
+      if (!url) return;
+
+      navigator.clipboard.writeText(url).then(() => {
+        const copyText = document.getElementById('copy-text');
+        const copyIcon = document.getElementById('copy-icon');
+        
+        if (copyText) copyText.textContent = "Copied!";
+        if (copyIcon) copyIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>`;
+
+        showToast("✓ Custom link copied to clipboard!");
+
+        setTimeout(() => {
+          if (copyText) copyText.textContent = "Copy Link";
+          if (copyIcon) copyIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>`;
+        }, 2200);
+      }).catch(err => {
+        console.error("Clipboard copy failed: ", err);
+        showToast("Failed to copy. Please copy manually.");
+      });
+    }
+
+    /**
+     * Open generated link in a new browser tab
+     */
+    function openShareUrlInNewTab() {
+      const url = modalUrlOutput.value;
+      if (url) window.open(url, '_blank');
+    }
+
+    /**
+     * Quick share for single item direct link
+     */
+    function shareSingleItem(itemId, event) {
+      if (event) event.stopPropagation();
+      const baseUrl = window.location.origin + window.location.pathname;
+      const itemUrl = `${baseUrl}?ids=${itemId}`;
+
+      navigator.clipboard.writeText(itemUrl).then(() => {
+        showToast(`✓ Link for entry copied to clipboard!`);
+      });
+    }
+
+    /**
+     * Quick share for an entire category
+     */
+    function shareCategoryDirectly(catKey) {
+      const baseUrl = window.location.origin + window.location.pathname;
+      const catUrl = `${baseUrl}?categories=${catKey}`;
+
+      navigator.clipboard.writeText(catUrl).then(() => {
+        const name = CATEGORIES_META[catKey]?.badge || catKey;
+        showToast(`✓ Link for '${name}' category copied!`);
+      });
+    }
+
+    /**
+     * =========================================================================
+     * 5. TOAST NOTIFICATIONS
+     * =========================================================================
+     */
+    function showToast(message, duration = 3000) {
+      const container = document.getElementById('toast-container');
+      if (!container) return;
+
+      const toast = document.createElement('div');
+      toast.className = 'pointer-events-auto bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-4 py-2.5 rounded-xl shadow-xl text-xs sm:text-sm font-semibold flex items-center gap-2 border border-slate-700 dark:border-slate-200 transition-all transform translate-y-2 opacity-0 duration-200';
+      toast.textContent = message;
+
+      container.appendChild(toast);
+
+      // Animate in
+      requestAnimationFrame(() => {
+        toast.classList.remove('translate-y-2', 'opacity-0');
+      });
+
+      // Animate out & remove
+      setTimeout(() => {
+        toast.classList.add('translate-y-2', 'opacity-0');
+        setTimeout(() => toast.remove(), 250);
+      }, duration);
+    }
+
+    /**
+     * =========================================================================
+     * 6. FILTER ACTIONS & USER CONTROLS
+     * =========================================================================
+     */
+    function filterByTag(tagName) {
+      state.selectedTag = tagName;
+      renderCV();
+      showToast(`Filtered by tag: #${tagName}`);
+    }
+
+    function clearTagFilter() {
+      state.selectedTag = null;
+      renderCV();
+    }
+
+    function clearUrlIdFilter() {
+      state.urlIdFilter = [];
+      const url = new URL(window.location);
+      url.searchParams.delete('ids');
+      window.history.pushState({}, '', url);
+      updateTailoredBanner();
+      updateCategoryCounts();
+      renderCV();
+    }
+
+    function resetFilters(event) {
+      if (event) event.preventDefault();
+
+      state.activeCategory = 'all';
+      state.searchQuery = '';
+      state.featuredOnly = false;
+      state.selectedTag = null;
+      state.urlCategoryFilter = [];
+      state.urlIdFilter = [];
+      state.recipientName = '';
+      state.customContext = '';
+
+      // Reset DOM controls
+      const searchInput = document.getElementById('search-input');
+      const clearSearchBtn = document.getElementById('clear-search-btn');
+      const featuredToggle = document.getElementById('featured-toggle');
+      if (searchInput) searchInput.value = '';
+      if (clearSearchBtn) clearSearchBtn.classList.add('hidden');
+      if (featuredToggle) featuredToggle.checked = false;
+
+      // Update pills
+      document.querySelectorAll('.category-pill').forEach(pill => {
+        if (pill.getAttribute('data-category') === 'all') {
+          pill.classList.add('active');
+        } else {
+          pill.classList.remove('active');
+        }
+      });
+
+      // Clean URL without reloading
+      const cleanUrl = window.location.origin + window.location.pathname;
+      window.history.pushState({}, '', cleanUrl);
+
+      updateTailoredBanner();
+      updateCategoryCounts();
+      renderCV();
+      showToast("Reset to full complete CV view.");
+    }
+
+    /**
+     * =========================================================================
+     * 7. THEME & DARK MODE SYSTEM
+     * =========================================================================
+     */
+    function getStoredTheme() {
+      return localStorage.getItem('cv_theme') || 'system';
+    }
+
+    function applyTheme(theme) {
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const isDark = theme === 'dark' || (theme === 'system' && prefersDark);
+
+      if (isDark) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+
+      // Update color-scheme meta for native scrollbars and form controls
+      const meta = document.querySelector('meta[name="color-scheme"]');
+      if (meta) {
+        meta.content = theme === 'system' ? 'light dark' : theme;
+      }
+
+      // Update Icons in header
+      const iconLight = document.getElementById('theme-icon-light');
+      const iconDark = document.getElementById('theme-icon-dark');
+      const iconSystem = document.getElementById('theme-icon-system');
+
+      if (iconLight && iconDark && iconSystem) {
+        iconLight.classList.add('hidden');
+        iconDark.classList.add('hidden');
+        iconSystem.classList.add('hidden');
+
+        if (theme === 'light') iconLight.classList.remove('hidden');
+        else if (theme === 'dark') iconDark.classList.remove('hidden');
+        else iconSystem.classList.remove('hidden');
+      }
+
+      // Update Dropdown checks
+      ['light', 'dark', 'system'].forEach(t => {
+        const check = document.getElementById(`check-${t}`);
+        if (check) {
+          if (t === theme) check.classList.remove('hidden');
+          else check.classList.add('hidden');
+        }
+      });
+    }
+
+    function setTheme(theme) {
+      localStorage.setItem('cv_theme', theme);
+      applyTheme(theme);
+      closeThemeMenu();
+      showToast(`Theme set to ${theme.charAt(0).toUpperCase() + theme.slice(1)}`);
+    }
+
+    function toggleThemeMenu() {
+      const menu = document.getElementById('theme-dropdown');
+      if (menu) menu.classList.toggle('hidden');
+    }
+
+    function closeThemeMenu() {
+      const menu = document.getElementById('theme-dropdown');
+      if (menu) menu.classList.add('hidden');
+    }
+
+    // Listen to OS system theme changes
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+      if (getStoredTheme() === 'system') {
+        applyTheme('system');
+      }
+    });
+
+    /**
+     * =========================================================================
+     * 8. EVENT LISTENERS & APP INITIALIZATION
+     * =========================================================================
+     */
+    document.addEventListener('DOMContentLoaded', () => {
+      // 1. Initialize Theme
+      applyTheme(getStoredTheme());
+
+      // 2. Parse URL parameters
+      parseUrlParameters();
+
+      // 3. Initialize Category Counts & Render Content
+      updateCategoryCounts();
+      renderCV();
+
+      // 4. Initialize Modal Checklist
+      initModalChecklist();
+
+      // 5. Category Tab Click Handlers
+      const categoryTabs = document.getElementById('category-tabs');
+      if (categoryTabs) {
+        categoryTabs.addEventListener('click', (e) => {
+          const btn = e.target.closest('.category-pill');
+          if (!btn) return;
+
+          const cat = btn.getAttribute('data-category');
+          state.activeCategory = cat;
+
+          document.querySelectorAll('.category-pill').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+
+          renderCV();
+        });
+      }
+
+      // 6. Live Search Input
+      const searchInput = document.getElementById('search-input');
+      const clearSearchBtn = document.getElementById('clear-search-btn');
+
+      if (searchInput) {
+        searchInput.addEventListener('input', (e) => {
+          state.searchQuery = e.target.value.trim();
+          if (state.searchQuery) {
+            clearSearchBtn.classList.remove('hidden');
+          } else {
+            clearSearchBtn.classList.add('hidden');
+          }
+          renderCV();
+        });
+      }
+
+      if (clearSearchBtn) {
+        clearSearchBtn.addEventListener('click', () => {
+          searchInput.value = '';
+          state.searchQuery = '';
+          clearSearchBtn.classList.add('hidden');
+          renderCV();
+          searchInput.focus();
+        });
+      }
+
+      // 7. Featured Toggle
+      const featuredToggle = document.getElementById('featured-toggle');
+      if (featuredToggle) {
+        featuredToggle.addEventListener('change', (e) => {
+          state.featuredOnly = e.target.checked;
+          renderCV();
+        });
+      }
+
+      // 8. Open Share Modal Buttons
+      const openShareBtn = document.getElementById('open-share-btn');
+      if (openShareBtn) {
+        openShareBtn.addEventListener('click', openShareModal);
+      }
+
+      // 9. Print / PDF Button
+      const printBtn = document.getElementById('print-cv-btn');
+      if (printBtn) {
+        printBtn.addEventListener('click', () => {
+          window.print();
+        });
+      }
+
+      // 10. Theme Menu Toggle & Outside click handler
+      const themeToggleBtn = document.getElementById('theme-toggle-btn');
+      if (themeToggleBtn) {
+        themeToggleBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          toggleThemeMenu();
+        });
+      }
+
+      document.addEventListener('click', (e) => {
+        if (!e.target.closest('#theme-menu-container')) {
+          closeThemeMenu();
+        }
+      });
+
+      // 11. Keyboard Shortcuts (Esc closes modal, / focuses search)
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          closeShareModal();
+          closeThemeMenu();
+        }
+        if (e.key === '/' && document.activeElement !== searchInput && (!shareModal || !shareModal.open)) {
+          e.preventDefault();
+          if (searchInput) searchInput.focus();
+        }
+      });
+    });
+  </script>
+
+  <!-- Category Pill Active CSS Style (Clean, minimal aesthetic) -->
+  <style>
+    .category-pill {
+      background-color: transparent;
+      color: #64748b;
+      border-color: transparent;
+    }
+    .dark .category-pill {
+      color: #94a3b8;
+      border-color: transparent;
+    }
+    .category-pill:hover {
+      background-color: #f1f5f9;
+      color: #0f172a;
+    }
+    .dark .category-pill:hover {
+      background-color: #1e293b;
+      color: #f8fafc;
+    }
+    .category-pill.active {
+      background-color: #ffffff;
+      color: #4f46e5;
+      border-color: #cbd5e1;
+      font-weight: 700;
+      box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    }
+    .dark .category-pill.active {
+      background-color: #1e293b;
+      color: #818cf8;
+      border-color: #334155;
+    }
+    /* Hide scrollbar for category tabs on mobile */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+  </style>
+
+</body>
+</html>
