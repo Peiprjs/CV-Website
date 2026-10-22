@@ -1,0 +1,601 @@
+window.CV_DEFAULT_DATA = {
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "theme": {
+    "palette": "indigo",
+    "note": "Choose from presets ('indigo', 'emerald', 'blue', 'violet', 'rose', 'amber', 'cyan') or provide a custom hex in customShades.",
+    "customShades": null
+  },
+  "profile": {
+    "name": "Mar Roca Cugat",
+    "suffix": "B.Sc. Candidate",
+    "initials": "MRC",
+    "title": "Biomedical Sciences Researcher & AI Systems Developer",
+    "status": "BSc Candidate at Maastricht University & Flagship Hackathon Manager",
+    "location": "Maastricht, Netherlands",
+    "bio": "Undergraduate researcher in Biomedical Sciences at Maastricht University passionate about cell biology, toxicology, genomics, and bio-image informatics. Active open-source developer building multi-agent research pipelines, automated laboratory analysis workflows, and embedded IoT tools. Experienced in academic governance and educational leadership within the Faculty of Health, Medicine and Life Sciences (FHML).",
+    "email": "m.rocacugat@student.maastrichtuniversity.nl",
+    "github": "https://github.com/peiprjs",
+    "githubUsername": "peiprjs",
+    "linkedin": "https://www.linkedin.com/in/mar-roca-cugat/",
+    "scholar": "https://scholar.google.com/citations?user=ocdBqTwAAAAJ",
+    "website": "https://cv.peiphy.xyz/CV.pdf",
+    "metrics": [
+      {
+        "value": "8.8k+",
+        "label": "GitHub Commits"
+      },
+      {
+        "value": "5",
+        "label": "Published Works & Protocols"
+      },
+      {
+        "value": "4+",
+        "label": "Years Open Source Dev"
+      },
+      {
+        "value": "3+",
+        "label": "Leadership & Academic Roles"
+      }
+    ]
+  },
+  "categories": {
+    "work": {
+      "title": "Professional Experience",
+      "badge": "Work"
+    },
+    "projects": {
+      "title": "Key Projects & Published Works",
+      "badge": "Projects"
+    },
+    "learning": {
+      "title": "Education & Learning",
+      "badge": "Learning"
+    },
+    "certifications": {
+      "title": "Certifications & Distinctions",
+      "badge": "Certifications"
+    },
+    "volunteering": {
+      "title": "Community, Governance & Leadership",
+      "badge": "Volunteering"
+    },
+    "hobbies": {
+      "title": "Interests & Pursuits",
+      "badge": "Hobbies"
+    }
+  },
+  "skills": {
+    "hard": [
+      {
+        "name": "Python & Bio-Image Informatics",
+        "level": 5,
+        "tag": "Bioinformatics"
+      },
+      {
+        "name": "Genomics Data Pipelines (TCGA, NGS)",
+        "level": 4,
+        "tag": "Genomics"
+      },
+      {
+        "name": "Laboratory Wet-Lab Techniques & Protocols",
+        "level": 4,
+        "tag": "Wet Lab"
+      },
+      {
+        "name": "Multi-Agent AI Pipelines (CrewAI & Local LLMs)",
+        "level": 4,
+        "tag": "AI Systems"
+      },
+      {
+        "name": "JavaScript, Node.js & Browser Extensions",
+        "level": 5,
+        "tag": "Software Dev"
+      },
+      {
+        "name": "Image Processing & Cell Migration Assays",
+        "level": 4,
+        "tag": "Image Analysis"
+      },
+      {
+        "name": "Linux Systems & Cloud Infrastructure",
+        "level": 4,
+        "tag": "Systems"
+      },
+      {
+        "name": "Embedded Hardware & IoT (Raspberry Pi)",
+        "level": 3,
+        "tag": "Hardware"
+      }
+    ],
+    "soft": [
+      {
+        "name": "Academic Governance & Faculty Representation",
+        "level": 5,
+        "tag": "Governance"
+      },
+      {
+        "name": "Educational Leadership & Teaching Assistance",
+        "level": 5,
+        "tag": "Education"
+      },
+      {
+        "name": "Hackathon Management & Event Orchestration",
+        "level": 5,
+        "tag": "Management"
+      },
+      {
+        "name": "Scientific Protocol Writing & Documentation",
+        "level": 4,
+        "tag": "Communication"
+      },
+      {
+        "name": "Cross-Functional Research Collaboration",
+        "level": 4,
+        "tag": "Teamwork"
+      },
+      {
+        "name": "Student Advocacy & Educational Quality Assurance",
+        "level": 5,
+        "tag": "Advocacy"
+      }
+    ]
+  },
+  "items": [
+    {
+      "id": "work-um-lab-ta",
+      "category": "work",
+      "title": "Laboratory and Teaching Assistant",
+      "organization": "Maastricht University (Onderwijsinstituut FHML)",
+      "date": "Sep 2024 – Present",
+      "location": "Maastricht, NL",
+      "description": "Assisting in practical laboratory sessions, guiding undergraduate students in biomedical techniques, and digitizing standardized experimental protocols for the Faculty of Health, Medicine and Life Sciences.",
+      "tags": [
+        "Biomedical Sciences",
+        "Laboratory Instruction",
+        "Wet Lab",
+        "Protocols.io",
+        "Teaching"
+      ],
+      "featured": true,
+      "link": "https://www.maastrichtuniversity.nl"
+    },
+    {
+      "id": "work-head-of-edu",
+      "category": "work",
+      "title": "Head of Education",
+      "organization": "Study Association Helix",
+      "date": "Jun 2025 – Jun 2026",
+      "location": "Maastricht, NL",
+      "description": "Representing biomedical sciences student interests, managing educational quality assurance initiatives, and collaborating with faculty administration on curriculum development.",
+      "tags": [
+        "Academic Governance",
+        "Student Leadership",
+        "Curriculum Development",
+        "Higher Education"
+      ],
+      "featured": true,
+      "link": "https://www.maastrichtuniversity.nl"
+    },
+    {
+      "id": "work-pgamerx-legacy",
+      "category": "work",
+      "title": "Department Co-Manager & Software Developer",
+      "organization": "PGamerX Legacy",
+      "date": "Nov 2021 – Sep 2023",
+      "location": "Remote",
+      "description": "Co-managed the automation software development department and engineered open-source applications and high-availability Discord bots for community and developer workflows.",
+      "tags": [
+        "JavaScript",
+        "Node.js",
+        "Automation",
+        "Software Development",
+        "Team Management"
+      ],
+      "featured": true,
+      "link": "https://github.com/PGamerX-Legacy/muser"
+    },
+    {
+      "id": "work-something-host",
+      "category": "work",
+      "title": "Technical Support Agent",
+      "organization": "Something Host",
+      "date": "Aug 2020 – Dec 2020",
+      "location": "Remote",
+      "description": "Provided technical support, troubleshooting, and server deployment assistance for cloud and web hosting infrastructure clients.",
+      "tags": [
+        "Linux",
+        "Server Administration",
+        "Technical Support",
+        "Networking"
+      ],
+      "featured": false
+    },
+    {
+      "id": "project-transwell-scripts",
+      "category": "projects",
+      "title": "Transwell Image Processing Scripts",
+      "organization": "Zenodo / Open Source Research Software",
+      "date": "Jun 2026",
+      "description": "Automated image processing scripts designed for quantifying and analyzing Transwell migration and invasion assays. Published with open-access archival via CERN/Zenodo (**DOI: 10.5281/ZENODO.20741673**).",
+      "tags": [
+        "Image Processing",
+        "Bioinformatics",
+        "Cell Biology",
+        "Open Science",
+        "Zenodo"
+      ],
+      "featured": true,
+      "link": "https://github.com/Peiprjs/Transwell-Image-Processing-Scripts"
+    },
+    {
+      "id": "project-zebrafish-arrhythmia-protocol",
+      "category": "projects",
+      "title": "Imaging Cardiac Arrhythmia in Zebrafish Genetic Disease Models",
+      "organization": "Protocols.io (Maastricht University)",
+      "date": "Mar 2026",
+      "description": "Co-authored standardized open-access laboratory protocol detailing high-resolution optical imaging of cardiac arrhythmia in zebrafish embryo disease models (**DOI: 10.17504/protocols.io.yxmvm1j75v3p/v1**).",
+      "tags": [
+        "Zebrafish Models",
+        "Cardiology",
+        "Microscopy",
+        "Genetics",
+        "Protocols.io"
+      ],
+      "featured": true,
+      "link": "https://www.protocols.io/view/imaging-cardiac-arrhythmia-in-genetic-disease-mode-yxmvm1j75v3p/v1"
+    },
+    {
+      "id": "project-predator-eater",
+      "category": "projects",
+      "title": "Predator-Eater: Predatory Journal Detector",
+      "organization": "Open Source Initiative",
+      "date": "2026",
+      "description": "A cross-browser extension for Firefox and Google Chrome that automatically detects and alerts researchers when viewing potentially predatory academic journals.",
+      "tags": [
+        "JavaScript",
+        "Browser Extension",
+        "Academic Integrity",
+        "Open Source",
+        "Web Extensions"
+      ],
+      "featured": true,
+      "link": "https://github.com/Peiprjs/Predator-Eater"
+    },
+    {
+      "id": "project-tcga-cdk-analysis",
+      "category": "projects",
+      "title": "TCGA-CDK-Analysis: Genomics Data Pipeline",
+      "organization": "Maastricht University Research Build",
+      "date": "2026",
+      "description": "Computational genomics and transcriptomics analysis investigating Cyclin-Dependent Kinases (CDKs) across The Cancer Genome Atlas (TCGA) datasets.",
+      "tags": [
+        "Genomics",
+        "TCGA",
+        "Bioinformatics",
+        "Data Analysis",
+        "Oncology"
+      ],
+      "featured": false,
+      "link": "https://github.com/Peiprjs/TCGA-CDK-analysis"
+    },
+    {
+      "id": "project-staphylococcus-sampling",
+      "category": "projects",
+      "title": "Staphylococcus Aureus Sampling Protocol",
+      "organization": "Protocols.io",
+      "date": "Sep 2022",
+      "description": "Peer-reviewed open-access methodology protocol covering sampling, isolation, and processing of Staphylococcus Aureus cultures (**DOI: dx.doi.org/10.17504/protocols.io.81wgb6pk1lpk/v10**).",
+      "tags": [
+        "Microbiology",
+        "Bacteriology",
+        "Methodology",
+        "Protocols.io",
+        "Wet Lab"
+      ],
+      "featured": false,
+      "link": "https://www.protocols.io"
+    },
+    {
+      "id": "project-multi-agent-scoping",
+      "category": "projects",
+      "title": "Autonomous Multi-Agent Literature Review System",
+      "organization": "Personal Research Tooling",
+      "date": "2026",
+      "description": "Local LLM-driven multi-agent pipeline (CrewAI & lightweight local models) for conducting systematic scoping reviews, featuring automated RIS citation exports for Zotero, Obsidian knowledge vault generation, and an interactive Streamlit dashboard.",
+      "tags": [
+        "Python",
+        "CrewAI",
+        "Streamlit",
+        "Local LLMs",
+        "Obsidian",
+        "Zotero"
+      ],
+      "featured": false
+    },
+    {
+      "id": "edu-bsc-maastricht",
+      "category": "learning",
+      "title": "Bachelor of Science in Biomedical Sciences",
+      "organization": "Maastricht University Faculty of Health, Medicine and Life Sciences",
+      "date": "2023 – 2026",
+      "location": "Maastricht, Netherlands",
+      "description": "Focusing on toxicology, genomics, molecular biology, and biomedical data analysis. Active in educational improvement and open-access protocol standardization.",
+      "tags": [
+        "Biomedical Sciences",
+        "Toxicology",
+        "Genomics",
+        "Cell Biology",
+        "Problem-Based Learning"
+      ],
+      "featured": true,
+      "link": "https://www.maastrichtuniversity.nl"
+    },
+    {
+      "id": "edu-radiation-protection",
+      "category": "learning",
+      "title": "Radiation Protection Officer (TMS-VRS D)",
+      "organization": "Maastricht University (FHML - Radiation Protection Unit Randwyck)",
+      "date": "Sep 2025 – Oct 2025",
+      "location": "Maastricht, NL",
+      "description": "Specialized certification for handling dispersible radioactive substances level D safely within biomedical research laboratories.",
+      "tags": [
+        "Radiation Safety",
+        "Laboratory Safety",
+        "Compliance",
+        "Biomedical Engineering"
+      ],
+      "featured": false,
+      "link": "https://www.maastrichtuniversity.nl"
+    },
+    {
+      "id": "edu-qa-sep",
+      "category": "learning",
+      "title": "Basic Course Quality Assurance for SEP-Members",
+      "organization": "Maastricht University (Onderwijs Instituut)",
+      "date": "Dec 2023",
+      "location": "Maastricht, NL",
+      "description": "Training on educational quality assurance, student evaluation panels, and providing structured feedback to improve higher education curricula.",
+      "tags": [
+        "Quality Assurance",
+        "Education Policy",
+        "Academic Governance"
+      ],
+      "featured": false
+    },
+    {
+      "id": "edu-ib",
+      "category": "learning",
+      "title": "International Baccalaureate (IB) Diploma Programme & Batxillerat",
+      "organization": "INS Jaume Vicens Vives / International Baccalaureate",
+      "date": "2021 – 2023",
+      "location": "Girona, Spain",
+      "description": "Rigorous bilingual secondary education program combining the IB Diploma and Spanish Batxillerat with a strong focus on experimental sciences and mathematics.",
+      "tags": [
+        "International Baccalaureate",
+        "Sciences",
+        "Mathematics",
+        "Bilingual Education"
+      ],
+      "featured": true
+    },
+    {
+      "id": "cert-catalan-biology-olympiad",
+      "category": "certifications",
+      "title": "Q1 + 3rd Place in Subregionals (Catalan Biology Olympiad)",
+      "organization": "Col·legi de Biòlegs de Catalunya",
+      "date": "Feb 2023",
+      "description": "Achieved top placement in the regional phase of the Catalan Biology Olympiad, demonstrating advanced competency in molecular and organismal biology.",
+      "tags": [
+        "Biology Olympiad",
+        "Distinction",
+        "Genetics",
+        "Cell Biology"
+      ],
+      "featured": true
+    },
+    {
+      "id": "cert-physics-olympiad",
+      "category": "certifications",
+      "title": "Top 50 - Regional Selection (Physics Olympiad)",
+      "organization": "Societat Catalana de Física",
+      "date": "Feb 2023",
+      "description": "Selected among the top 50 pre-regional participants in the Catalan Physics Olympiad.",
+      "tags": [
+        "Physics",
+        "Olympiad",
+        "Distinction",
+        "Mathematics"
+      ],
+      "featured": false
+    },
+    {
+      "id": "cert-ditmae-math",
+      "category": "certifications",
+      "title": "Probability - First Place (DITMAE)",
+      "organization": "Institut d'Estudis Catalans",
+      "date": "Mar 2022",
+      "description": "First place award in probability and mathematical modeling at the Dissabte Transfronterer de les Matemàtiques a l'Alt Empordà.",
+      "tags": [
+        "Mathematics",
+        "Probability",
+        "Competition",
+        "First Place"
+      ],
+      "featured": false
+    },
+    {
+      "id": "cert-idescat-stats",
+      "category": "certifications",
+      "title": "Categoria IDESCAT - First Place (Planter d'Estadística)",
+      "organization": "Institut d'Estadística de Catalunya",
+      "date": "May 2021",
+      "description": "First place award for statistical research report on population health and sedentary behavior among youth.",
+      "tags": [
+        "Statistics",
+        "Data Analysis",
+        "Research Report",
+        "First Place"
+      ],
+      "featured": false
+    },
+    {
+      "id": "cert-first-aid",
+      "category": "certifications",
+      "title": "First Aid Certificate",
+      "organization": "Generalitat de Catalunya Servei Català de la Salut (SEM)",
+      "date": "Aug 2018",
+      "description": "Certified emergency first aid training administered by the Medical Emergency Service of Catalonia.",
+      "tags": [
+        "First Aid",
+        "Emergency Response",
+        "Health & Safety"
+      ],
+      "featured": false
+    },
+    {
+      "id": "vol-friquis-ciencia",
+      "category": "volunteering",
+      "title": "Co-organizer",
+      "organization": "Friquis X Ciència",
+      "date": "Feb 2020 – Present",
+      "location": "Sant Pere de Ribes, ES",
+      "description": "Co-organizing science communication initiatives, public engagement events, and educational workshops to bridge science and community.",
+      "tags": [
+        "Science Communication",
+        "Public Engagement",
+        "Community Outreach",
+        "Organization"
+      ],
+      "featured": true,
+      "link": "https://orcid.org/0000-0001-8796-8396"
+    },
+    {
+      "id": "vol-hackclub",
+      "category": "volunteering",
+      "title": "Club Organizer",
+      "organization": "HackClub",
+      "date": "Sep 2022 – Aug 2023",
+      "location": "Shelburne, VT, US",
+      "description": "Facilitated coding workshops, hardware hacking sessions, and peer programming projects for youth developers.",
+      "tags": [
+        "Coding Club",
+        "Youth Mentorship",
+        "Hardware Hacking",
+        "Community Leadership"
+      ],
+      "featured": false
+    },
+    {
+      "id": "vol-journalist",
+      "category": "volunteering",
+      "title": "Journalist & Public Relations",
+      "organization": "INS Jaume Vicens Vives",
+      "date": "Sep 2021 – Aug 2023",
+      "location": "Girona, Catalunya, ES",
+      "description": "Managed public relations and authored school journal articles covering academic achievements, scientific developments, and student life.",
+      "tags": [
+        "Public Relations",
+        "Journalism",
+        "Communication",
+        "Writing"
+      ],
+      "featured": false
+    },
+    {
+      "id": "vol-geology-curator",
+      "category": "volunteering",
+      "title": "Collection Curator (Geology and Natural History)",
+      "organization": "INS Jaume Vicens Vives",
+      "date": "Sep 2021 – Jun 2022",
+      "location": "Girona, Catalunya, ES",
+      "description": "Curated, cataloged, and maintained geological and natural history specimens for educational exhibition and classroom instruction.",
+      "tags": [
+        "Curation",
+        "Geology",
+        "Natural History",
+        "Museum Studies"
+      ],
+      "featured": false
+    },
+    {
+      "id": "vol-lexcit",
+      "category": "volunteering",
+      "title": "Volunteer in Lèxcit",
+      "organization": "Generalitat de Catalunya (Escola Annexa)",
+      "date": "Sep 2021 – Jun 2022",
+      "location": "Girona, Catalunya, ES",
+      "description": "Volunteered in reading and literacy support programs for children to improve linguistic comprehension and academic success.",
+      "tags": [
+        "Volunteer",
+        "Literacy",
+        "Education",
+        "Community Support"
+      ],
+      "featured": false
+    },
+    {
+      "id": "vol-english-ta",
+      "category": "volunteering",
+      "title": "Teaching Assistant for English",
+      "organization": "Departament d'Ensenyament (Escola Annexa)",
+      "date": "Sep 2021 – Jun 2022",
+      "location": "Girona, Catalunya, ES",
+      "description": "Assisted teachers in conducting interactive English language classes and conversational practice for primary students.",
+      "tags": [
+        "Teaching Assistant",
+        "English Language",
+        "Pedagogy",
+        "Volunteering"
+      ],
+      "featured": false
+    },
+    {
+      "id": "hobby-open-source",
+      "category": "hobbies",
+      "title": "Open-Source Development & AI Tooling",
+      "organization": "Independent Developer",
+      "date": "Present",
+      "description": "Building developer utilities, browser extensions, and multi-agent AI pipelines with over 8,800 GitHub commits and active open-science contributions.",
+      "tags": [
+        "Open Source",
+        "Python",
+        "JavaScript",
+        "AI Systems",
+        "GitHub"
+      ],
+      "featured": true
+    },
+    {
+      "id": "hobby-bio-informatics",
+      "category": "hobbies",
+      "title": "Bio-Image Informatics & Data Visualization",
+      "organization": "Maastricht University Research",
+      "date": "Present",
+      "description": "Exploring automated microscopy image processing, biological dataset pipelines, and interactive Streamlit dashboards for scientific research.",
+      "tags": [
+        "Bioinformatics",
+        "Microscopy",
+        "Streamlit",
+        "Data Science"
+      ],
+      "featured": false
+    },
+    {
+      "id": "hobby-languages",
+      "category": "hobbies",
+      "title": "Multilingual Communication & Linguistics",
+      "organization": "Self-Directed",
+      "date": "Ongoing",
+      "description": "Passionate about languages and cross-cultural communication. Fluent in Catalan, Spanish, and English (C2), with professional working proficiency in Dutch (B2) and foundational knowledge in French and Esperanto.",
+      "tags": [
+        "Linguistics",
+        "Multilingual",
+        "Catalan",
+        "Spanish",
+        "English",
+        "Dutch"
+      ],
+      "featured": false
+    }
+  ]
+};

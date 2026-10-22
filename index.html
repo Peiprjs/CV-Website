@@ -3,9 +3,19 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Interactive CV & Portfolio</title>
-  <meta name="description" content="Modern, responsive, single-page interactive CV and portfolio with JSON data customization and granular link-based filtering.">
+  <title>Mar Roca Cugat – Biomedical Sciences Researcher & AI Systems Developer</title>
+  <meta name="description" content="Undergraduate researcher in Biomedical Sciences at Maastricht University passionate about cell biology, toxicology, genomics, and bio-image informatics.">
+  <meta name="author" content="Mar Roca Cugat">
   <meta name="color-scheme" content="light dark">
+
+  <!-- Open Graph / Meta for Social & GitHub Pages -->
+  <meta property="og:title" content="Mar Roca Cugat – Biomedical Sciences Researcher & AI Systems Developer">
+  <meta property="og:description" content="Interactive CV and portfolio highlighting biomedical research, published protocols, open-source AI tooling, and academic governance.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://cv.peiphy.xyz">
+
+  <!-- Preload Embedded Dataset for Instant 0ms Paint & Local file:// Compatibility -->
+  <script src="data.js"></script>
 
   <!-- Google Fonts: Inter & JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -165,12 +175,12 @@
       <!-- Brand & Name -->
       <div class="flex items-center gap-4">
         <a href="#" class="flex items-center gap-3 group focus:outline-none focus:ring-2 focus:ring-brand-500 rounded-lg p-1" onclick="resetFilters(event)">
-          <div id="header-avatar" class="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-500 to-brand-700 flex items-center justify-center text-white font-bold text-lg shadow-md shadow-brand-500/20 group-hover:scale-105 transition-transform">
-            AM
+          <div id="header-avatar" class="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-500 to-brand-700 flex items-center justify-center text-white font-bold text-base shadow-md shadow-brand-500/20 group-hover:scale-105 transition-transform">
+            MRC
           </div>
           <div>
-            <span id="header-name" class="font-bold text-slate-900 dark:text-white tracking-tight text-base sm:text-lg block leading-tight">Alex Morgan</span>
-            <span id="header-subtitle" class="text-xs text-slate-500 dark:text-slate-400 font-mono tracking-wide">Interactive CV & Portfolio</span>
+            <span id="header-name" class="font-bold text-slate-900 dark:text-white tracking-tight text-base sm:text-lg block leading-tight">Mar Roca Cugat</span>
+            <span id="header-subtitle" class="text-xs text-slate-500 dark:text-slate-400 font-mono tracking-wide">Biomedical Sciences & AI Developer</span>
           </div>
         </a>
 
@@ -305,25 +315,25 @@
           <div class="flex flex-wrap items-center gap-3">
             <span id="profile-badge-pill" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/60">
               <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-              <span id="profile-status">Available for Staff/Lead Roles & Advisory</span>
+              <span id="profile-status">BSc Candidate at Maastricht University & Flagship Hackathon Manager</span>
             </span>
             <span id="profile-location" class="text-xs text-slate-500 dark:text-slate-400 font-mono flex items-center gap-1">
               <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-              <span>Zurich, Switzerland (Open to Remote)</span>
+              <span>Maastricht, Netherlands</span>
             </span>
           </div>
 
           <div>
             <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-              <span id="profile-name">Alex Morgan</span><span id="profile-suffix" class="text-brand-600 dark:text-brand-400 text-2xl sm:text-3xl lg:text-4xl font-semibold">, M.Sc.</span>
+              <span id="profile-name">Mar Roca Cugat</span><span id="profile-suffix" class="text-brand-600 dark:text-brand-400 text-2xl sm:text-3xl lg:text-4xl font-semibold">, B.Sc. Candidate</span>
             </h1>
             <p id="profile-title" class="mt-2 text-lg sm:text-xl font-medium text-slate-600 dark:text-slate-300">
-              Senior AI Systems Engineer & Open Source Researcher
+              Biomedical Sciences Researcher & AI Systems Developer
             </p>
           </div>
 
           <p id="profile-bio" class="text-sm sm:text-base text-slate-600 dark:text-slate-400 max-w-3xl leading-relaxed">
-            Specializing in high-throughput distributed AI pipelines, autonomous agentic runtimes, and low-latency systems. Over 8 years of engineering experience bridging research prototypes into mission-critical cloud infrastructure. Active open-source maintainer and conference speaker.
+            Undergraduate researcher in Biomedical Sciences at Maastricht University passionate about cell biology, toxicology, genomics, and bio-image informatics. Active open-source developer building multi-agent research pipelines, automated laboratory analysis workflows, and embedded IoT tools. Experienced in academic governance and educational leadership within the Faculty of Health, Medicine and Life Sciences (FHML).
           </p>
 
           <!-- Contact & Social Pills -->
@@ -468,7 +478,7 @@
     <!-- FOOTER -->
     <footer class="pt-12 pb-8 border-t border-slate-200 dark:border-slate-800 text-xs text-slate-500 dark:text-slate-400 flex flex-col sm:flex-row items-center justify-between gap-4">
       <div>
-        <p id="footer-copyright">© 2026 Alex Morgan. Built with HTML, Tailwind CSS, & Vanilla JS.</p>
+        <p id="footer-copyright">© 2026 Mar Roca Cugat. Built with HTML, Tailwind CSS, & Vanilla JS.</p>
         <p class="text-slate-400 dark:text-slate-500 mt-0.5">Customizable via <code class="font-mono text-slate-600 dark:text-slate-300">data.json</code> • High-impact filtering & clean PDF export.</p>
       </div>
       <div class="flex items-center gap-4">
@@ -952,7 +962,7 @@
         icon: `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>`
       },
       projects: {
-        title: "Key Projects & Builds",
+        title: "Key Projects & Published Works",
         badge: "Projects",
         icon: `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>`
       },
@@ -962,14 +972,14 @@
         icon: `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/></svg>`
       },
       certifications: {
-        title: "Certifications & Credentials",
+        title: "Certifications & Distinctions",
         badge: "Certifications",
         icon: `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138z"/></svg>`
       },
       volunteering: {
-        title: "Community & Volunteering",
+        title: "Community, Governance & Leadership",
         badge: "Volunteering",
-        icon: `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>`
+        icon: `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>`
       },
       hobbies: {
         title: "Interests & Pursuits",
@@ -982,279 +992,58 @@
     /**
      * Embedded fallback data in case external fetch fails (e.g. running from file:// URL)
      */
-    const FALLBACK_DEFAULT_DATA = {
-      theme: {
-        palette: "indigo"
-      },
+    const FALLBACK_DEFAULT_DATA = (typeof window !== "undefined" && window.CV_DEFAULT_DATA) ? window.CV_DEFAULT_DATA : {
+      theme: { palette: "indigo" },
       profile: {
-        name: "Alex Morgan",
-        suffix: "M.Sc.",
-        initials: "AM",
-        title: "Senior AI Systems Engineer & Open Source Researcher",
-        status: "Available for Staff/Lead Roles & Advisory",
-        location: "Zurich, Switzerland (Open to Remote)",
-        bio: "Specializing in high-throughput distributed AI pipelines, autonomous agentic runtimes, and low-latency systems. Over 8 years of engineering experience bridging research prototypes into mission-critical cloud infrastructure. Active open-source maintainer and conference speaker.",
-        email: "alex.morgan@example.com",
-        github: "https://github.com/alexmorgan",
-        githubUsername: "alexmorgan",
-        linkedin: "https://linkedin.com/in/alexmorgan-dev",
-        scholar: "https://scholar.google.com",
-        website: "https://alexmorgan.dev",
+        name: "Mar Roca Cugat",
+        suffix: "B.Sc. Candidate",
+        initials: "MRC",
+        title: "Biomedical Sciences Researcher & AI Systems Developer",
+        status: "BSc Candidate at Maastricht University & Flagship Hackathon Manager",
+        location: "Maastricht, Netherlands",
+        bio: "Undergraduate researcher in Biomedical Sciences at Maastricht University passionate about cell biology, toxicology, genomics, and bio-image informatics. Active open-source developer building multi-agent research pipelines, automated laboratory analysis workflows, and embedded IoT tools. Experienced in academic governance and educational leadership within the Faculty of Health, Medicine and Life Sciences (FHML).",
+        email: "m.rocacugat@student.maastrichtuniversity.nl",
+        github: "https://github.com/peiprjs",
+        githubUsername: "peiprjs",
+        linkedin: "https://www.linkedin.com/in/mar-roca-cugat/",
+        scholar: "https://scholar.google.com/citations?user=ocdBqTwAAAAJ",
+        website: "https://cv.peiphy.xyz/CV.pdf",
         metrics: [
-          { value: "8+", label: "Years Experience" },
-          { value: "4.2k", label: "GitHub Stars" },
-          { value: "25+", label: "Prod Models / APIs" },
-          { value: "7", label: "Papers & Patents" }
+          { value: "8.8k+", label: "GitHub Commits" },
+          { value: "5", label: "Published Works & Protocols" },
+          { value: "4+", label: "Years Open Source Dev" },
+          { value: "3+", label: "Leadership & Academic Roles" }
         ]
       },
       categories: {
         work: { title: "Professional Experience", badge: "Work" },
-        projects: { title: "Key Projects & Builds", badge: "Projects" },
+        projects: { title: "Key Projects & Published Works", badge: "Projects" },
         learning: { title: "Education & Learning", badge: "Learning" },
-        certifications: { title: "Certifications & Credentials", badge: "Certifications" },
-        volunteering: { title: "Community & Volunteering", badge: "Volunteering" },
+        certifications: { title: "Certifications & Distinctions", badge: "Certifications" },
+        volunteering: { title: "Community, Governance & Leadership", badge: "Volunteering" },
         hobbies: { title: "Interests & Pursuits", badge: "Hobbies" }
       },
       skills: {
         hard: [
-          { name: "Distributed Systems & Consensus", level: 5, tag: "Architecture" },
-          { name: "Python, PyTorch & vLLM", level: 5, tag: "AI / ML" },
-          { name: "Rust & Low-Level Systems", level: 4, tag: "Systems" },
-          { name: "Kubernetes, Docker & Istio", level: 5, tag: "Cloud & DevOps" },
-          { name: "LLM Inference & Agentic Runtimes", level: 5, tag: "AI Systems" },
-          { name: "Kafka & Event Streaming", level: 4, tag: "Data Pipelines" },
-          { name: "Vector Databases (HNSW, FAISS)", level: 4, tag: "Information Retrieval" },
-          { name: "Linux Internals, C++ & SIMD", level: 4, tag: "Performance" },
-          { name: "TypeScript, WebAssembly & Canvas", level: 4, tag: "Web & Tooling" },
-          { name: "Formal Verification & Protocol Design", level: 3, tag: "Research" }
+          { name: "Python & Bio-Image Informatics", level: 5, tag: "Bioinformatics" },
+          { name: "Genomics Data Pipelines (TCGA, NGS)", level: 4, tag: "Genomics" },
+          { name: "Laboratory Wet-Lab Techniques & Protocols", level: 4, tag: "Wet Lab" },
+          { name: "Multi-Agent AI Pipelines (CrewAI & Local LLMs)", level: 4, tag: "AI Systems" },
+          { name: "JavaScript, Node.js & Browser Extensions", level: 5, tag: "Software Dev" },
+          { name: "Image Processing & Cell Migration Assays", level: 4, tag: "Image Analysis" },
+          { name: "Linux Systems & Cloud Infrastructure", level: 4, tag: "Systems" },
+          { name: "Embedded Hardware & IoT (Raspberry Pi)", level: 3, tag: "Hardware" }
         ],
         soft: [
-          { name: "Technical Leadership & Architecture Strategy", level: 5, tag: "Leadership" },
-          { name: "Engineering Mentorship & Talent Growth", level: 5, tag: "People" },
-          { name: "Cross-Functional Product Collaboration", level: 4, tag: "Communication" },
-          { name: "Conference Speaking & Technical Writing", level: 4, tag: "Advocacy" },
-          { name: "High-Pressure Incident Management & Blameless Post-Mortems", level: 5, tag: "Reliability" },
-          { name: "Open-Source Community Building & Diversity Initiatives", level: 5, tag: "Community" }
+          { name: "Academic Governance & Faculty Representation", level: 5, tag: "Governance" },
+          { name: "Educational Leadership & Teaching Assistance", level: 5, tag: "Education" },
+          { name: "Hackathon Management & Event Orchestration", level: 5, tag: "Management" },
+          { name: "Scientific Protocol Writing & Documentation", level: 4, tag: "Communication" },
+          { name: "Cross-Functional Research Collaboration", level: 4, tag: "Teamwork" },
+          { name: "Student Advocacy & Educational Quality Assurance", level: 5, tag: "Advocacy" }
         ]
       },
-      items: [
-        {
-          id: "work-staff-ai-systems",
-          category: "work",
-          title: "Staff AI Systems Engineer & Tech Lead",
-          organization: "Cerebral Systems Labs",
-          date: "2023 – Present",
-          location: "Zurich, CH / Hybrid",
-          description: "Leading the distributed systems team responsible for training and serving large reasoning models. Architected a multi-region inference gateway serving **45M+ daily requests** with sub-40ms P99 latency. Engineered speculative decoding pipelines cutting LLM inference costs by **38%**.",
-          tags: ["Python", "Rust", "Distributed Systems", "vLLM", "Kubernetes", "PyTorch", "gRPC"],
-          featured: true,
-          link: "https://cerebralsystems.example.com"
-        },
-        {
-          id: "work-senior-cloud-architect",
-          category: "work",
-          title: "Senior Cloud & Infrastructure Architect",
-          organization: "Aether Cloud Infrastructure",
-          date: "2020 – 2023",
-          location: "Geneva, CH",
-          description: "Spearheaded the migration of monolithic microservices into modular Kubernetes clusters with Istio service mesh. Mentored a team of 14 engineers across SRE and platform teams. Designed real-time event streaming architectures using Kafka handling **1.2 TB/hour**.",
-          tags: ["Go", "Kubernetes", "Terraform", "Kafka", "AWS", "Prometheus", "Architecture"],
-          featured: true,
-          link: "https://aethercloud.example.com"
-        },
-        {
-          id: "work-ml-engineer-nova",
-          category: "work",
-          title: "Machine Learning Engineer",
-          organization: "Nova Data Intelligence",
-          date: "2018 – 2020",
-          location: "Berlin, DE",
-          description: "Implemented high-precision NLP classification and entity-resolution models for financial intelligence. Built automated CI/CD evaluation pipelines with MLflow and Docker, reducing model deployment cycles from 2 weeks to under **3 hours**.",
-          tags: ["Python", "Transformers", "NLP", "MLflow", "Docker", "PostgreSQL"],
-          featured: false,
-          link: "https://novaintelligence.example.com"
-        },
-        {
-          id: "work-systems-intern",
-          category: "work",
-          title: "Systems Engineering Intern",
-          organization: "Starlight Analytics",
-          date: "Summer 2017",
-          location: "Edinburgh, UK",
-          description: "Developed optimized C++ data parser utilities for time-series sensor telemetry. Benchmarked database indexing strategies across ClickHouse and TimescaleDB, resulting in a **4x query speedup** for historical aggregations.",
-          tags: ["C++", "Time Series", "ClickHouse", "Linux", "Benchmarking"],
-          featured: false
-        },
-        {
-          id: "project-omniagent-runtime",
-          category: "projects",
-          title: "OmniAgent: Distributed Multi-Agent Runtime",
-          organization: "Open Source Initiative",
-          date: "2025 – 2026",
-          description: "An open-source asynchronous orchestration runtime for autonomous AI agent networks with verifiable execution traces and cryptographic state checkpoints. Reached **2.8k GitHub stars** and actively used in production by 3 fintech startups.",
-          tags: ["Rust", "TypeScript", "AI Agents", "WebSockets", "Docker", "Open Source"],
-          featured: true,
-          link: "https://github.com/alexmorgan/omniagent"
-        },
-        {
-          id: "project-hyperindex-vectordb",
-          category: "projects",
-          title: "HyperIndex: Ultra-Low Latency Embedded Vector Index",
-          organization: "Personal Project",
-          date: "2024",
-          description: "SIMD-accelerated Hierarchical Navigable Small World (HNSW) vector search engine written in Rust with Python and WebAssembly bindings. Achieved **15% higher recall** than standard FAISS on 1M 768-dim embedding benchmarks.",
-          tags: ["Rust", "SIMD", "Vector Search", "WASM", "Information Retrieval"],
-          featured: true,
-          link: "https://github.com/alexmorgan/hyperindex"
-        },
-        {
-          id: "project-syntaxlens-ast",
-          category: "projects",
-          title: "SyntaxLens: Interactive AST & Compiler Visualizer",
-          organization: "Dev Tools Community",
-          date: "2023",
-          description: "Browser-based developer tool for live abstract syntax tree introspection and bytecode comparison across V8, PyPy, and Cranelift. Featured in *JavaScript Weekly* and *Hacker News* front page.",
-          tags: ["TypeScript", "WebAssembly", "Compilers", "Tailwind CSS", "Canvas API"],
-          featured: false,
-          link: "https://syntaxlens.dev"
-        },
-        {
-          id: "project-microvoice-tts",
-          category: "projects",
-          title: "MicroVoice: Local Edge Neural Speech Synthesizer",
-          organization: "Research Build",
-          date: "2022",
-          description: "Zero-dependency pure browser neural text-to-speech synthesizer running entirely clientside via ONNX Runtime Web. Performs realtime acoustic modeling without transmitting voice data to remote servers.",
-          tags: ["WebAudio API", "ONNX", "Edge AI", "Privacy", "JavaScript"],
-          featured: false,
-          link: "https://github.com/alexmorgan/microvoice"
-        },
-        {
-          id: "edu-msc-eth-zurich",
-          category: "learning",
-          title: "Master of Science in Computer Science (Distributed Systems)",
-          organization: "ETH Zürich",
-          date: "2018 – 2020",
-          location: "Zurich, Switzerland",
-          description: "Graduated with Distinction (**GPA 5.8 / 6.0**). Master's thesis on *'Asynchronous Consensus under Network Partitions for Byzantine-Tolerant Replicated State Machines'*, supervised by Prof. T. Hoare Chair. Core coursework in High Performance Computing, Machine Learning, and Cryptographic Protocols.",
-          tags: ["Distributed Systems", "Consensus", "Formal Verification", "Algorithms"],
-          featured: true
-        },
-        {
-          id: "edu-bsc-edinburgh",
-          category: "learning",
-          title: "Bachelor of Science in Computer Science & Mathematics",
-          organization: "University of Edinburgh",
-          date: "2014 – 2018",
-          location: "Edinburgh, United Kingdom",
-          description: "First Class Honours. Awarded the *Class Medal in Systems Programming*. Served as Undergraduate Teaching Assistant for Data Structures & Algorithms and Operating Systems courses.",
-          tags: ["Computer Science", "Discrete Math", "Operating Systems", "C"],
-          featured: false
-        },
-        {
-          id: "course-stanford-distributed-ml",
-          category: "learning",
-          title: "Advanced Distributed Machine Learning Systems (CS 329)",
-          organization: "Stanford Online / Center for Professional Development",
-          date: "2022",
-          description: "Intensive 10-week post-graduate curriculum covering parameter servers, pipeline parallelism, tensor parallelism (Megatron-LM), and RDMA networking.",
-          tags: ["Distributed ML", "Parallelism", "NCCL", "GPU Clusters"],
-          featured: false
-        },
-        {
-          id: "cert-aws-solutions-architect",
-          category: "certifications",
-          title: "AWS Certified Solutions Architect – Professional (SAP-C02)",
-          organization: "Amazon Web Services",
-          date: "2024 – 2027",
-          description: "Comprehensive validation of multi-tier resilient cloud architecture, automated disaster recovery, enterprise security governance, and multi-account cloud topologies.",
-          tags: ["AWS", "Cloud Architecture", "Security", "High Availability"],
-          featured: true,
-          link: "https://aws.amazon.com/verification"
-        },
-        {
-          id: "cert-cncf-cka",
-          category: "certifications",
-          title: "Certified Kubernetes Administrator (CKA)",
-          organization: "Cloud Native Computing Foundation (CNCF)",
-          date: "2023 – 2026",
-          description: "Hands-on performance exam evaluating cluster lifecycle administration, storage networking, ingress controllers, troubleshooting, and production workload orchestration.",
-          tags: ["Kubernetes", "DevOps", "Containers", "CNCF"],
-          featured: true,
-          link: "https://cncf.io/certification/cka"
-        },
-        {
-          id: "cert-deeplearning-specialization",
-          category: "certifications",
-          title: "Deep Learning Specialization",
-          organization: "DeepLearning.AI & Coursera",
-          date: "2021",
-          description: "Five-course sequence covering neural network fundamentals, hyperparameter tuning, structuring ML projects, convolutional models, and sequence sequence models.",
-          tags: ["Deep Learning", "TensorFlow", "Math", "Optimization"],
-          featured: false,
-          link: "https://coursera.org"
-        },
-        {
-          id: "vol-ai-safety-mentor",
-          category: "volunteering",
-          title: "Technical Mentor & Grant Application Reviewer",
-          organization: "AI Safety & Alignment Open Network",
-          date: "2023 – Present",
-          description: "Providing 1-on-1 technical coaching for junior researchers investigating mechanistic interpretability and model red-teaming. Evaluated over 30 micro-grant submissions for compute resources.",
-          tags: ["Mentorship", "AI Safety", "Community", "Research"],
-          featured: true
-        },
-        {
-          id: "vol-pyladies-workshop-lead",
-          category: "volunteering",
-          title: "Open Workshop Lead & Python Instructor",
-          organization: "PyLadies & Women Who Code Zurich",
-          date: "2021 – Present",
-          description: "Organized and delivered 8 free weekend workshops introducing modern Python, Git, and web API development to over 240 career switchers and underrepresented engineers.",
-          tags: ["Teaching", "Python", "Diversity in Tech", "Community"],
-          featured: false
-        },
-        {
-          id: "vol-crisis-mapping-foss",
-          category: "volunteering",
-          title: "Core Contributor & Relief Mapping Engineer",
-          organization: "CrisisResponse Open Source GIS",
-          date: "2019 – 2022",
-          description: "Volunteered emergency map layer data-pipelines during natural disaster responses to assist humanitarian logistics coordinators in real-time routing.",
-          tags: ["GIS", "OpenStreetMap", "Python", "Public Good"],
-          featured: false
-        },
-        {
-          id: "hobby-ultra-trail-running",
-          category: "hobbies",
-          title: "Alpine Trail Running & Ultra-Marathons",
-          organization: "Swiss Alpine Runners Club",
-          date: "2019 – Present",
-          description: "Finisher of the Eiger Ultra Trail 51k and Scenic Trail 54k with over 3,800m vertical ascent. Enduring discipline, pacing strategies, and mental resilience applied directly to long-term engineering challenges.",
-          tags: ["Endurance", "Trail Running", "Outdoors", "Mindset"],
-          featured: true
-        },
-        {
-          id: "hobby-modular-synth",
-          category: "hobbies",
-          title: "Generative Audio & Eurorack Modular Synthesis",
-          organization: "Independent Sound Design",
-          date: "2020 – Present",
-          description: "Designing stochastic generative music patches utilizing control voltage (CV), algorithmic step sequencers, and analog filtering circuits. Exploring the intersection of mathematics and harmony.",
-          tags: ["Music", "Sound Synthesis", "Analog Circuits", "Creativity"],
-          featured: false
-        },
-        {
-          id: "hobby-ergonomic-keyboards",
-          category: "hobbies",
-          title: "Custom Ergonomic Keyboard Design & Micro-soldering",
-          organization: "Maker Community",
-          date: "2022 – Present",
-          description: "Hand-soldered split ergonomic mechanical keyboards (Corne & Dactyl ManuForm) with custom ZMK wireless firmware, Colemak-DH layouts, and micro-controller integration.",
-          tags: ["Hardware", "Soldering", "Ergonomics", "ZMK Firmware"],
-          featured: false
-        }
-      ]
+      items: []
     };
 
     /**
@@ -1391,18 +1180,18 @@
       const headerName = document.getElementById('header-name');
       const footerCopyright = document.getElementById('footer-copyright');
 
-      if (nameEl) nameEl.textContent = p.name || 'Alex Morgan';
+      if (nameEl) nameEl.textContent = p.name || 'Mar Roca Cugat';
       if (suffixEl) suffixEl.textContent = p.suffix ? `, ${p.suffix}` : '';
       if (titleEl) titleEl.textContent = p.title || '';
       if (bioEl) bioEl.textContent = p.bio || '';
-      if (statusEl) statusEl.textContent = p.status || 'Available for technical roles';
+      if (statusEl) statusEl.textContent = p.status || 'BSc Candidate at Maastricht University & Flagship Hackathon Manager';
       if (locationEl) {
         const span = locationEl.querySelector('span');
         if (span) span.textContent = p.location || '';
       }
-      if (headerAvatar) headerAvatar.textContent = p.initials || 'AM';
-      if (headerName) headerName.textContent = p.name || 'Alex Morgan';
-      if (footerCopyright) footerCopyright.textContent = `© 2026 ${p.name || 'Alex Morgan'}. Built with HTML, Tailwind CSS, & Vanilla JS.`;
+      if (headerAvatar) headerAvatar.textContent = p.initials || 'MRC';
+      if (headerName) headerName.textContent = p.name || 'Mar Roca Cugat';
+      if (footerCopyright) footerCopyright.textContent = `© 2026 ${p.name || 'Mar Roca Cugat'}. Built with HTML, Tailwind CSS, & Vanilla JS.`;
 
       // Render Contact Pills
       const contactsContainer = document.getElementById('profile-contacts-container');
@@ -1491,18 +1280,19 @@
      * Load external data.json via Fetch API with automatic fallback
      */
     async function loadExternalConfig() {
+      // 1. Immediately apply embedded data for instant zero-latency paint
+      applyData(FALLBACK_DEFAULT_DATA, "data.js");
+
+      // 2. Fetch external data.json to reflect runtime custom updates
       try {
-        const response = await fetch('data.json', { cache: 'no-cache' });
+        const response = await fetch('./data.json', { cache: 'no-cache' });
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         const jsonData = await response.json();
         applyData(jsonData, "data.json");
-        showToast("✓ Successfully loaded data and palette from data.json");
       } catch (err) {
-        console.warn("Could not fetch data.json (e.g. running from file:// protocol or file unserved). Using embedded default data.", err);
-        applyData(FALLBACK_DEFAULT_DATA, "Embedded Default");
-        showToast("Loaded default embedded data (running locally)");
+        console.warn("External data.json fetch skipped/unavailable (offline or file://). Using embedded dataset.", err);
       }
     }
 

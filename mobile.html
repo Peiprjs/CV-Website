@@ -3,9 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Mobile CV & Portfolio | Smartphone Edition</title>
-  <meta name="description" content="Touch-optimized smartphone edition of interactive CV and portfolio with mobile navigation, quick sharing, and theme controls.">
+  <title>Mar Roca Cugat – Interactive CV & Portfolio (Smartphone Edition)</title>
+  <meta name="description" content="Smartphone-optimized interactive CV and portfolio for Mar Roca Cugat – Biomedical Sciences Researcher & AI Systems Developer.">
+  <meta name="author" content="Mar Roca Cugat">
   <meta name="color-scheme" content="light dark">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Mar Roca Cugat – Interactive CV & Portfolio (Smartphone Edition)">
+  <meta property="og:description" content="Touch-optimized interactive CV and portfolio for Mar Roca Cugat.">
+  <meta property="og:type" content="website">
+
+  <!-- Preload Embedded Dataset for Instant 0ms Paint & Local file:// Compatibility -->
+  <script src="data.js"></script>
 
   <!-- Google Fonts: Inter & JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -142,11 +151,11 @@
       
       <!-- Brand & Name -->
       <a href="#" class="flex items-center gap-2.5 focus:outline-none" onclick="resetFilters(event)">
-        <div id="header-avatar" class="w-8 h-8 rounded-lg bg-gradient-to-br from-brand-500 to-brand-700 flex items-center justify-center text-white font-bold text-sm shadow-sm">
-          AM
+        <div id="header-avatar" class="w-8 h-8 rounded-lg bg-gradient-to-br from-brand-500 to-brand-700 flex items-center justify-center text-white font-bold text-xs shadow-sm">
+          MRC
         </div>
         <div>
-          <span id="header-name" class="font-bold text-slate-900 dark:text-white text-sm block leading-tight">Alex Morgan</span>
+          <span id="header-name" class="font-bold text-slate-900 dark:text-white text-sm block leading-tight">Mar Roca Cugat</span>
           <span class="text-[10px] text-brand-600 dark:text-brand-400 font-mono tracking-tight font-medium">📱 Smartphone Edition</span>
         </div>
       </a>
@@ -200,24 +209,24 @@
       <div class="space-y-1.5">
         <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/60">
           <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-          <span id="profile-status">Available for Staff/Lead Roles</span>
+          <span id="profile-status">BSc Candidate at Maastricht University & Flagship Hackathon Manager</span>
         </div>
 
         <h1 class="text-xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-          <span id="profile-name">Alex Morgan</span><span id="profile-suffix" class="text-brand-600 dark:text-brand-400 text-base font-semibold">, M.Sc.</span>
+          <span id="profile-name">Mar Roca Cugat</span><span id="profile-suffix" class="text-brand-600 dark:text-brand-400 text-base font-semibold">, B.Sc. Candidate</span>
         </h1>
         <p id="profile-title" class="text-xs font-semibold text-slate-600 dark:text-slate-300">
-          Senior AI Systems Engineer & Open Source Researcher
+          Biomedical Sciences Researcher & AI Systems Developer
         </p>
       </div>
 
       <!-- Collapsible Bio -->
       <div class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
         <p id="profile-bio-preview">
-          Specializing in high-throughput distributed AI pipelines, autonomous agentic runtimes, and low-latency systems...
+          Undergraduate researcher in Biomedical Sciences at Maastricht University passionate about cell biology, toxicology, genomics, and bio-image informatics...
         </p>
         <p id="profile-bio-full" class="hidden mt-1">
-          Over 8 years of engineering experience bridging research prototypes into mission-critical cloud infrastructure. Active open-source maintainer and conference speaker.
+          Active open-source developer building multi-agent research pipelines, automated laboratory analysis workflows, and embedded IoT tools. Experienced in academic governance and educational leadership within the Faculty of Health, Medicine and Life Sciences (FHML).
         </p>
         <button id="toggle-bio-btn" type="button" onclick="toggleBio()" class="text-[11px] text-brand-600 dark:text-brand-400 font-semibold hover:underline mt-1 block">
           Read more ↓
@@ -327,7 +336,7 @@
 
     <!-- Footer -->
     <footer class="pt-6 pb-12 text-center text-xs text-slate-400 space-y-2">
-      <p id="footer-copyright">© 2026 Alex Morgan • Smartphone Edition</p>
+      <p id="footer-copyright">© 2026 Mar Roca Cugat • Smartphone Edition</p>
       <p><a href="desktop.html" class="text-brand-600 underline font-medium">Switch to Desktop Version (2-Column)</a></p>
     </footer>
 
@@ -423,10 +432,10 @@
     let CV_DATA = [];
     let CATEGORIES_META = {
       work: { title: "Professional Experience", badge: "Work" },
-      projects: { title: "Key Projects & Builds", badge: "Projects" },
+      projects: { title: "Key Projects & Published Works", badge: "Projects" },
       learning: { title: "Education & Learning", badge: "Learning" },
-      certifications: { title: "Certifications & Credentials", badge: "Certifications" },
-      volunteering: { title: "Community & Volunteering", badge: "Volunteering" },
+      certifications: { title: "Certifications & Distinctions", badge: "Certifications" },
+      volunteering: { title: "Community, Governance & Leadership", badge: "Volunteering" },
       hobbies: { title: "Interests & Pursuits", badge: "Hobbies" }
     };
     const CATEGORY_ORDER = ['work', 'projects', 'learning', 'certifications', 'volunteering', 'hobbies'];
@@ -542,12 +551,12 @@
     }
 
     function renderProfile(p) {
-      document.getElementById('profile-name').textContent = p.name || 'Alex Morgan';
+      document.getElementById('profile-name').textContent = p.name || 'Mar Roca Cugat';
       document.getElementById('profile-suffix').textContent = p.suffix ? `, ${p.suffix}` : '';
       document.getElementById('profile-title').textContent = p.title || '';
-      document.getElementById('profile-status').textContent = p.status || 'Available';
-      document.getElementById('header-avatar').textContent = p.initials || 'AM';
-      document.getElementById('header-name').textContent = p.name || 'Alex Morgan';
+      document.getElementById('profile-status').textContent = p.status || 'BSc Candidate at Maastricht University & Flagship Hackathon Manager';
+      document.getElementById('header-avatar').textContent = p.initials || 'MRC';
+      document.getElementById('header-name').textContent = p.name || 'Mar Roca Cugat';
 
       const metrics = document.getElementById('profile-metrics-container');
       if (metrics && Array.isArray(p.metrics)) {
@@ -833,17 +842,25 @@
     }
 
     async function loadConfig() {
+      // 1. Immediately apply embedded data for instant zero-latency paint
+      if (typeof window !== 'undefined' && window.CV_DEFAULT_DATA) {
+        applyData(window.CV_DEFAULT_DATA);
+      }
+      // 2. Fetch external data.json (relative path for GitHub Pages compatibility)
       try {
-        const res = await fetch('data.json', { cache: 'no-cache' });
+        const res = await fetch('./data.json', { cache: 'no-cache' });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const json = await res.json();
         applyData(json);
       } catch (e) {
-        console.warn("Using default embedded fallback data", e);
-        applyData({
-          theme: { palette: 'indigo' },
-          profile: { name: 'Alex Morgan', suffix: 'M.Sc.', initials: 'AM', title: 'Senior AI Systems Engineer' },
-          items: []
-        });
+        console.warn("External data.json fetch skipped/unavailable (offline or file://). Using embedded dataset.", e);
+        if (typeof window === 'undefined' || !window.CV_DEFAULT_DATA) {
+          applyData({
+            theme: { palette: 'indigo' },
+            profile: { name: 'Mar Roca Cugat', suffix: 'B.Sc. Candidate', initials: 'MRC', title: 'Biomedical Sciences Researcher & AI Systems Developer' },
+            items: []
+          });
+        }
       }
     }
 

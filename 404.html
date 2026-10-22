@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Page Not Found – Mar Roca Cugat Portfolio</title>
+  <meta name="robots" content="noindex">
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+            }
+          }
+        }
+      }
+    };
+  </script>
+  <!-- Prevent FOUC: Apply Dark/Light theme -->
+  <script>
+    (function () {
+      try {
+        const storedTheme = localStorage.getItem('cv_theme') || 'system';
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        if (storedTheme === 'dark' || (storedTheme === 'system' && prefersDark)) {
+          document.documentElement.classList.add('dark');
+        }
+      } catch (e) {}
+    })();
+  </script>
+</head>
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 min-h-screen flex items-center justify-center p-6 antialiased font-sans transition-colors duration-300">
+  <div class="max-w-md w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-8 shadow-xl text-center space-y-6">
+    <div class="w-16 h-16 mx-auto rounded-2xl bg-indigo-50 dark:bg-indigo-950/60 text-brand-600 dark:text-brand-400 flex items-center justify-center text-3xl font-black">
+      404
+    </div>
+    <div class="space-y-2">
+      <h1 class="text-2xl font-black text-slate-900 dark:text-white tracking-tight">Page Not Found</h1>
+      <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
+        The page you are looking for doesn't exist or has moved. Explore the interactive portfolio editions below:
+      </p>
+    </div>
+
+    <div class="space-y-2.5 pt-2">
+      <a href="index.html" class="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold bg-brand-600 hover:bg-brand-700 text-white shadow-md shadow-brand-500/20 transition">
+        <span>⚡ Open Unified Portfolio</span>
+      </a>
+      <div class="grid grid-cols-2 gap-2 pt-1">
+        <a href="desktop.html" class="flex items-center justify-center px-3 py-2 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition">
+          🖥️ Desktop Edition
+        </a>
+        <a href="mobile.html" class="flex items-center justify-center px-3 py-2 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition">
+          📱 Smartphone Edition
+        </a>
+      </div>
+    </div>
+
+    <div class="pt-4 border-t border-slate-100 dark:border-slate-800 text-[11px] text-slate-400">
+      <p>© 2026 Mar Roca Cugat • Maastricht University</p>
+    </div>
+  </div>
+</body>
+</html>
