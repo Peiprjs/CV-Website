@@ -1,0 +1,22 @@
+{
+  "name": "portfolio-cv",
+  "version": "1.0.0",
+  "description": "Interactive CV & Portfolio Web Application for Mar Roca Cugat",
+  "scripts": {
+    "update-data": "node scripts/update-data.js",
+    "update": "node scripts/update-data.js",
+    "sync": "node scripts/update-data.js",
+    "watch": "node scripts/update-data.js --watch",
+    "validate": "node scripts/update-data.js --validate",
+    "serve": "python3 -m http.server 8000"
+  },
+  "keywords": [
+    "cv",
+    "portfolio",
+    "interactive-resume",
+    "tailwind",
+    "github-pages"
+  ],
+  "author": "Mar Roca Cugat",
+  "license": "MIT"
+}

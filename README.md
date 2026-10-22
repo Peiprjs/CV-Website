@@ -111,6 +111,45 @@ To ensure instant first paint without network roundtrip delay and to support ope
 
 ---
 
+## 🔄 Automatic Data Update Script
+
+Whenever you make changes to [`data.json`](file:///home/peipr/gits/new_website/data.json), run the update script to synchronize the embedded dataset, validate schema integrity, and update static HTML metadata across all editions:
+
+### Quick Run:
+```bash
+./update-data.sh
+```
+*(Automatically detects and uses Node.js or Python 3)*
+
+### Or via NPM / Node:
+```bash
+# Update once and synchronize data.js + HTML metadata
+npm run update-data
+# or: node scripts/update-data.js
+
+# Watch mode: automatically re-sync whenever you save data.json
+npm run watch
+# or: node scripts/update-data.js --watch
+
+# Validate schema without writing files
+npm run validate
+```
+
+### Or via Python:
+```bash
+python3 scripts/update_data.py            # Run once
+python3 scripts/update_data.py --watch    # Watch mode
+python3 scripts/update_data.py --validate # Validate only
+```
+
+### What the Script Does Automatically:
+1. **Schema & Integrity Validation:** Verifies JSON syntax, checks for duplicate item IDs, validates categories, and ensures skill levels are between 1 and 5.
+2. **Generates Preload Dataset ([`data.js`](file:///home/peipr/gits/new_website/data.js)):** Compiles `window.CV_DEFAULT_DATA` for zero-latency 0ms first-paint and offline/`file://` browsing.
+3. **Synchronizes HTML Metadata:** Keeps `<title>`, `<meta name="description">`, `<meta name="author">`, and `<meta property="og:*">` tags aligned across `index.html`, `desktop.html`, `mobile.html`, and `404.html`.
+4. **CI/CD Integration:** Runs automatically during GitHub Pages builds in [`.github/workflows/deploy.yml`](file:///home/peipr/gits/new_website/.github/workflows/deploy.yml) so your live site is always updated even if you edit `data.json` on GitHub.
+
+---
+
 ## 🌐 GitHub Pages Compatibility & Deployment
 
 The website is 100% compatible with GitHub Pages, whether hosted at the domain root (`https://username.github.io/`), a repository subpath (`https://username.github.io/repo-name/`), or a custom domain (`https://cv.peiphy.xyz`):

@@ -1,3 +1,11 @@
+/**
+ * AUTO-GENERATED FILE — DO NOT EDIT DIRECTLY.
+ * Generated from data.json via scripts/update-data.js
+ * Last generated: 2026-10-22T12:09:10.444Z
+ * 
+ * Exposes window.CV_DEFAULT_DATA for instant 0ms first-paint
+ * and offline / file:// protocol compatibility.
+ */
 window.CV_DEFAULT_DATA = {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "theme": {
