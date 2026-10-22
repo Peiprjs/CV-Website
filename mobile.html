@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Mar Roca Cugat – Interactive CV & Portfolio (Smartphone Edition)</title>
-  <meta name="description" content="Smartphone-optimized interactive CV and portfolio for Mar Roca Cugat – Biomedical Sciences Researcher & AI Systems Developer.">
+  <meta name="description" content="Smartphone-optimized interactive CV and portfolio for Mar Roca Cugat – Biomedical Sciences Researcher, Student & Educational Advisor.">
   <meta name="author" content="Mar Roca Cugat">
   <meta name="color-scheme" content="light dark">
 
@@ -160,19 +160,19 @@
         </div>
       </a>
 
-      <!-- Quick Header Controls -->
-      <div class="flex items-center gap-2">
+      <!-- Merged Desktop View & Theme Control Capsule -->
+      <div class="flex items-center p-0.5 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 shadow-sm text-[11px] font-semibold">
         <!-- Switch to Desktop Link -->
-        <a href="desktop.html" class="px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 flex items-center gap-1" title="Switch to Full-Width Desktop Edition">
+        <a href="desktop.html" class="flex items-center gap-1 px-2.5 py-1 rounded-lg text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200/60 dark:hover:bg-slate-700/60 transition" title="Switch to Full-Width Desktop Edition">
           <svg class="w-3 h-3 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-          Desktop
+          <span>Desktop</span>
         </a>
-
+        <span class="h-3.5 w-px bg-slate-300 dark:bg-slate-700 mx-0.5" aria-hidden="true"></span>
         <!-- Theme Toggle Button -->
-        <button id="theme-toggle-btn" type="button" aria-label="Toggle Dark Mode" class="p-2 rounded-lg text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 transition">
-          <svg id="theme-icon-light" class="w-4 h-4 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 9H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
-          <svg id="theme-icon-dark" class="w-4 h-4 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
-          <svg id="theme-icon-system" class="w-4 h-4 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+        <button id="theme-toggle-btn" type="button" aria-label="Toggle Dark Mode" class="p-1 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-200/60 dark:hover:bg-slate-700/60 transition flex items-center justify-center">
+          <svg id="theme-icon-light" class="w-3.5 h-3.5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 9H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+          <svg id="theme-icon-dark" class="w-3.5 h-3.5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+          <svg id="theme-icon-system" class="w-3.5 h-3.5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
         </button>
       </div>
 
@@ -351,11 +351,6 @@
       <span>Share Custom Link</span>
     </button>
 
-    <!-- Palette / JSON settings -->
-    <button type="button" onclick="openCustomizeModal()" aria-label="Palette and settings" class="p-2.5 rounded-xl text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 transition active:scale-95">
-      <svg class="w-4 h-4 text-brand-600 dark:text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4 4.001 4.001 0 014-4h1a4 4 0 004-4V7a4 4 0 118 0v2a4 4 0 004 4h1a4 4 0 014 4 4 4 0 01-4 4H7z"/></svg>
-    </button>
-
     <!-- Scroll to Top -->
     <button type="button" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" aria-label="Scroll to top" class="p-2.5 rounded-xl text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 transition active:scale-95">
       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"/></svg>
@@ -389,21 +384,6 @@
     <div class="p-4 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/40 space-y-2">
       <input type="text" id="modal-url-output" readonly class="w-full p-2 rounded-xl text-[11px] font-mono bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 select-all">
       <button type="button" onclick="copyShareUrl()" class="w-full py-2.5 rounded-xl text-xs font-bold bg-brand-600 text-white">Copy Link</button>
-    </div>
-  </dialog>
-
-  <!-- CUSTOMIZE MODAL -->
-  <dialog id="customize-modal" closedby="any" class="rounded-3xl bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 p-0 border border-slate-200 dark:border-slate-800 shadow-2xl w-[95vw] max-w-md overflow-hidden focus:outline-none">
-    <div class="p-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
-      <h2 class="text-base font-bold">Palette & Theme</h2>
-      <button type="button" onclick="closeCustomizeModal()" class="p-1 text-slate-400">✕</button>
-    </div>
-    <div class="p-4 space-y-4 text-xs">
-      <span class="font-bold uppercase tracking-wider text-slate-400 block">Choose Colour Palette</span>
-      <div class="grid grid-cols-2 gap-2" id="palette-buttons-grid"></div>
-    </div>
-    <div class="p-3 border-t border-slate-200 dark:border-slate-800 text-right">
-      <button type="button" onclick="closeCustomizeModal()" class="px-4 py-1.5 rounded-xl bg-slate-200 dark:bg-slate-700 font-bold text-xs">Done</button>
     </div>
   </dialog>
 
@@ -818,19 +798,6 @@
       document.querySelectorAll('.modal-cb').forEach(cb => cb.checked = modalSelectedIds.has(cb.value));
       updateModalUrl();
     }
-
-    const customizeModal = document.getElementById('customize-modal');
-    function openCustomizeModal() {
-      const grid = document.getElementById('palette-buttons-grid');
-      grid.innerHTML = Object.keys(PALETTES).map(k => `
-        <button type="button" onclick="applyPalette('${k}', true)" class="p-2 rounded-xl border border-slate-200 dark:border-slate-800 text-xs font-semibold flex items-center gap-2">
-          <span class="w-3.5 h-3.5 rounded-full" style="background-color: ${PALETTES[k].previewHex}"></span>
-          ${PALETTES[k].name}
-        </button>
-      `).join('');
-      customizeModal.showModal();
-    }
-    function closeCustomizeModal() { customizeModal.close(); }
 
     function showToast(msg) {
       const c = document.getElementById('toast-container');

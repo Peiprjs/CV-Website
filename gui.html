@@ -1,0 +1,1093 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CV Data Studio – Local GUI Editor</title>
+  
+  <!-- Preload Dataset if opened statically via file:// -->
+  <script src="data.js"></script>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            brand: {
+              50: 'rgb(var(--brand-50, 238 242 255) / <alpha-value>)',
+              100: 'rgb(var(--brand-100, 224 231 255) / <alpha-value>)',
+              500: 'rgb(var(--brand-500, 99 102 241) / <alpha-value>)',
+              600: 'rgb(var(--brand-600, 79 70 229) / <alpha-value>)',
+              700: 'rgb(var(--brand-700, 67 56 202) / <alpha-value>)',
+            }
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    /* Prevent FOUC Theme Init */
+    :root {
+      --brand-50: 238 242 255;
+      --brand-100: 224 231 255;
+      --brand-500: 99 102 241;
+      --brand-600: 79 70 229;
+      --brand-700: 67 56 202;
+    }
+  </style>
+  <script>
+    if (localStorage.getItem('cv_gui_theme') === 'dark' || (!localStorage.getItem('cv_gui_theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      document.documentElement.classList.add('dark');
+    }
+  </script>
+</head>
+<body class="bg-slate-100 dark:bg-slate-950 text-slate-800 dark:text-slate-100 min-h-screen font-sans flex flex-col antialiased transition-colors duration-200">
+
+  <!-- ==========================================
+       TOP GLOBAL HEADER & ACTIONS
+       ========================================== -->
+  <header class="sticky top-0 z-40 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
+      
+      <!-- Brand & Status -->
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-600 to-indigo-800 flex items-center justify-center text-white font-black text-lg shadow-md shadow-brand-500/20">
+          ⚙️
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="font-bold text-slate-900 dark:text-white tracking-tight text-base sm:text-lg">CV Data Studio</h1>
+            <span id="server-badge" class="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800 flex items-center gap-1">
+              <span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>
+              Checking server...
+            </span>
+          </div>
+          <p class="text-xs text-slate-500 dark:text-slate-400 font-mono">Local GUI for data.json & Website Synchronization</p>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex items-center gap-2 sm:gap-3">
+        
+        <!-- Preview Dropdown -->
+        <div class="relative group">
+          <button type="button" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:bg-slate-200 dark:hover:bg-slate-700 transition">
+            <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+            <span class="hidden sm:inline">Preview Site ▾</span>
+          </button>
+          <div class="hidden group-hover:block absolute right-0 mt-1 w-48 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xl py-1 text-xs font-medium z-50">
+            <a href="index.html" target="_blank" class="block px-3 py-2 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center justify-between">
+              <span>⚡ Responsive Unified</span>
+              <span class="text-slate-400 text-[10px]">↗</span>
+            </a>
+            <a href="desktop.html" target="_blank" class="block px-3 py-2 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center justify-between">
+              <span>🖥️ Desktop (2-Col)</span>
+              <span class="text-slate-400 text-[10px]">↗</span>
+            </a>
+            <a href="mobile.html" target="_blank" class="block px-3 py-2 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center justify-between">
+              <span>📱 Smartphone Edition</span>
+              <span class="text-slate-400 text-[10px]">↗</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Update HTML Only Button -->
+        <button type="button" onclick="triggerUpdateHtml()" title="Run scripts/update-data.js to compile data.js and synchronize HTML metadata" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 transition shadow-sm">
+          <svg class="w-4 h-4 text-brand-600 dark:text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+          <span class="hidden md:inline">Update HTML</span>
+        </button>
+
+        <!-- Save JSON Button -->
+        <button type="button" onclick="saveDataJson()" title="Save current form data to data.json (Ctrl+S)" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold bg-slate-900 dark:bg-white text-white dark:text-slate-900 hover:bg-slate-800 dark:hover:bg-slate-100 transition shadow-sm">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/></svg>
+          <span>Save JSON</span>
+        </button>
+
+        <!-- Combined Save & Update Button (Primary) -->
+        <button type="button" onclick="saveAndUpdateAll()" title="Save data.json AND compile HTML in one click" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold bg-brand-600 hover:bg-brand-700 text-white shadow-md shadow-brand-500/25 transition active:scale-95">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          <span>Save & Update HTML</span>
+        </button>
+
+        <!-- GUI Dark/Light Toggle -->
+        <button type="button" onclick="toggleGuiTheme()" aria-label="Toggle Dark Mode" class="p-2 rounded-xl text-slate-500 hover:text-slate-900 dark:hover:text-white bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 transition">
+          <svg id="gui-theme-icon-light" class="w-4 h-4 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 9H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+          <svg id="gui-theme-icon-dark" class="w-4 h-4 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+        </button>
+
+      </div>
+    </div>
+  </header>
+
+  <!-- ==========================================
+       MAIN WORKSPACE TABS & BODY
+       ========================================== -->
+  <div class="max-w-7xl mx-auto w-full px-4 sm:px-6 py-6 flex-1 flex flex-col gap-6">
+    
+    <!-- Tab Navigation Bar -->
+    <div class="flex items-center gap-1.5 p-1 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm overflow-x-auto no-scrollbar text-xs font-semibold">
+      <button type="button" onclick="switchTab('profile')" id="tab-btn-profile" class="tab-btn px-4 py-2.5 rounded-xl transition flex items-center gap-2 text-brand-600 dark:text-brand-400 bg-brand-50 dark:bg-brand-950/60">
+        <span>👤 Profile & Bio</span>
+      </button>
+      <button type="button" onclick="switchTab('theme')" id="tab-btn-theme" class="tab-btn px-4 py-2.5 rounded-xl transition flex items-center gap-2 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
+        <span>🎨 Palette & Theme</span>
+      </button>
+      <button type="button" onclick="switchTab('skills')" id="tab-btn-skills" class="tab-btn px-4 py-2.5 rounded-xl transition flex items-center gap-2 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
+        <span>⚡ Skills Matrix (5-Dot)</span>
+        <span id="tab-badge-skills" class="px-1.5 py-0.5 rounded-full text-[10px] bg-slate-100 dark:bg-slate-800 text-slate-500">14</span>
+      </button>
+      <button type="button" onclick="switchTab('items')" id="tab-btn-items" class="tab-btn px-4 py-2.5 rounded-xl transition flex items-center gap-2 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
+        <span>📁 CV Items Manager</span>
+        <span id="tab-badge-items" class="px-1.5 py-0.5 rounded-full text-[10px] bg-slate-100 dark:bg-slate-800 text-slate-500">28</span>
+      </button>
+      <button type="button" onclick="switchTab('raw')" id="tab-btn-raw" class="tab-btn px-4 py-2.5 rounded-xl transition flex items-center gap-2 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
+        <span>💻 Raw JSON Editor</span>
+      </button>
+    </div>
+
+    <!-- ==========================================
+         TAB 1: PROFILE & CONTACTS
+         ========================================== -->
+    <section id="tab-panel-profile" class="tab-panel space-y-6">
+      
+      <!-- Basic Details Card -->
+      <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-sm space-y-4">
+        <h2 class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+          <span>👤 Basic Personal & Academic Identity</span>
+        </h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Full Name</label>
+            <input type="text" id="prof-name" class="w-full px-3 py-2 rounded-xl text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Degree / Suffix</label>
+            <input type="text" id="prof-suffix" placeholder="e.g. B.Sc. Candidate" class="w-full px-3 py-2 rounded-xl text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Initials (Avatar)</label>
+            <input type="text" id="prof-initials" placeholder="MRC" maxlength="4" class="w-full px-3 py-2 rounded-xl text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Location</label>
+            <input type="text" id="prof-location" placeholder="e.g. Maastricht, Netherlands" class="w-full px-3 py-2 rounded-xl text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Primary Title / Profession</label>
+            <input type="text" id="prof-title" placeholder="Biomedical Sciences Researcher & AI Systems Developer" class="w-full px-3 py-2 rounded-xl text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Status Badge Text</label>
+            <input type="text" id="prof-status" placeholder="BSc Candidate at Maastricht University" class="w-full px-3 py-2 rounded-xl text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500">
+          </div>
+        </div>
+
+        <div>
+          <div class="flex items-center justify-between mb-1">
+            <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400">Bio / Executive Summary</label>
+            <span id="prof-bio-count" class="text-[11px] text-slate-400 font-mono">0 chars</span>
+          </div>
+          <textarea id="prof-bio" rows="4" class="w-full p-3 rounded-xl text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500 leading-relaxed"></textarea>
+        </div>
+      </div>
+
+      <!-- Links & Socials -->
+      <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-sm space-y-4">
+        <h2 class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+          <span>🔗 Contacts & External Profiles</span>
+        </h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Email Address</label>
+            <input type="email" id="prof-email" class="w-full px-3 py-2 rounded-xl text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">GitHub URL</label>
+            <input type="url" id="prof-github" class="w-full px-3 py-2 rounded-xl text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">LinkedIn URL</label>
+            <input type="url" id="prof-linkedin" class="w-full px-3 py-2 rounded-xl text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Google Scholar URL</label>
+            <input type="url" id="prof-scholar" class="w-full px-3 py-2 rounded-xl text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white">
+          </div>
+          <div class="sm:col-span-2">
+            <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Website or PDF CV URL</label>
+            <input type="url" id="prof-website" class="w-full px-3 py-2 rounded-xl text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white">
+          </div>
+        </div>
+      </div>
+
+      <!-- Key Metrics -->
+      <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-sm space-y-4">
+        <div class="flex items-center justify-between">
+          <h2 class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+            <span>📊 Key Metrics / Highlights</span>
+          </h2>
+          <button type="button" onclick="addMetricRow()" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-brand-50 dark:bg-brand-950/60 text-brand-600 dark:text-brand-400 border border-brand-200 dark:border-brand-800/60 hover:bg-brand-100 transition">
+            + Add Metric
+          </button>
+        </div>
+        <div id="metrics-container" class="space-y-2"></div>
+      </div>
+
+    </section>
+
+    <!-- ==========================================
+         TAB 2: PALETTE & THEME
+         ========================================== -->
+    <section id="tab-panel-theme" class="tab-panel hidden space-y-6">
+      <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-sm space-y-6">
+        <div>
+          <h2 class="text-base font-bold text-slate-900 dark:text-white">🎨 Accent Color Palette</h2>
+          <p class="text-xs text-slate-500 mt-1">Select a predefined palette or supply a custom hex code. Updating this will retheme buttons, tags, 5-dot proficiency dots, and gradients across the entire website.</p>
+        </div>
+
+        <!-- Presets Grid -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3" id="theme-presets-grid"></div>
+
+        <!-- Custom Hex Input -->
+        <div class="pt-4 border-t border-slate-200 dark:border-slate-800 flex flex-wrap items-center gap-3">
+          <label class="text-xs font-semibold text-slate-700 dark:text-slate-300">Custom Hex Color:</label>
+          <div class="flex items-center gap-2">
+            <input type="color" id="theme-color-picker" class="w-8 h-8 rounded-lg cursor-pointer border border-slate-300 dark:border-slate-700 p-0.5 bg-transparent" onchange="onCustomColorPicker(this.value)">
+            <input type="text" id="theme-custom-hex" placeholder="#6366f1" maxlength="7" class="px-3 py-1.5 rounded-xl text-xs font-mono bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white uppercase" oninput="onCustomHexInput(this.value)">
+          </div>
+          <span id="theme-active-label" class="text-xs font-mono text-brand-600 dark:text-brand-400 font-semibold ml-auto">
+            Active: indigo
+          </span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         TAB 3: SKILLS MATRIX (5-DOT RATING)
+         ========================================== -->
+    <section id="tab-panel-skills" class="tab-panel hidden space-y-6">
+      <div class="flex items-center justify-between">
+        <div>
+          <h2 class="text-base font-bold text-slate-900 dark:text-white">⚡ Skills Matrix (5-Dot Scale)</h2>
+          <p class="text-xs text-slate-500 mt-0.5">Click the circular dots to set rating levels (1 to 5). Distinguish clearly between Hard Skills and Soft Skills.</p>
+        </div>
+        <div class="flex items-center gap-2">
+          <button type="button" onclick="addSkill('hard')" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-brand-50 dark:bg-brand-950/60 text-brand-600 dark:text-brand-400 border border-brand-200 dark:border-brand-800">
+            + Add Hard Skill
+          </button>
+          <button type="button" onclick="addSkill('soft')" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
+            + Add Soft Skill
+          </button>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        
+        <!-- HARD SKILLS COLUMN -->
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-sm space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+            <h3 class="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-brand-500"></span>
+              Technical & Hard Skills
+            </h3>
+            <span id="hard-skills-count" class="text-xs font-mono text-slate-400">0 skills</span>
+          </div>
+          <div id="hard-skills-list" class="space-y-3"></div>
+        </div>
+
+        <!-- SOFT SKILLS COLUMN -->
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-sm space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+            <h3 class="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+              Soft & Leadership Skills
+            </h3>
+            <span id="soft-skills-count" class="text-xs font-mono text-slate-400">0 skills</span>
+          </div>
+          <div id="soft-skills-list" class="space-y-3"></div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ==========================================
+         TAB 4: CV ITEMS MANAGER
+         ========================================== -->
+    <section id="tab-panel-items" class="tab-panel hidden space-y-6">
+      
+      <!-- Items Control Bar -->
+      <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-3 shadow-sm">
+        
+        <!-- Category Filter Pills -->
+        <div class="flex items-center gap-1 overflow-x-auto no-scrollbar text-xs font-semibold">
+          <button type="button" onclick="filterItemsByCategory('all')" class="item-cat-filter px-3 py-1.5 rounded-xl bg-brand-600 text-white" data-cat="all">All</button>
+          <button type="button" onclick="filterItemsByCategory('work')" class="item-cat-filter px-3 py-1.5 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800" data-cat="work">Work</button>
+          <button type="button" onclick="filterItemsByCategory('projects')" class="item-cat-filter px-3 py-1.5 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800" data-cat="projects">Projects</button>
+          <button type="button" onclick="filterItemsByCategory('learning')" class="item-cat-filter px-3 py-1.5 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800" data-cat="learning">Learning</button>
+          <button type="button" onclick="filterItemsByCategory('certifications')" class="item-cat-filter px-3 py-1.5 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800" data-cat="certifications">Certifications</button>
+          <button type="button" onclick="filterItemsByCategory('volunteering')" class="item-cat-filter px-3 py-1.5 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800" data-cat="volunteering">Volunteering</button>
+          <button type="button" onclick="filterItemsByCategory('hobbies')" class="item-cat-filter px-3 py-1.5 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800" data-cat="hobbies">Hobbies</button>
+        </div>
+
+        <!-- Search & Add Item -->
+        <div class="flex items-center gap-2">
+          <input type="text" id="items-search-input" placeholder="Search entries..." oninput="onItemsSearch(this.value)" class="px-3 py-1.5 rounded-xl text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white">
+          <button type="button" onclick="openNewItemModal()" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-brand-600 hover:bg-brand-700 text-white shrink-0">
+            + New Entry
+          </button>
+        </div>
+
+      </div>
+
+      <!-- Items List -->
+      <div id="cv-items-container" class="space-y-4"></div>
+
+    </section>
+
+    <!-- ==========================================
+         TAB 5: RAW JSON EDITOR
+         ========================================== -->
+    <section id="tab-panel-raw" class="tab-panel hidden space-y-4">
+      <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-sm space-y-4">
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <h2 class="text-base font-bold text-slate-900 dark:text-white">💻 Direct JSON Document Editor</h2>
+            <p class="text-xs text-slate-500">Edit the JSON code directly. Changes will automatically propagate to all forms and previews.</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <button type="button" onclick="formatRawJson()" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
+              Format / Prettify
+            </button>
+            <button type="button" onclick="applyRawJsonChanges()" class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-brand-600 text-white">
+              Apply JSON to Forms
+            </button>
+          </div>
+        </div>
+
+        <textarea id="raw-json-textarea" rows="22" spellcheck="false" class="w-full p-4 rounded-2xl font-mono text-xs leading-relaxed bg-slate-950 text-slate-100 border border-slate-800 focus:outline-none focus:ring-2 focus:ring-brand-500"></textarea>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         TERMINAL / OUTPUT LOG DRAWER
+         ========================================== -->
+    <div class="bg-slate-900 rounded-2xl border border-slate-800 text-slate-200 overflow-hidden shadow-lg">
+      <div class="px-4 py-2.5 bg-slate-950/80 border-b border-slate-800 flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+          <span class="text-xs font-mono font-semibold text-slate-300">Console / Build Output</span>
+        </div>
+        <button type="button" onclick="document.getElementById('console-output').textContent = 'Ready.'" class="text-[10px] font-mono text-slate-400 hover:text-white">Clear</button>
+      </div>
+      <pre id="console-output" class="p-3 text-[11px] font-mono text-slate-300 max-h-36 overflow-y-auto whitespace-pre-wrap">Connected to CV Data Studio. Ready.</pre>
+    </div>
+
+  </div>
+
+  <!-- ==========================================
+     ITEM EDIT / ADD MODAL
+     ========================================== -->
+  <dialog id="item-modal" closedby="any" class="rounded-3xl bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 p-0 border border-slate-200 dark:border-slate-800 shadow-2xl max-w-2xl w-[92vw] overflow-hidden focus:outline-none">
+    <div class="p-5 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between bg-slate-50 dark:bg-slate-800/40">
+      <h3 id="item-modal-title" class="text-base font-bold">Edit CV Entry</h3>
+      <button type="button" onclick="closeItemModal()" class="p-1 text-slate-400 hover:text-slate-600 dark:hover:text-white">✕</button>
+    </div>
+    <form id="item-form" onsubmit="saveItemModal(event)" class="p-6 space-y-4 max-h-[70vh] overflow-y-auto">
+      <input type="hidden" id="modal-item-index" value="-1">
+      
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Unique Identifier (ID)</label>
+          <input type="text" id="modal-item-id" required placeholder="e.g. work-research-assistant" class="w-full px-3 py-2 rounded-xl text-xs font-mono bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Category</label>
+          <select id="modal-item-category" class="w-full px-3 py-2 rounded-xl text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white">
+            <option value="work">Work (Professional Experience)</option>
+            <option value="projects">Projects & Publications</option>
+            <option value="learning">Learning & Education</option>
+            <option value="certifications">Certifications & Distinctions</option>
+            <option value="volunteering">Volunteering & Governance</option>
+            <option value="hobbies">Hobbies & Pursuits</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Role / Project Title</label>
+          <input type="text" id="modal-item-title" required class="w-full px-3 py-2 rounded-xl text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Organization / Platform / Issuer</label>
+          <input type="text" id="modal-item-org" required class="w-full px-3 py-2 rounded-xl text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white">
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Date Range</label>
+          <input type="text" id="modal-item-date" placeholder="e.g. Sep 2024 – Present" class="w-full px-3 py-2 rounded-xl text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Location</label>
+          <input type="text" id="modal-item-location" placeholder="e.g. Maastricht, NL" class="w-full px-3 py-2 rounded-xl text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white">
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Description</label>
+        <textarea id="modal-item-desc" rows="3" class="w-full p-3 rounded-xl text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white"></textarea>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Tags (Comma-separated)</label>
+          <input type="text" id="modal-item-tags" placeholder="Python, Bioinformatics, Wet Lab" class="w-full px-3 py-2 rounded-xl text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">External Link URL</label>
+          <input type="url" id="modal-item-link" placeholder="https://..." class="w-full px-3 py-2 rounded-xl text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white">
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2 pt-2">
+        <input type="checkbox" id="modal-item-featured" class="w-4 h-4 rounded text-brand-600 focus:ring-brand-500">
+        <label for="modal-item-featured" class="text-xs font-semibold text-slate-700 dark:text-slate-300">★ Highlight as Featured Entry</label>
+      </div>
+
+      <div class="pt-4 border-t border-slate-200 dark:border-slate-800 flex justify-end gap-2">
+        <button type="button" onclick="closeItemModal()" class="px-4 py-2 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800">Cancel</button>
+        <button type="submit" class="px-4 py-2 rounded-xl text-xs font-bold bg-brand-600 text-white">Save Entry</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- TOAST CONTAINER -->
+  <div id="toast-container" class="fixed bottom-6 right-6 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+  <!-- ==========================================
+       JAVASCRIPT LOGIC FOR LOCAL GUI
+       ========================================== -->
+  <script>
+    // State
+    let currentData = null;
+    let activeCategoryFilter = 'all';
+    let activeSearchQuery = '';
+    let isServerConnected = false;
+
+    const PRESET_PALETTES = {
+      indigo: { name: 'Indigo', hex: '#6366f1' },
+      emerald: { name: 'Emerald', hex: '#10b981' },
+      blue: { name: 'Ocean Blue', hex: '#3b82f6' },
+      violet: { name: 'Violet', hex: '#8b5cf6' },
+      rose: { name: 'Rose', hex: '#f43f5e' },
+      amber: { name: 'Amber', hex: '#f59e0b' },
+      cyan: { name: 'Cyan', hex: '#06b6d4' }
+    };
+
+    function showToast(msg, isErr = false) {
+      const c = document.getElementById('toast-container');
+      const t = document.createElement('div');
+      t.className = `${isErr ? 'bg-rose-600' : 'bg-slate-900 dark:bg-white'} text-white ${isErr ? '' : 'dark:text-slate-900'} px-4 py-2.5 rounded-xl text-xs font-bold shadow-xl flex items-center gap-2 animate-in fade-in slide-in-from-bottom-2`;
+      t.innerHTML = `<span>${isErr ? '✖' : '✔'}</span> <span>${msg}</span>`;
+      c.appendChild(t);
+      setTimeout(() => t.remove(), 2800);
+    }
+
+    function logConsole(msg) {
+      const el = document.getElementById('console-output');
+      el.textContent = `[${new Date().toLocaleTimeString()}] ${msg}\n` + el.textContent;
+    }
+
+    // 1. Initial Load
+    async function loadData() {
+      // Try local REST API
+      try {
+        const res = await fetch('/api/data', { cache: 'no-cache' });
+        if (res.ok) {
+          currentData = await res.json();
+          isServerConnected = true;
+          setServerStatus(true);
+          renderAll();
+          logConsole("Loaded data.json directly from local server API.");
+          return;
+        }
+      } catch (e) {
+        // Fallback
+      }
+
+      // Fallback: try relative fetch
+      try {
+        const res = await fetch('./data.json', { cache: 'no-cache' });
+        if (res.ok) {
+          currentData = await res.json();
+          setServerStatus(false);
+          renderAll();
+          logConsole("Loaded data.json via static HTTP. (Server save API unavailable)");
+          return;
+        }
+      } catch (e) {}
+
+      // Fallback: window.CV_DEFAULT_DATA
+      if (typeof window !== 'undefined' && window.CV_DEFAULT_DATA) {
+        currentData = JSON.parse(JSON.stringify(window.CV_DEFAULT_DATA));
+        setServerStatus(false);
+        renderAll();
+        logConsole("Loaded preloaded dataset from data.js. (Standalone file:// mode)");
+      } else {
+        showToast("Could not load data.json", true);
+      }
+    }
+
+    function setServerStatus(connected) {
+      const badge = document.getElementById('server-badge');
+      if (connected) {
+        badge.className = "px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 flex items-center gap-1.5";
+        badge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Live Server Connected`;
+      } else {
+        badge.className = "px-2 py-0.5 rounded-full text-[10px] font-semibold bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800 flex items-center gap-1.5";
+        badge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span> Static / file:// Mode`;
+      }
+    }
+
+    // 2. Render Functions
+    function renderAll() {
+      if (!currentData) return;
+      renderProfile();
+      renderTheme();
+      renderSkills();
+      renderItems();
+      renderRawJson();
+    }
+
+    function renderProfile() {
+      const p = currentData.profile || {};
+      document.getElementById('prof-name').value = p.name || '';
+      document.getElementById('prof-suffix').value = p.suffix || '';
+      document.getElementById('prof-initials').value = p.initials || '';
+      document.getElementById('prof-location').value = p.location || '';
+      document.getElementById('prof-title').value = p.title || '';
+      document.getElementById('prof-status').value = p.status || '';
+      document.getElementById('prof-bio').value = p.bio || '';
+      document.getElementById('prof-email').value = p.email || '';
+      document.getElementById('prof-github').value = p.github || '';
+      document.getElementById('prof-linkedin').value = p.linkedin || '';
+      document.getElementById('prof-scholar').value = p.scholar || '';
+      document.getElementById('prof-website').value = p.website || '';
+      document.getElementById('prof-bio-count').textContent = `${(p.bio || '').length} chars`;
+
+      // Metrics
+      const mContainer = document.getElementById('metrics-container');
+      mContainer.innerHTML = '';
+      (p.metrics || []).forEach((m, idx) => {
+        const row = document.createElement('div');
+        row.className = "flex items-center gap-2";
+        row.innerHTML = `
+          <input type="text" placeholder="Value (e.g. 8.8k+)" value="${m.value || ''}" class="metric-val px-3 py-1.5 rounded-xl text-xs font-mono font-bold w-36 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white">
+          <input type="text" placeholder="Label (e.g. GitHub Commits)" value="${m.label || ''}" class="metric-lbl flex-1 px-3 py-1.5 rounded-xl text-xs bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white">
+          <button type="button" onclick="deleteMetricRow(${idx})" class="p-1.5 text-slate-400 hover:text-rose-500 transition">✕</button>
+        `;
+        mContainer.appendChild(row);
+      });
+    }
+
+    function addMetricRow() {
+      if (!currentData.profile.metrics) currentData.profile.metrics = [];
+      currentData.profile.metrics.push({ value: '', label: '' });
+      renderProfile();
+    }
+
+    function deleteMetricRow(idx) {
+      currentData.profile.metrics.splice(idx, 1);
+      renderProfile();
+    }
+
+    function renderTheme() {
+      const active = currentData.theme?.palette || 'indigo';
+      const grid = document.getElementById('theme-presets-grid');
+      grid.innerHTML = '';
+
+      Object.entries(PRESET_PALETTES).forEach(([key, info]) => {
+        const isSelected = active.toLowerCase() === key.toLowerCase();
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.onclick = () => selectPalette(key);
+        btn.className = `p-3 rounded-2xl border text-left transition flex items-center gap-2.5 ${
+          isSelected 
+            ? 'border-brand-600 bg-brand-50/50 dark:bg-brand-950/40 ring-2 ring-brand-500' 
+            : 'border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:bg-slate-50'
+        }`;
+        btn.innerHTML = `
+          <span class="w-4 h-4 rounded-full shadow-sm shrink-0" style="background-color: ${info.hex}"></span>
+          <span class="text-xs font-bold text-slate-900 dark:text-white">${info.name}</span>
+        `;
+        grid.appendChild(btn);
+      });
+
+      document.getElementById('theme-active-label').textContent = `Active: ${active}`;
+      if (/^#[0-9a-fA-F]{6}$/.test(active)) {
+        document.getElementById('theme-color-picker').value = active;
+        document.getElementById('theme-custom-hex').value = active;
+      }
+    }
+
+    function selectPalette(key) {
+      if (!currentData.theme) currentData.theme = {};
+      currentData.theme.palette = key;
+      renderTheme();
+    }
+
+    function onCustomColorPicker(hex) {
+      document.getElementById('theme-custom-hex').value = hex;
+      selectPalette(hex);
+    }
+
+    function onCustomHexInput(hex) {
+      if (/^#[0-9a-fA-F]{6}$/.test(hex)) {
+        document.getElementById('theme-color-picker').value = hex;
+        selectPalette(hex);
+      }
+    }
+
+    function renderSkills() {
+      const skills = currentData.skills || { hard: [], soft: [] };
+      document.getElementById('tab-badge-skills').textContent = (skills.hard?.length || 0) + (skills.soft?.length || 0);
+
+      // Render Hard
+      const hardList = document.getElementById('hard-skills-list');
+      document.getElementById('hard-skills-count').textContent = `${skills.hard?.length || 0} skills`;
+      hardList.innerHTML = '';
+      (skills.hard || []).forEach((sk, idx) => {
+        hardList.appendChild(createSkillCard(sk, idx, 'hard'));
+      });
+
+      // Render Soft
+      const softList = document.getElementById('soft-skills-list');
+      document.getElementById('soft-skills-count').textContent = `${skills.soft?.length || 0} skills`;
+      softList.innerHTML = '';
+      (skills.soft || []).forEach((sk, idx) => {
+        softList.appendChild(createSkillCard(sk, idx, 'soft'));
+      });
+    }
+
+    function createSkillCard(sk, idx, type) {
+      const card = document.createElement('div');
+      card.className = "p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/80 space-y-2";
+      
+      let dotsHtml = '';
+      for (let i = 1; i <= 5; i++) {
+        const isFilled = i <= sk.level;
+        dotsHtml += `
+          <button type="button" onclick="setSkillLevel('${type}', ${idx}, ${i})" title="Set rating to ${i}/5" class="w-5 h-5 rounded-full flex items-center justify-center transition active:scale-90">
+            <span class="w-3.5 h-3.5 rounded-full transition-all ${isFilled ? 'bg-brand-600 dark:bg-brand-400 scale-100 shadow-sm' : 'bg-slate-200 dark:bg-slate-700 scale-75 hover:scale-95'}"></span>
+          </button>
+        `;
+      }
+
+      card.innerHTML = `
+        <div class="flex items-center justify-between gap-2">
+          <input type="text" value="${sk.name || ''}" placeholder="Skill Title" onchange="updateSkillProp('${type}', ${idx}, 'name', this.value)" class="flex-1 px-2.5 py-1 rounded-lg text-xs font-bold bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white">
+          <input type="text" value="${sk.tag || ''}" placeholder="Tag/Domain" onchange="updateSkillProp('${type}', ${idx}, 'tag', this.value)" class="w-28 px-2 py-1 rounded-lg text-[11px] font-mono text-slate-500 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700">
+          <button type="button" onclick="deleteSkill('${type}', ${idx})" title="Delete" class="p-1 text-slate-400 hover:text-rose-500">✕</button>
+        </div>
+        <div class="flex items-center justify-between pt-1">
+          <div class="flex items-center gap-1">${dotsHtml}</div>
+          <span class="text-[11px] font-mono text-slate-400 font-semibold">${sk.level} / 5</span>
+        </div>
+      `;
+      return card;
+    }
+
+    function setSkillLevel(type, idx, level) {
+      currentData.skills[type][idx].level = level;
+      renderSkills();
+    }
+
+    function updateSkillProp(type, idx, prop, val) {
+      currentData.skills[type][idx][prop] = val;
+    }
+
+    function addSkill(type) {
+      if (!currentData.skills) currentData.skills = { hard: [], soft: [] };
+      if (!currentData.skills[type]) currentData.skills[type] = [];
+      currentData.skills[type].push({ name: 'New Skill', level: 3, tag: 'General' });
+      renderSkills();
+    }
+
+    function deleteSkill(type, idx) {
+      currentData.skills[type].splice(idx, 1);
+      renderSkills();
+    }
+
+    function renderItems() {
+      const items = currentData.items || [];
+      document.getElementById('tab-badge-items').textContent = items.length;
+
+      const container = document.getElementById('cv-items-container');
+      container.innerHTML = '';
+
+      let filtered = items;
+      if (activeCategoryFilter !== 'all') {
+        filtered = filtered.filter(it => it.category === activeCategoryFilter);
+      }
+      if (activeSearchQuery) {
+        const q = activeSearchQuery.toLowerCase();
+        filtered = filtered.filter(it => 
+          (it.title && it.title.toLowerCase().includes(q)) ||
+          (it.organization && it.organization.toLowerCase().includes(q)) ||
+          (it.description && it.description.toLowerCase().includes(q)) ||
+          (it.tags && it.tags.some(t => t.toLowerCase().includes(q)))
+        );
+      }
+
+      if (filtered.length === 0) {
+        container.innerHTML = `<div class="p-12 text-center text-slate-400 text-xs">No items match the current filter.</div>`;
+        return;
+      }
+
+      filtered.forEach((it) => {
+        const originalIndex = items.indexOf(it);
+        const card = document.createElement('div');
+        card.className = "bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-5 shadow-sm space-y-3";
+        
+        const tagsHtml = (it.tags || []).map(t => `<span class="px-2 py-0.5 rounded-lg text-[10px] font-semibold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">#${t}</span>`).join(' ');
+
+        card.innerHTML = `
+          <div class="flex items-start justify-between gap-3">
+            <div>
+              <div class="flex items-center gap-2 mb-1">
+                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-brand-50 dark:bg-brand-950 text-brand-600 dark:text-brand-400 border border-brand-200 dark:border-brand-800/50">${it.category}</span>
+                ${it.featured ? '<span class="text-amber-500 text-xs font-bold">★ Featured</span>' : ''}
+                <span class="text-[11px] font-mono text-slate-400">${it.id}</span>
+              </div>
+              <h3 class="text-sm font-bold text-slate-900 dark:text-white">${it.title}</h3>
+              <p class="text-xs font-medium text-slate-600 dark:text-slate-400">${it.organization || it.issuer || ''} ${it.location ? '• ' + it.location : ''} • <span class="text-brand-600 dark:text-brand-400 font-semibold">${it.date || ''}</span></p>
+            </div>
+            <div class="flex items-center gap-1.5 shrink-0">
+              <button type="button" onclick="openEditItemModal(${originalIndex})" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 transition">Edit</button>
+              <button type="button" onclick="duplicateItem(${originalIndex})" title="Duplicate Entry" class="px-2.5 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-slate-900 transition">📋</button>
+              <button type="button" onclick="deleteItem(${originalIndex})" title="Delete" class="px-2.5 py-1.5 rounded-xl text-xs text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition">✕</button>
+            </div>
+          </div>
+          <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">${it.description || ''}</p>
+          <div class="flex flex-wrap gap-1.5 pt-1">${tagsHtml}</div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function filterItemsByCategory(cat) {
+      activeCategoryFilter = cat;
+      document.querySelectorAll('.item-cat-filter').forEach(btn => {
+        if (btn.getAttribute('data-cat') === cat) {
+          btn.className = "item-cat-filter px-3 py-1.5 rounded-xl bg-brand-600 text-white";
+        } else {
+          btn.className = "item-cat-filter px-3 py-1.5 rounded-xl text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800";
+        }
+      });
+      renderItems();
+    }
+
+    function onItemsSearch(val) {
+      activeSearchQuery = val.trim();
+      renderItems();
+    }
+
+    function openNewItemModal() {
+      document.getElementById('item-modal-title').textContent = "New CV Entry";
+      document.getElementById('modal-item-index').value = "-1";
+      document.getElementById('modal-item-id').value = `item-${Date.now().toString(36)}`;
+      document.getElementById('modal-item-category').value = activeCategoryFilter !== 'all' ? activeCategoryFilter : 'work';
+      document.getElementById('modal-item-title').value = '';
+      document.getElementById('modal-item-org').value = '';
+      document.getElementById('modal-item-date').value = '';
+      document.getElementById('modal-item-location').value = '';
+      document.getElementById('modal-item-desc').value = '';
+      document.getElementById('modal-item-tags').value = '';
+      document.getElementById('modal-item-link').value = '';
+      document.getElementById('modal-item-featured').checked = false;
+      document.getElementById('item-modal').showModal();
+    }
+
+    function openEditItemModal(idx) {
+      const it = currentData.items[idx];
+      document.getElementById('item-modal-title').textContent = `Edit Entry: ${it.title}`;
+      document.getElementById('modal-item-index').value = idx;
+      document.getElementById('modal-item-id').value = it.id || '';
+      document.getElementById('modal-item-category').value = it.category || 'work';
+      document.getElementById('modal-item-title').value = it.title || '';
+      document.getElementById('modal-item-org').value = it.organization || it.issuer || '';
+      document.getElementById('modal-item-date').value = it.date || '';
+      document.getElementById('modal-item-location').value = it.location || '';
+      document.getElementById('modal-item-desc').value = it.description || '';
+      document.getElementById('modal-item-tags').value = (it.tags || []).join(', ');
+      document.getElementById('modal-item-link').value = it.link || '';
+      document.getElementById('modal-item-featured').checked = !!it.featured;
+      document.getElementById('item-modal').showModal();
+    }
+
+    function closeItemModal() {
+      document.getElementById('item-modal').close();
+    }
+
+    function saveItemModal(e) {
+      e.preventDefault();
+      const idx = parseInt(document.getElementById('modal-item-index').value, 10);
+      const tags = document.getElementById('modal-item-tags').value
+        .split(',')
+        .map(t => t.trim())
+        .filter(t => t.length > 0);
+
+      const itemObj = {
+        id: document.getElementById('modal-item-id').value.trim(),
+        category: document.getElementById('modal-item-category').value,
+        title: document.getElementById('modal-item-title').value.trim(),
+        organization: document.getElementById('modal-item-org').value.trim(),
+        date: document.getElementById('modal-item-date').value.trim(),
+        location: document.getElementById('modal-item-location').value.trim(),
+        description: document.getElementById('modal-item-desc').value.trim(),
+        tags: tags,
+        featured: document.getElementById('modal-item-featured').checked,
+        link: document.getElementById('modal-item-link').value.trim() || undefined
+      };
+
+      if (!itemObj.link) delete itemObj.link;
+
+      if (idx >= 0) {
+        currentData.items[idx] = itemObj;
+      } else {
+        currentData.items.unshift(itemObj);
+      }
+
+      closeItemModal();
+      renderItems();
+      showToast("Saved entry to working dataset");
+    }
+
+    function duplicateItem(idx) {
+      const clone = JSON.parse(JSON.stringify(currentData.items[idx]));
+      clone.id = `${clone.id}-copy-${Date.now().toString(36).slice(-4)}`;
+      clone.title = `${clone.title} (Copy)`;
+      currentData.items.splice(idx + 1, 0, clone);
+      renderItems();
+      showToast("Duplicated entry");
+    }
+
+    function deleteItem(idx) {
+      if (confirm(`Delete "${currentData.items[idx].title}"?`)) {
+        currentData.items.splice(idx, 1);
+        renderItems();
+        showToast("Deleted entry");
+      }
+    }
+
+    function renderRawJson() {
+      document.getElementById('raw-json-textarea').value = JSON.stringify(currentData, null, 2);
+    }
+
+    function formatRawJson() {
+      try {
+        const val = JSON.parse(document.getElementById('raw-json-textarea').value);
+        document.getElementById('raw-json-textarea').value = JSON.stringify(val, null, 2);
+        showToast("JSON formatted");
+      } catch (e) {
+        showToast("Invalid JSON syntax: " + e.message, true);
+      }
+    }
+
+    function applyRawJsonChanges() {
+      try {
+        const val = JSON.parse(document.getElementById('raw-json-textarea').value);
+        currentData = val;
+        renderAll();
+        showToast("JSON changes applied to forms");
+      } catch (e) {
+        showToast("Syntax Error: " + e.message, true);
+      }
+    }
+
+    // 3. Tab Navigation
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.add('hidden'));
+      document.getElementById(`tab-panel-${tabId}`).classList.remove('hidden');
+
+      document.querySelectorAll('.tab-btn').forEach(b => {
+        b.className = "tab-btn px-4 py-2.5 rounded-xl transition flex items-center gap-2 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white";
+      });
+      const activeBtn = document.getElementById(`tab-btn-${tabId}`);
+      activeBtn.className = "tab-btn px-4 py-2.5 rounded-xl transition flex items-center gap-2 text-brand-600 dark:text-brand-400 bg-brand-50 dark:bg-brand-950/60";
+
+      if (tabId === 'raw') {
+        gatherProfileInputs();
+        renderRawJson();
+      }
+    }
+
+    function gatherProfileInputs() {
+      if (!currentData) return;
+      if (!currentData.profile) currentData.profile = {};
+      const p = currentData.profile;
+      p.name = document.getElementById('prof-name').value.trim();
+      p.suffix = document.getElementById('prof-suffix').value.trim();
+      p.initials = document.getElementById('prof-initials').value.trim();
+      p.location = document.getElementById('prof-location').value.trim();
+      p.title = document.getElementById('prof-title').value.trim();
+      p.status = document.getElementById('prof-status').value.trim();
+      p.bio = document.getElementById('prof-bio').value.trim();
+      p.email = document.getElementById('prof-email').value.trim();
+      p.github = document.getElementById('prof-github').value.trim();
+      p.linkedin = document.getElementById('prof-linkedin').value.trim();
+      p.scholar = document.getElementById('prof-scholar').value.trim();
+      p.website = document.getElementById('prof-website').value.trim();
+
+      // Gather metrics
+      const metrics = [];
+      document.querySelectorAll('#metrics-container > div').forEach(row => {
+        const v = row.querySelector('.metric-val').value.trim();
+        const l = row.querySelector('.metric-lbl').value.trim();
+        if (v || l) metrics.push({ value: v, label: l });
+      });
+      p.metrics = metrics;
+    }
+
+    // 4. Save and Update Actions
+    async function saveDataJson() {
+      gatherProfileInputs();
+      const jsonString = JSON.stringify(currentData, null, 2);
+
+      if (isServerConnected) {
+        try {
+          const res = await fetch('/api/save', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: jsonString
+          });
+          const result = await res.json();
+          if (res.ok) {
+            showToast("Saved to data.json directly on disk!");
+            logConsole("Saved data.json successfully via local server.");
+            return true;
+          } else {
+            showToast(result.error || "Save failed", true);
+            return false;
+          }
+        } catch (e) {
+          showToast("Network error saving file", true);
+          return false;
+        }
+      } else {
+        // Fallback: file download or File System Access API
+        downloadJsonFile(jsonString);
+        showToast("Downloaded data.json (Server not running)");
+        return true;
+      }
+    }
+
+    async function triggerUpdateHtml() {
+      if (isServerConnected) {
+        logConsole("Executing scripts/update-data.js...");
+        try {
+          const res = await fetch('/api/update', { method: 'POST' });
+          const json = await res.json();
+          if (res.ok && json.success) {
+            showToast("Updated HTML metadata & data.js!");
+            logConsole(json.output || "Synchronized successfully.");
+          } else {
+            showToast(json.error || "Update script failed", true);
+            logConsole("Error: " + (json.output || json.error));
+          }
+        } catch (e) {
+          showToast("Failed to call update API: " + e.message, true);
+        }
+      } else {
+        alert("To compile and update the HTML automatically, run the GUI with:\n\nnpm run gui\nor:\n./update-data.sh --gui");
+      }
+    }
+
+    async function saveAndUpdateAll() {
+      gatherProfileInputs();
+      const jsonString = JSON.stringify(currentData, null, 2);
+
+      if (isServerConnected) {
+        logConsole("Saving data.json and updating HTML...");
+        try {
+          const res = await fetch('/api/save-and-update', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: jsonString
+          });
+          const json = await res.json();
+          if (res.ok && json.success) {
+            showToast("Saved & Synchronized All HTML Pages!");
+            logConsole(json.output || "Saved data.json and synchronized website successfully.");
+          } else {
+            showToast("Error updating HTML", true);
+            logConsole("Error: " + (json.error || json.output));
+          }
+        } catch (e) {
+          showToast("Network error: " + e.message, true);
+        }
+      } else {
+        downloadJsonFile(jsonString);
+        alert("File saved locally! To compile the HTML automatically, launch with:\n\nnpm run gui");
+      }
+    }
+
+    function downloadJsonFile(content) {
+      const blob = new Blob([content], { type: 'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'data.json';
+      a.click();
+      URL.revokeObjectURL(a.href);
+    }
+
+    // Keyboard shortcut (Ctrl+S / Cmd+S)
+    document.addEventListener('keydown', (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+        e.preventDefault();
+        saveAndUpdateAll();
+      }
+    });
+
+    // Theme Switcher for GUI
+    function toggleGuiTheme() {
+      const isDark = document.documentElement.classList.toggle('dark');
+      localStorage.setItem('cv_gui_theme', isDark ? 'dark' : 'light');
+      updateThemeIcons();
+    }
+
+    function updateThemeIcons() {
+      const isDark = document.documentElement.classList.contains('dark');
+      document.getElementById('gui-theme-icon-light').classList.toggle('hidden', isDark);
+      document.getElementById('gui-theme-icon-dark').classList.toggle('hidden', !isDark);
+    }
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+      updateThemeIcons();
+      loadData();
+      document.getElementById('prof-bio').addEventListener('input', (e) => {
+        document.getElementById('prof-bio-count').textContent = `${e.target.value.length} chars`;
+      });
+    });
+  </script>
+</body>
+</html>

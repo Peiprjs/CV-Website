@@ -3,6 +3,8 @@
   "version": "1.0.0",
   "description": "Interactive CV & Portfolio Web Application for Mar Roca Cugat",
   "scripts": {
+    "gui": "node scripts/gui-server.js",
+    "gui:py": "python3 scripts/gui_server.py",
     "update-data": "node scripts/update-data.js",
     "update": "node scripts/update-data.js",
     "sync": "node scripts/update-data.js",
