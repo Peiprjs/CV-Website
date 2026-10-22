@@ -1,7 +1,7 @@
 /**
  * AUTO-GENERATED FILE — DO NOT EDIT DIRECTLY.
  * Generated from data.json via scripts/update-data.js
- * Last generated: 2026-10-22T12:56:38.088Z
+ * Last generated: 2026-10-22T13:07:35.360Z
  * 
  * Exposes window.CV_DEFAULT_DATA for instant 0ms first-paint
  * and offline / file:// protocol compatibility.
