@@ -149,6 +149,10 @@
         <span>⚡ Skills Matrix (5-Dot)</span>
         <span id="tab-badge-skills" class="px-1.5 py-0.5 rounded-full text-[10px] bg-slate-100 dark:bg-slate-800 text-slate-500">14</span>
       </button>
+      <button type="button" onclick="switchTab('languages')" id="tab-btn-languages" class="tab-btn px-4 py-2.5 rounded-xl transition flex items-center gap-2 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
+        <span>🌐 Languages (CEFR / JLPT)</span>
+        <span id="tab-badge-languages" class="px-1.5 py-0.5 rounded-full text-[10px] bg-slate-100 dark:bg-slate-800 text-slate-500">6</span>
+      </button>
       <button type="button" onclick="switchTab('items')" id="tab-btn-items" class="tab-btn px-4 py-2.5 rounded-xl transition flex items-center gap-2 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white">
         <span>📁 CV Items Manager</span>
         <span id="tab-badge-items" class="px-1.5 py-0.5 rounded-full text-[10px] bg-slate-100 dark:bg-slate-800 text-slate-500">28</span>
@@ -323,6 +327,29 @@
           <div id="soft-skills-list" class="space-y-3"></div>
         </div>
 
+      </div>
+    </section>
+
+    <!-- ==========================================
+         TAB: LANGUAGES (CEFR & JLPT)
+         ========================================== -->
+    <section id="tab-panel-languages" class="tab-panel hidden space-y-6">
+      <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-sm space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-100 dark:border-slate-800">
+          <div>
+            <h2 class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+              <span>🌐 Multilingual Competencies & Proficiency Scale</span>
+            </h2>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+              Configure languages and their segmented progress bars. Choose the CEFR standard framework (A1–C2) or Japanese JLPT (N5–N1 with CEFR benchmark equivalence).
+            </p>
+          </div>
+          <button type="button" onclick="addLanguageGui()" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold bg-brand-600 hover:bg-brand-700 text-white shadow-sm transition">
+            <span>+ Add Language</span>
+          </button>
+        </div>
+
+        <div id="gui-languages-container" class="space-y-4"></div>
       </div>
     </section>
 
@@ -573,6 +600,7 @@
       renderProfile();
       renderTheme();
       renderSkills();
+      renderLanguagesGui();
       renderItems();
       renderRawJson();
     }
@@ -734,6 +762,227 @@
     function deleteSkill(type, idx) {
       currentData.skills[type].splice(idx, 1);
       renderSkills();
+    }
+
+    // Languages GUI Functions
+    function renderLanguagesGui() {
+      if (!currentData) return;
+      if (!Array.isArray(currentData.languages)) {
+        currentData.languages = [];
+      }
+      const langs = currentData.languages;
+      const badge = document.getElementById('tab-badge-languages');
+      if (badge) badge.textContent = langs.length;
+
+      const container = document.getElementById('gui-languages-container');
+      if (!container) return;
+      container.innerHTML = '';
+
+      if (langs.length === 0) {
+        container.innerHTML = `
+          <div class="text-center py-8 text-xs text-slate-400 bg-slate-50 dark:bg-slate-800/40 rounded-2xl border border-dashed border-slate-200 dark:border-slate-800">
+            No languages added yet. Click "+ Add Language" above.
+          </div>
+        `;
+        return;
+      }
+
+      const cefrLevels = [
+        { code: 'A1', name: 'Breakthrough', desc: 'Beginner' },
+        { code: 'A2', name: 'Waystage', desc: 'Elementary' },
+        { code: 'B1', name: 'Threshold', desc: 'Intermediate' },
+        { code: 'B2', name: 'Vantage', desc: 'Upper Intermediate' },
+        { code: 'C1', name: 'Operational', desc: 'Advanced' },
+        { code: 'C2', name: 'Mastery', desc: 'Mastery / Native' }
+      ];
+
+      const jlptLevels = [
+        { code: 'N5', cefr: 'A1', label: 'Introductory (≈ A1)' },
+        { code: 'N4', cefr: 'A2', label: 'Elementary (≈ A2)' },
+        { code: 'N3', cefr: 'B1', label: 'Intermediate (≈ B1)' },
+        { code: 'N2', cefr: 'B2', label: 'Upper Intermediate (≈ B2)' },
+        { code: 'N1', cefr: 'C1+', label: 'Advanced / Fluent (≈ C1+)' }
+      ];
+
+      langs.forEach((lang, idx) => {
+        const isJapanese = (lang.framework === 'JLPT' || (lang.name && lang.name.toLowerCase() === 'japanese') || /^N[1-5]$/i.test(lang.level));
+        const norm = String(lang.level || '').toUpperCase().trim();
+
+        let segmentedPreview = '';
+        if (isJapanese) {
+          let activeIndex = 1;
+          if (norm === 'N5' || norm === 'A1') activeIndex = 1;
+          else if (norm === 'N4' || norm === 'A2') activeIndex = 2;
+          else if (norm === 'N3' || norm === 'B1') activeIndex = 3;
+          else if (norm === 'N2' || norm === 'B2') activeIndex = 4;
+          else if (norm === 'N1' || norm === 'C1' || norm === 'C2' || norm.includes('NATIVE')) activeIndex = 5;
+
+          segmentedPreview = `
+            <div class="space-y-1">
+              <div class="grid grid-cols-5 gap-1.5">
+                ${jlptLevels.map((lvl, lIdx) => {
+                  const isFilled = (lIdx + 1) <= activeIndex;
+                  return `
+                    <button type="button" onclick="setLanguageLevel(${idx}, '${lvl.code}')" title="Set to ${lvl.code} (${lvl.label})" class="py-1 px-1 rounded-lg text-center transition-all cursor-pointer ${
+                      isFilled 
+                        ? 'bg-brand-600 dark:bg-brand-500 text-white font-bold shadow-xs' 
+                        : 'bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-500 hover:bg-slate-200 font-medium'
+                    }">
+                      <div class="text-[11px] leading-tight font-mono font-bold">${lvl.code}</div>
+                      <div class="text-[8.5px] leading-tight opacity-80 font-sans tracking-tight">≈ ${lvl.cefr}</div>
+                    </button>
+                  `;
+                }).join('')}
+              </div>
+              <div class="flex items-center justify-between text-[10px] text-slate-400 font-mono px-0.5">
+                <span>N5 (Basic)</span>
+                <span class="text-brand-600 dark:text-brand-400 font-medium">JLPT (CEFR Equivalent)</span>
+                <span>N1 (Fluent)</span>
+              </div>
+            </div>
+          `;
+        } else {
+          let activeIndex = 1;
+          if (norm === 'A1') activeIndex = 1;
+          else if (norm === 'A2') activeIndex = 2;
+          else if (norm === 'B1') activeIndex = 3;
+          else if (norm === 'B2') activeIndex = 4;
+          else if (norm === 'C1') activeIndex = 5;
+          else if (norm === 'C2' || norm.includes('NATIVE') || norm.includes('BILINGUAL')) activeIndex = 6;
+
+          segmentedPreview = `
+            <div class="space-y-1">
+              <div class="grid grid-cols-6 gap-1.5">
+                ${cefrLevels.map((lvl, lIdx) => {
+                  const isFilled = (lIdx + 1) <= activeIndex;
+                  return `
+                    <button type="button" onclick="setLanguageLevel(${idx}, '${lvl.code}')" title="Set to ${lvl.code} (${lvl.name})" class="py-1 px-0.5 rounded-lg text-center transition-all cursor-pointer ${
+                      isFilled 
+                        ? 'bg-brand-600 dark:bg-brand-500 text-white font-bold shadow-xs' 
+                        : 'bg-slate-100 dark:bg-slate-800 text-slate-400 dark:text-slate-500 hover:bg-slate-200 font-medium'
+                    }">
+                      <div class="text-[11px] leading-tight font-mono font-bold">${lvl.code}</div>
+                      <div class="text-[8.5px] leading-tight opacity-80 font-sans truncate">${lvl.name}</div>
+                    </button>
+                  `;
+                }).join('')}
+              </div>
+              <div class="flex items-center justify-between text-[10px] text-slate-400 font-mono px-0.5">
+                <span>A1 (Basic)</span>
+                <span class="text-brand-600 dark:text-brand-400 font-medium">CEFR Framework</span>
+                <span>C2 (Mastery)</span>
+              </div>
+            </div>
+          `;
+        }
+
+        const card = document.createElement('div');
+        card.className = "p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/80 space-y-3";
+        card.innerHTML = `
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 flex-1">
+              <div>
+                <label class="block text-[11px] font-semibold text-slate-500 dark:text-slate-400 mb-0.5">Language</label>
+                <input type="text" value="${lang.name || ''}" placeholder="e.g. Japanese" onchange="updateLanguageProp(${idx}, 'name', this.value)" class="w-full px-2.5 py-1.5 rounded-lg text-xs font-bold bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white">
+              </div>
+              <div>
+                <label class="block text-[11px] font-semibold text-slate-500 dark:text-slate-400 mb-0.5">Native Name / Script</label>
+                <input type="text" value="${lang.nativeName || ''}" placeholder="e.g. 日本語 or Català" onchange="updateLanguageProp(${idx}, 'nativeName', this.value)" class="w-full px-2.5 py-1.5 rounded-lg text-xs font-mono bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white">
+              </div>
+              <div>
+                <label class="block text-[11px] font-semibold text-slate-500 dark:text-slate-400 mb-0.5">Scale / Framework</label>
+                <select onchange="changeLanguageFramework(${idx}, this.value)" class="w-full px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white">
+                  <option value="CEFR" ${lang.framework === 'CEFR' ? 'selected' : ''}>CEFR (A1–C2)</option>
+                  <option value="JLPT" ${lang.framework === 'JLPT' ? 'selected' : ''}>Japanese JLPT (N5–N1)</option>
+                </select>
+              </div>
+            </div>
+            <div class="flex items-center gap-2 self-end sm:self-center">
+              <div>
+                <label class="block text-[11px] font-semibold text-slate-500 dark:text-slate-400 mb-0.5">Proficiency Level</label>
+                <select onchange="setLanguageLevel(${idx}, this.value)" class="px-2.5 py-1.5 rounded-lg text-xs font-mono font-bold bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white">
+                  ${isJapanese ? `
+                    <option value="N5" ${norm === 'N5' ? 'selected' : ''}>N5 (≈ A1 Basic)</option>
+                    <option value="N4" ${norm === 'N4' ? 'selected' : ''}>N4 (≈ A2 Elementary)</option>
+                    <option value="N3" ${norm === 'N3' ? 'selected' : ''}>N3 (≈ B1 Intermediate)</option>
+                    <option value="N2" ${norm === 'N2' ? 'selected' : ''}>N2 (≈ B2 Upper Intermediate)</option>
+                    <option value="N1" ${norm === 'N1' ? 'selected' : ''}>N1 (≈ C1+ Advanced/Fluent)</option>
+                  ` : `
+                    <option value="A1" ${norm === 'A1' ? 'selected' : ''}>A1 (Breakthrough)</option>
+                    <option value="A2" ${norm === 'A2' ? 'selected' : ''}>A2 (Waystage)</option>
+                    <option value="B1" ${norm === 'B1' ? 'selected' : ''}>B1 (Threshold)</option>
+                    <option value="B2" ${norm === 'B2' ? 'selected' : ''}>B2 (Vantage)</option>
+                    <option value="C1" ${norm === 'C1' ? 'selected' : ''}>C1 (Operational)</option>
+                    <option value="C2" ${norm === 'C2' ? 'selected' : ''}>C2 (Mastery / Native)</option>
+                  `}
+                </select>
+              </div>
+              <button type="button" onclick="deleteLanguageGui(${idx})" title="Delete language" class="mt-4 p-2 text-slate-400 hover:text-rose-500 transition">✕</button>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-500 dark:text-slate-400 mb-0.5">Descriptor Badge</label>
+              <input type="text" value="${lang.descriptor || ''}" placeholder="e.g. Native / Bilingual or Full Professional" onchange="updateLanguageProp(${idx}, 'descriptor', this.value)" class="w-full px-2.5 py-1.5 rounded-lg text-xs bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white">
+            </div>
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-500 dark:text-slate-400 mb-0.5">Context / Usage Notes</label>
+              <input type="text" value="${lang.description || ''}" placeholder="e.g. Academic, research, international conference fluency..." onchange="updateLanguageProp(${idx}, 'description', this.value)" class="w-full px-2.5 py-1.5 rounded-lg text-xs bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white">
+            </div>
+          </div>
+
+          <div class="pt-1">
+            <span class="text-[10px] font-semibold uppercase tracking-wider text-slate-400 block mb-1">Interactive Segmented Progress Bar (Click segments to set level):</span>
+            ${segmentedPreview}
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function addLanguageGui() {
+      if (!currentData.languages) currentData.languages = [];
+      currentData.languages.push({
+        name: 'New Language',
+        nativeName: '',
+        framework: 'CEFR',
+        level: 'B1',
+        descriptor: 'Intermediate',
+        description: ''
+      });
+      renderLanguagesGui();
+    }
+
+    function deleteLanguageGui(idx) {
+      if (confirm(`Delete "${currentData.languages[idx].name || 'this language'}"?`)) {
+        currentData.languages.splice(idx, 1);
+        renderLanguagesGui();
+      }
+    }
+
+    function updateLanguageProp(idx, prop, val) {
+      if (!currentData.languages || !currentData.languages[idx]) return;
+      currentData.languages[idx][prop] = val;
+    }
+
+    function changeLanguageFramework(idx, framework) {
+      if (!currentData.languages || !currentData.languages[idx]) return;
+      currentData.languages[idx].framework = framework;
+      if (framework === 'JLPT') {
+        currentData.languages[idx].level = 'N5';
+        if (!currentData.languages[idx].descriptor) currentData.languages[idx].descriptor = 'Introductory / Basic (JLPT N5 ≈ CEFR A1)';
+      } else {
+        currentData.languages[idx].level = 'B1';
+        if (!currentData.languages[idx].descriptor) currentData.languages[idx].descriptor = 'Intermediate';
+      }
+      renderLanguagesGui();
+    }
+
+    function setLanguageLevel(idx, level) {
+      if (!currentData.languages || !currentData.languages[idx]) return;
+      currentData.languages[idx].level = level;
+      renderLanguagesGui();
     }
 
     function renderItems() {

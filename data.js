@@ -1,7 +1,7 @@
 /**
  * AUTO-GENERATED FILE — DO NOT EDIT DIRECTLY.
  * Generated from data.json via scripts/update-data.js
- * Last generated: 2026-10-22T12:34:53.712Z
+ * Last generated: 2026-10-22T12:56:38.088Z
  * 
  * Exposes window.CV_DEFAULT_DATA for instant 0ms first-paint
  * and offline / file:// protocol compatibility.
@@ -158,6 +158,56 @@ window.CV_DEFAULT_DATA = {
       }
     ]
   },
+  "languages": [
+    {
+      "name": "Catalan",
+      "nativeName": "Català",
+      "framework": "CEFR",
+      "level": "C2",
+      "descriptor": "Native / Bilingual",
+      "description": "Native language with full bilingual fluency in educational, administrative, and creative contexts."
+    },
+    {
+      "name": "Spanish",
+      "nativeName": "Español",
+      "framework": "CEFR",
+      "level": "C2",
+      "descriptor": "Native / Bilingual",
+      "description": "Native language with complete proficiency across academic, professional, and scientific communication."
+    },
+    {
+      "name": "English",
+      "nativeName": "English",
+      "framework": "CEFR",
+      "level": "C2",
+      "descriptor": "Mastery / Full Professional",
+      "description": "Full academic and research fluency (C2). Teaching assistant, international conference speaker, and scientific author."
+    },
+    {
+      "name": "Dutch",
+      "nativeName": "Nederlands",
+      "framework": "CEFR",
+      "level": "B2",
+      "descriptor": "Upper Intermediate / Vantage",
+      "description": "Professional working proficiency living and studying at Maastricht University in the Netherlands."
+    },
+    {
+      "name": "French",
+      "nativeName": "Français",
+      "framework": "CEFR",
+      "level": "A2",
+      "descriptor": "Elementary / Waystage",
+      "description": "Basic conversational ability, reading comprehension, and everyday vocabulary."
+    },
+    {
+      "name": "Japanese",
+      "nativeName": "日本語",
+      "framework": "JLPT",
+      "level": "N5",
+      "descriptor": "Introductory / Basic (JLPT N5 ≈ CEFR A1)",
+      "description": "Basic kanji, hiragana, katakana, and elementary daily conversational phrases."
+    }
+  ],
   "items": [
     {
       "id": "work-um-lab-ta",
