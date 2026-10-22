@@ -98,6 +98,18 @@ function validateData(data) {
     if (data.skills.soft) checkSkills(data.skills.soft, 'soft');
   }
 
+  // Languages validation
+  if (data.languages) {
+    if (!Array.isArray(data.languages)) {
+      issues.push('"languages" must be an array.');
+    } else {
+      data.languages.forEach((lang, idx) => {
+        if (!lang.name) issues.push(`languages[${idx}] missing "name".`);
+        if (!lang.level) issues.push(`languages[${idx}] ("${lang.name || idx}") missing "level".`);
+      });
+    }
+  }
+
   // Items validation
   if (!Array.isArray(data.items)) {
     issues.push('Missing or invalid "items" array.');
@@ -281,12 +293,14 @@ function runUpdate(options = {}) {
   // Print Summary Stats
   const hardSkillsCount = parsedData.skills?.hard?.length || 0;
   const softSkillsCount = parsedData.skills?.soft?.length || 0;
+  const languagesCount = parsedData.languages?.length || 0;
   const itemsCount = parsedData.items?.length || 0;
   const palette = parsedData.theme?.palette || 'default';
 
   log(`${colors.dim}  • Profile: ${colors.bold}${parsedData.profile?.name}${colors.reset}${colors.dim} (${parsedData.profile?.title})`);
   log(`${colors.dim}  • Theme Palette: ${colors.bold}${palette}${colors.reset}`);
   log(`${colors.dim}  • Skills: ${colors.bold}${hardSkillsCount}${colors.reset}${colors.dim} hard, ${colors.bold}${softSkillsCount}${colors.reset}${colors.dim} soft`);
+  log(`${colors.dim}  • Languages: ${colors.bold}${languagesCount}${colors.reset}${colors.dim} language entries (CEFR / JLPT segmented bars)`);
   log(`${colors.dim}  • CV Items: ${colors.bold}${itemsCount}${colors.reset}${colors.dim} total entries`);
   log(`${colors.green}✔ All data successfully synchronized!${colors.reset}\n`);
 

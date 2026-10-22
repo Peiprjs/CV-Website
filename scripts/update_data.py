@@ -92,6 +92,17 @@ def validate_data(data):
         if 'hard' in skills: check_skills(skills['hard'], 'hard')
         if 'soft' in skills: check_skills(skills['soft'], 'soft')
 
+    languages = data.get('languages')
+    if languages is not None:
+        if not isinstance(languages, list):
+            issues.append('"languages" must be a list.')
+        else:
+            for idx, lang in enumerate(languages):
+                if not lang.get('name'):
+                    issues.append(f'languages[{idx}] missing "name".')
+                if not lang.get('level'):
+                    issues.append(f'languages[{idx}] ("{lang.get("name") or idx}") missing "level".')
+
     items = data.get('items')
     if not isinstance(items, list):
         issues.append('Missing or invalid "items" array.')
@@ -235,6 +246,7 @@ def run_update(validate_only=False, is_watch=False):
     skills = data.get('skills', {})
     hard_cnt = len(skills.get('hard', []))
     soft_cnt = len(skills.get('soft', []))
+    languages_cnt = len(data.get('languages', []))
     items_cnt = len(data.get('items', []))
     palette = data.get('theme', {}).get('palette', 'default')
     profile = data.get('profile', {})
@@ -242,6 +254,7 @@ def run_update(validate_only=False, is_watch=False):
     log(f"{DIM}  • Profile: {BOLD}{profile.get('name')}{RESET}{DIM} ({profile.get('title')})")
     log(f"{DIM}  • Theme Palette: {BOLD}{palette}{RESET}")
     log(f"{DIM}  • Skills: {BOLD}{hard_cnt}{RESET}{DIM} hard, {BOLD}{soft_cnt}{RESET}{DIM} soft")
+    log(f"{DIM}  • Languages: {BOLD}{languages_cnt}{RESET}{DIM} language entries (CEFR / JLPT segmented bars)")
     log(f"{DIM}  • CV Items: {BOLD}{items_cnt}{RESET}{DIM} total entries")
     log(f"{GREEN}✔ All data successfully synchronized!{RESET}\n")
     return True
