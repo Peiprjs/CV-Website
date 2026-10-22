@@ -236,6 +236,46 @@
 
     </section>
 
+    <!-- MOBILE SKILLS SECTION (5-Dot Indicators: Hard & Soft distinction) -->
+    <section id="skills-section" class="rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 p-4 shadow-sm space-y-3 transition-colors">
+      <div class="flex items-center justify-between pb-2 border-b border-slate-100 dark:border-slate-800">
+        <div>
+          <span class="text-[10px] font-bold uppercase tracking-wider text-brand-600 dark:text-brand-400">Competency Matrix</span>
+          <h2 class="text-sm font-extrabold text-slate-900 dark:text-white">Core Skills & Expertise</h2>
+        </div>
+        <div class="flex items-center gap-1.5 text-[10px] font-mono text-slate-400">
+          <span class="w-2 h-2 rounded-full bg-brand-500 inline-block"></span>
+          <span>1–5 scale</span>
+        </div>
+      </div>
+
+      <!-- Segmented Hard vs Soft Tab Switcher -->
+      <div class="grid grid-cols-2 p-1 rounded-xl bg-slate-100 dark:bg-slate-800 text-xs font-semibold text-center">
+        <button type="button" id="tab-hard-skills" onclick="switchMobileSkillsTab('hard')" class="py-1.5 rounded-lg bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-xs transition">
+          Hard Skills (<span id="hard-skills-count">0</span>)
+        </button>
+        <button type="button" id="tab-soft-skills" onclick="switchMobileSkillsTab('soft')" class="py-1.5 rounded-lg text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition">
+          Soft Skills (<span id="soft-skills-count">0</span>)
+        </button>
+      </div>
+
+      <!-- Hard Skills List -->
+      <div id="hard-skills-panel" class="space-y-1.5">
+        <p class="text-[11px] text-slate-400 pb-1">Technical engineering, systems architecture & AI</p>
+        <div id="hard-skills-list" class="space-y-1.5">
+          <!-- Dynamically populated -->
+        </div>
+      </div>
+
+      <!-- Soft Skills List -->
+      <div id="soft-skills-panel" class="hidden space-y-1.5">
+        <p class="text-[11px] text-slate-400 pb-1">Leadership, team orchestration & communication</p>
+        <div id="soft-skills-list" class="space-y-1.5">
+          <!-- Dynamically populated -->
+        </div>
+      </div>
+    </section>
+
     <!-- MOBILE STICKY FILTER BAR -->
     <section id="mobile-filter-bar" class="sticky top-14 z-30 py-2.5 -mx-4 px-4 bg-slate-50/95 dark:bg-slate-950/95 backdrop-blur-md border-y border-slate-200 dark:border-slate-800 space-y-2">
       
@@ -391,10 +431,111 @@
     };
     const CATEGORY_ORDER = ['work', 'projects', 'learning', 'certifications', 'volunteering', 'hobbies'];
 
+    const DEFAULT_SKILLS = {
+      hard: [
+        { name: "Distributed Systems & Consensus", level: 5, tag: "Architecture" },
+        { name: "Python, PyTorch & vLLM", level: 5, tag: "AI / ML" },
+        { name: "Rust & Low-Level Systems", level: 4, tag: "Systems" },
+        { name: "Kubernetes, Docker & Istio", level: 5, tag: "Cloud & DevOps" },
+        { name: "LLM Inference & Agentic Runtimes", level: 5, tag: "AI Systems" },
+        { name: "Kafka & Event Streaming", level: 4, tag: "Data Pipelines" },
+        { name: "Vector Databases (HNSW, FAISS)", level: 4, tag: "Information Retrieval" },
+        { name: "Linux Internals, C++ & SIMD", level: 4, tag: "Performance" },
+        { name: "TypeScript, WebAssembly & Canvas", level: 4, tag: "Web & Tooling" },
+        { name: "Formal Verification & Protocol Design", level: 3, tag: "Research" }
+      ],
+      soft: [
+        { name: "Technical Leadership & Architecture Strategy", level: 5, tag: "Leadership" },
+        { name: "Engineering Mentorship & Talent Growth", level: 5, tag: "People" },
+        { name: "Cross-Functional Product Collaboration", level: 4, tag: "Communication" },
+        { name: "Conference Speaking & Technical Writing", level: 4, tag: "Advocacy" },
+        { name: "High-Pressure Incident Management & Blameless Post-Mortems", level: 5, tag: "Reliability" },
+        { name: "Open-Source Community Building & Diversity Initiatives", level: 5, tag: "Community" }
+      ]
+    };
+
+    function switchMobileSkillsTab(tab) {
+      const hardTab = document.getElementById('tab-hard-skills');
+      const softTab = document.getElementById('tab-soft-skills');
+      const hardPanel = document.getElementById('hard-skills-panel');
+      const softPanel = document.getElementById('soft-skills-panel');
+      if (tab === 'hard') {
+        hardTab.className = "py-1.5 rounded-lg bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-xs transition";
+        softTab.className = "py-1.5 rounded-lg text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition";
+        hardPanel.classList.remove('hidden');
+        softPanel.classList.add('hidden');
+      } else {
+        softTab.className = "py-1.5 rounded-lg bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-xs transition";
+        hardTab.className = "py-1.5 rounded-lg text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition";
+        softPanel.classList.remove('hidden');
+        hardPanel.classList.add('hidden');
+      }
+    }
+
+    function renderSkills(skillsData) {
+      if (!skillsData) return;
+      const hardContainer = document.getElementById('hard-skills-list');
+      const softContainer = document.getElementById('soft-skills-list');
+      const hardCountEl = document.getElementById('hard-skills-count');
+      const softCountEl = document.getElementById('soft-skills-count');
+
+      function render5Dots(level) {
+        let dots = '';
+        for (let i = 1; i <= 5; i++) {
+          if (i <= level) {
+            dots += `<span class="w-2 h-2 rounded-full bg-brand-500 inline-block shadow-xs"></span>`;
+          } else {
+            dots += `<span class="w-2 h-2 rounded-full bg-slate-200 dark:bg-slate-700 inline-block"></span>`;
+          }
+        }
+        return `
+          <div class="flex items-center gap-1" title="Proficiency: ${level} of 5" aria-label="${level} out of 5">
+            ${dots}
+            <span class="text-[10px] font-mono text-slate-400 dark:text-slate-500 ml-1 w-5 text-right">${level}/5</span>
+          </div>
+        `;
+      }
+
+      if (hardContainer && Array.isArray(skillsData.hard)) {
+        if (hardCountEl) hardCountEl.textContent = skillsData.hard.length;
+        hardContainer.innerHTML = skillsData.hard.map(s => `
+          <div class="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-800 flex items-center justify-between gap-2">
+            <div class="min-w-0 flex items-center gap-1.5">
+              <span class="text-xs font-semibold text-slate-800 dark:text-slate-200 truncate">${s.name}</span>
+              ${s.tag ? `<span class="text-[9px] font-mono px-1.5 py-0.5 rounded bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-500 shrink-0">#${s.tag}</span>` : ''}
+            </div>
+            <div class="shrink-0">
+              ${render5Dots(s.level)}
+            </div>
+          </div>
+        `).join('');
+      }
+
+      if (softContainer && Array.isArray(skillsData.soft)) {
+        if (softCountEl) softCountEl.textContent = skillsData.soft.length;
+        softContainer.innerHTML = skillsData.soft.map(s => `
+          <div class="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-800 flex items-center justify-between gap-2">
+            <div class="min-w-0 flex items-center gap-1.5">
+              <span class="text-xs font-semibold text-slate-800 dark:text-slate-200 truncate">${s.name}</span>
+              ${s.tag ? `<span class="text-[9px] font-mono px-1.5 py-0.5 rounded bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-500 shrink-0">#${s.tag}</span>` : ''}
+            </div>
+            <div class="shrink-0">
+              ${render5Dots(s.level)}
+            </div>
+          </div>
+        `).join('');
+      }
+    }
+
     function applyData(data) {
       if (data.theme) applyPalette(data.theme.palette);
       if (data.profile) renderProfile(data.profile);
       if (Array.isArray(data.items)) CV_DATA = data.items;
+      if (data.skills) {
+        renderSkills(data.skills);
+      } else {
+        renderSkills(DEFAULT_SKILLS);
+      }
       renderMobileCategoryTabs();
       updateCategoryCounts();
       renderCV();

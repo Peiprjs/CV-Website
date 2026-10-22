@@ -52,6 +52,26 @@
       "badge": "Hobbies"
     }
   },
+  "skills": {
+    "hard": [
+      { "name": "Python & Bio-Image Informatics", "level": 5, "tag": "Bioinformatics" },
+      { "name": "Genomics Data Pipelines (TCGA, NGS)", "level": 4, "tag": "Genomics" },
+      { "name": "Laboratory Wet-Lab Techniques & Protocols", "level": 4, "tag": "Wet Lab" },
+      { "name": "Multi-Agent AI Pipelines (CrewAI & Local LLMs)", "level": 4, "tag": "AI Systems" },
+      { "name": "JavaScript, Node.js & Browser Extensions", "level": 5, "tag": "Software Dev" },
+      { "name": "Image Processing & Cell Migration Assays", "level": 4, "tag": "Image Analysis" },
+      { "name": "Linux Systems & Cloud Infrastructure", "level": 4, "tag": "Systems" },
+      { "name": "Embedded Hardware & IoT (Raspberry Pi)", "level": 3, "tag": "Hardware" }
+    ],
+    "soft": [
+      { "name": "Academic Governance & Faculty Representation", "level": 5, "tag": "Governance" },
+      { "name": "Educational Leadership & Teaching Assistance", "level": 5, "tag": "Education" },
+      { "name": "Hackathon Management & Event Orchestration", "level": 5, "tag": "Management" },
+      { "name": "Scientific Protocol Writing & Documentation", "level": 4, "tag": "Communication" },
+      { "name": "Cross-Functional Research Collaboration", "level": 4, "tag": "Teamwork" },
+      { "name": "Student Advocacy & Educational Quality Assurance", "level": 5, "tag": "Advocacy" }
+    ]
+  },
   "items": [
     {
       "id": "work-um-lab-ta",

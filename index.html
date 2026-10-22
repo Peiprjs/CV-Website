@@ -340,6 +340,65 @@
       </div>
     </section>
 
+    <!-- SKILLS SHOWCASE SECTION (5-Dot Indicators with Hard & Soft distinction) -->
+    <section id="skills-section" class="rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 p-6 sm:p-8 lg:p-10 shadow-sm transition-colors">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-6 border-b border-slate-200 dark:border-slate-800 gap-3">
+        <div>
+          <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-brand-100 dark:bg-brand-950 text-brand-700 dark:text-brand-300 mb-1">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138z"/></svg>
+            Competency Matrix
+          </div>
+          <h2 class="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">Core Skills & Expertise</h2>
+          <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-0.5">Assessed on a 5-dot proficiency scale, with a clear distinction between Technical Hard Skills and Leadership Soft Skills.</p>
+        </div>
+        <div class="flex items-center gap-3 self-start sm:self-auto text-xs font-mono text-slate-500 dark:text-slate-400 bg-slate-50 dark:bg-slate-800/60 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700">
+          <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-brand-500 shadow-sm shadow-brand-500/30 inline-block"></span> Proficient</span>
+          <span class="text-slate-300 dark:text-slate-700">|</span>
+          <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-slate-200 dark:bg-slate-700 inline-block"></span> Familiar</span>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 pt-6">
+        <!-- Hard Skills Column -->
+        <div class="space-y-4">
+          <div class="flex items-center justify-between pb-2 border-b border-slate-100 dark:border-slate-800">
+            <div class="flex items-center gap-2">
+              <span class="p-1.5 rounded-lg bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
+              </span>
+              <div>
+                <h3 class="text-base font-bold text-slate-900 dark:text-white">Hard Skills</h3>
+                <span class="text-[11px] text-slate-400">Technical engineering, systems architecture & AI</span>
+              </div>
+            </div>
+            <span id="hard-skills-count" class="text-xs font-mono font-medium text-slate-500 px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800">0 skills</span>
+          </div>
+          <div id="hard-skills-list" class="space-y-2">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+
+        <!-- Soft Skills Column -->
+        <div class="space-y-4">
+          <div class="flex items-center justify-between pb-2 border-b border-slate-100 dark:border-slate-800">
+            <div class="flex items-center gap-2">
+              <span class="p-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+              </span>
+              <div>
+                <h3 class="text-base font-bold text-slate-900 dark:text-white">Soft Skills</h3>
+                <span class="text-[11px] text-slate-400">Leadership, team orchestration & communication</span>
+              </div>
+            </div>
+            <span id="soft-skills-count" class="text-xs font-mono font-medium text-slate-500 px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800">0 skills</span>
+          </div>
+          <div id="soft-skills-list" class="space-y-2">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- STICKY CONTROL & FILTER PANEL -->
     <section id="filter-controls" class="sticky top-16 z-30 py-3 bg-slate-50/90 dark:bg-slate-950/90 backdrop-blur-md border-y border-slate-200 dark:border-slate-800 transition-colors">
       <div class="space-y-3">
@@ -956,6 +1015,28 @@
         volunteering: { title: "Community & Volunteering", badge: "Volunteering" },
         hobbies: { title: "Interests & Pursuits", badge: "Hobbies" }
       },
+      skills: {
+        hard: [
+          { name: "Distributed Systems & Consensus", level: 5, tag: "Architecture" },
+          { name: "Python, PyTorch & vLLM", level: 5, tag: "AI / ML" },
+          { name: "Rust & Low-Level Systems", level: 4, tag: "Systems" },
+          { name: "Kubernetes, Docker & Istio", level: 5, tag: "Cloud & DevOps" },
+          { name: "LLM Inference & Agentic Runtimes", level: 5, tag: "AI Systems" },
+          { name: "Kafka & Event Streaming", level: 4, tag: "Data Pipelines" },
+          { name: "Vector Databases (HNSW, FAISS)", level: 4, tag: "Information Retrieval" },
+          { name: "Linux Internals, C++ & SIMD", level: 4, tag: "Performance" },
+          { name: "TypeScript, WebAssembly & Canvas", level: 4, tag: "Web & Tooling" },
+          { name: "Formal Verification & Protocol Design", level: 3, tag: "Research" }
+        ],
+        soft: [
+          { name: "Technical Leadership & Architecture Strategy", level: 5, tag: "Leadership" },
+          { name: "Engineering Mentorship & Talent Growth", level: 5, tag: "People" },
+          { name: "Cross-Functional Product Collaboration", level: 4, tag: "Communication" },
+          { name: "Conference Speaking & Technical Writing", level: 4, tag: "Advocacy" },
+          { name: "High-Pressure Incident Management & Blameless Post-Mortems", level: 5, tag: "Reliability" },
+          { name: "Open-Source Community Building & Diversity Initiatives", level: 5, tag: "Community" }
+        ]
+      },
       items: [
         {
           id: "work-staff-ai-systems",
@@ -1222,11 +1303,76 @@
         editor.value = JSON.stringify(config, null, 2);
       }
 
-      // 7. Refresh Navigation, Tally Counts, Modal Checklist, and Cards
+      // 7. Render Skills
+      if (config.skills) {
+        renderSkills(config.skills);
+      } else if (FALLBACK_DEFAULT_DATA.skills) {
+        renderSkills(FALLBACK_DEFAULT_DATA.skills);
+      }
+
+      // 8. Refresh Navigation, Tally Counts, Modal Checklist, and Cards
       renderCategoryTabs();
       updateCategoryCounts();
       initModalChecklist();
       renderCV();
+    }
+
+    /**
+     * Render Skills with 5-dot proficiency indicators (Soft vs Hard)
+     */
+    function renderSkills(skillsData) {
+      if (!skillsData) return;
+      const hardContainer = document.getElementById('hard-skills-list');
+      const softContainer = document.getElementById('soft-skills-list');
+      const hardCountEl = document.getElementById('hard-skills-count');
+      const softCountEl = document.getElementById('soft-skills-count');
+
+      function render5Dots(level) {
+        let dots = '';
+        for (let i = 1; i <= 5; i++) {
+          if (i <= level) {
+            dots += `<span class="w-2.5 h-2.5 rounded-full bg-brand-500 shadow-sm shadow-brand-500/30 inline-block transition-transform group-hover:scale-110"></span>`;
+          } else {
+            dots += `<span class="w-2.5 h-2.5 rounded-full bg-slate-200 dark:bg-slate-700/80 inline-block"></span>`;
+          }
+        }
+        return `
+          <div class="flex items-center gap-1.5" title="Proficiency: ${level} of 5" aria-label="${level} out of 5">
+            ${dots}
+            <span class="text-[11px] font-mono text-slate-400 dark:text-slate-500 ml-1.5 w-6 text-right">${level}/5</span>
+          </div>
+        `;
+      }
+
+      if (hardContainer && Array.isArray(skillsData.hard)) {
+        if (hardCountEl) hardCountEl.textContent = `${skillsData.hard.length} skills`;
+        hardContainer.innerHTML = skillsData.hard.map(s => `
+          <div class="group p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-800 flex items-center justify-between gap-3 hover:border-slate-300 dark:hover:border-slate-700 hover:bg-white dark:hover:bg-slate-800 transition">
+            <div class="flex items-center gap-2 min-w-0">
+              <span class="text-xs font-bold text-slate-800 dark:text-slate-200 truncate">${s.name}</span>
+              ${s.tag ? `<span class="text-[10px] font-mono px-2 py-0.5 rounded-md bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-500 shrink-0">#${s.tag}</span>` : ''}
+            </div>
+            <div class="shrink-0">
+              ${render5Dots(s.level)}
+            </div>
+          </div>
+        `).join('');
+      }
+
+      if (softContainer && Array.isArray(skillsData.soft)) {
+        if (softCountEl) softCountEl.textContent = `${skillsData.soft.length} skills`;
+        softContainer.innerHTML = skillsData.soft.map(s => `
+          <div class="group p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-800 flex items-center justify-between gap-3 hover:border-slate-300 dark:hover:border-slate-700 hover:bg-white dark:hover:bg-slate-800 transition">
+            <div class="flex items-center gap-2 min-w-0">
+              <span class="text-xs font-bold text-slate-800 dark:text-slate-200 truncate">${s.name}</span>
+              ${s.tag ? `<span class="text-[10px] font-mono px-2 py-0.5 rounded-md bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-slate-500 shrink-0">#${s.tag}</span>` : ''}
+            </div>
+            <div class="shrink-0">
+              ${render5Dots(s.level)}
+            </div>
+          </div>
+        `).join('');
+      }
     }
 
     /**

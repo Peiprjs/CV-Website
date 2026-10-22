@@ -73,6 +73,31 @@ Entries in [`data.json`](file:///home/peipr/gits/new_website/data.json) under `i
 
 ---
 
+### 3. Customizing Skills Matrix (Hard & Soft Skills)
+Skills are rated on an accessible 5-dot visual scale (`● ● ● ● ○`), with a clear architectural distinction between technical **Hard Skills** and leadership/interpersonal **Soft Skills**:
+
+```json
+{
+  "skills": {
+    "hard": [
+      { "name": "Distributed Systems & Consensus", "level": 5, "tag": "Architecture" },
+      { "name": "Python, PyTorch & vLLM", "level": 5, "tag": "AI / ML" },
+      { "name": "Rust & Low-Level Systems", "level": 4, "tag": "Systems" }
+    ],
+    "soft": [
+      { "name": "Technical Leadership & Architecture Strategy", "level": 5, "tag": "Leadership" },
+      { "name": "Engineering Mentorship & Talent Growth", "level": 5, "tag": "People" },
+      { "name": "Cross-Functional Product Collaboration", "level": 4, "tag": "Communication" }
+    ]
+  }
+}
+```
+- `name`: Competency title.
+- `level`: Integer from `1` to `5` controlling the filled 5-dot visual indicators. The active color palette (`theme.palette` or live switcher) dynamically themes the filled dots.
+- `tag`: Optional domain or specialty chip (e.g., `#Architecture`, `#Leadership`).
+
+---
+
 ## 🔗 Granular Link-Based Filtering
 
 - **URL Parameter Engine:**
