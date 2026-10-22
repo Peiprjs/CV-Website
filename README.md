@@ -1,91 +1,131 @@
 # Interactive CV & Portfolio Web Application
 
-A modern, responsive, single-page interactive CV and portfolio web application built with **HTML5**, **Tailwind CSS (CDN)**, and **Vanilla JavaScript**. Designed for engineers, researchers, and technical leaders who need a fast, zero-dependency portfolio with granular link-based filtering.
+A modern, responsive, single-page interactive CV and portfolio web application built with **HTML5**, **Tailwind CSS (CDN)**, and **Vanilla JavaScript**. Designed for engineers, researchers, and technical leaders who need a fast, zero-dependency portfolio with JSON data customization and granular link-based filtering.
 
 ---
 
-## 🚀 Key Features
+## 🎨 JSON-Based Customization
 
-### 1. Centralized, Clean Data Store
-- All CV entries are stored in a single, well-documented JavaScript array (`CV_DATA`) at the top of the main script in [`index.html`](file:///home/peipr/gits/new_website/index.html).
-- Supports 6 distinct categories:
-  - `work` (Professional experience)
-  - `projects` (Key projects & technical builds)
-  - `learning` (Education & academic courses)
-  - `certifications` (Credentials & licenses)
-  - `volunteering` (Volunteer work & community involvement)
-  - `hobbies` (Personal interests & pursuits)
-- Each entry strictly implements the requested schema:
-  ```javascript
-  {
-    id: "work-staff-ai-systems",
-    category: "work",
-    title: "Staff AI Systems Engineer & Tech Lead",
-    organization: "Cerebral Systems Labs",
-    date: "2023 – Present",
-    location: "Zurich, CH / Hybrid",
-    description: "Leading the distributed systems team...",
-    tags: ["Python", "Rust", "Distributed Systems", "vLLM"],
-    featured: true,
-    link: "https://example.com"
+All website content, profile metadata, categories, and the accent color palette can be edited in [`data.json`](file:///home/peipr/gits/new_website/data.json).
+
+### 1. Changing the Colour Palette
+Open [`data.json`](file:///home/peipr/gits/new_website/data.json) and set the `theme.palette` property:
+
+```json
+{
+  "theme": {
+    "palette": "emerald"
   }
-  ```
+}
+```
 
-### 2. Granular Link-Based Filtering
-- **URL Parameter Engine:** The application reads search query parameters on load to display only the requested items or categories:
+#### Available Built-In Palettes:
+- `"indigo"` (Modern tech / AI aesthetic - Default)
+- `"emerald"` (Clean green / sustainable tech)
+- `"blue"` (Ocean / classic academic & corporate)
+- `"violet"` (Creative / modern purple)
+- `"rose"` (Bold crimson / ruby)
+- `"amber"` (Warm gold / energetic)
+- `"cyan"` (High-tech / cyber cyan)
+
+#### Custom Hex Palette:
+You can also set `palette` to any custom Hex code (e.g. `"#0284c7"`), or define precise custom shades:
+```json
+{
+  "theme": {
+    "palette": "#0ea5e9"
+  }
+}
+```
+The application dynamically computes the entire 50–950 tint and shade scale and applies it across all buttons, badges, gradients, and focus rings.
+
+You can also test palettes on the fly or via URL parameter (e.g. `?palette=emerald`).
+
+---
+
+### 2. Customizing CV Items
+Entries in [`data.json`](file:///home/peipr/gits/new_website/data.json) under `items` adhere to the clean schema:
+
+```json
+{
+  "id": "work-staff-ai-systems",
+  "category": "work",
+  "title": "Staff AI Systems Engineer & Tech Lead",
+  "organization": "Cerebral Systems Labs",
+  "date": "2023 – Present",
+  "location": "Zurich, CH / Hybrid",
+  "description": "Leading the distributed systems team...",
+  "tags": ["Python", "Rust", "Distributed Systems", "vLLM"],
+  "featured": true,
+  "link": "https://example.com"
+}
+```
+
+#### Categories Supported:
+1. `work` (Professional experience)
+2. `projects` (Key projects & technical builds)
+3. `learning` (Education & academic courses)
+4. `certifications` (Credentials & licenses)
+5. `volunteering` (Volunteer work & community involvement)
+6. `hobbies` (Personal interests & pursuits)
+
+---
+
+### 3. In-Browser Palette & JSON Modal
+In the top header, click **"Palette & JSON"** (or **"Theme"** on mobile) to:
+- Instantly switch between color palettes and see changes live.
+- Upload any `.json` file from your computer to preview new data immediately.
+- Inspect and tweak the JSON in the live in-browser editor and click **"Apply JSON Changes"**.
+- Download the current configuration as a new `data.json` file.
+
+---
+
+## 🔗 Granular Link-Based Filtering
+
+- **URL Parameter Engine:**
   - Filter by Categories: `?categories=work,projects`
   - Filter by Item IDs: `?ids=work-staff-ai-systems,project-omniagent-runtime`
-  - Filter by Recipient / Context: `?recipient=DeepMind&context=Staff+Research+Engineer`
-  - Filter by Tag: `?tag=Rust`
-  - Filter by Featured: `?featured=true`
-- **Tailored View Banner:** When filtered parameters are present in the URL, a prominent banner is automatically shown (e.g., *"Custom CV View for DeepMind (Staff Research Engineer)"*), with one-click buttons to adjust the selection or reset to the full CV.
+  - Tailored Recipient Banner: `?recipient=DeepMind&context=Staff+Research+Engineer`
+  - Tag & Featured Filters: `?tag=Rust`, `?featured=true`
+  - Palette Override: `?palette=emerald`
+- **Tailored View Banner:** Automatically activates when URL parameters are present, displaying a personalized header with quick buttons to modify filters or reset to the full CV.
 
-### 3. Dynamic "Share Custom View" Builder Modal
-- Click **"Share Custom View"** in the top navigation or banner to open the builder drawer/modal.
-- **Master category & individual item checklists:** Select or deselect specific roles, projects, and certifications.
-- **Quick Presets:** Instant 1-click presets:
-  - *Select All* / *Clear All*
-  - *★ Featured Only*
-  - *Code & Tech (Work + Projects)*
-  - *Research & Edu (Learning + Certifications)*
-  - *Leadership & Volunteering (Work + Volunteering)*
-- **Live URL Generator:** Dynamically compiles a clean, shareable URL with real-time copy button and instant clipboard feedback.
+---
 
-### 4. Tri-State Light / Dark / System Theme System
-- Smooth manual toggle in the header supporting **Light**, **Dark**, and **System** preference.
-- Saves preference to `localStorage`.
+## 🌓 Dark / Light / System Theme
+
+- Supports **Light**, **Dark**, and **System** preference.
+- Stored in `localStorage`.
 - Includes an early `<script>` in `<head>` to prevent Flash of Unstyled Content (FOUC).
-- Configured with Tailwind's `darkMode: 'class'` and updates native `<meta name="color-scheme">` for consistent scrollbars and browser controls.
+- Synchronizes with native `<meta name="color-scheme">` for browser controls and scrollbars.
 
-### 5. Print & PDF Export Optimized
+---
+
+## 🖨️ Print & PDF Export
+
 - Dedicated `@media print` stylesheet.
-- Strips interactive UI controls (search bars, theme switches, buttons, modals, toasts).
-- Formats cards with `page-break-inside: avoid` for clean, professional 1-2 page PDF export via the browser's print dialog.
-- Preserves the active filtered view so you can generate tailored PDFs for specific job applications.
+- Strips interactive controls (modals, search bars, theme toggles, buttons).
+- Formats cards with `page-break-inside: avoid` for clean, professional 1-2 page PDF export.
+- Preserves whatever customized selection is currently active on the page.
 
 ---
 
-## 🛠️ How to Customize
+## 🚀 Local Preview & GitHub Pages Deployment
 
-1. Open [`index.html`](file:///home/peipr/gits/new_website/index.html).
-2. Locate the `PROFILE_DATA` and `CV_DATA` array:
-   - Edit personal details (name, email, social links, metrics).
-   - Add, edit, or remove items from the `CV_DATA` array.
-3. Save the file. No build tools, Webpack, or npm dependencies are required.
+### Local Preview:
+```bash
+python3 -m http.server 8000
+```
+Open `http://localhost:8000/` in your browser.
 
----
-
-## 🌐 Instant GitHub Pages Deployment
-
+### Deploy to GitHub Pages:
 1. Push this repository to GitHub:
    ```bash
    git add .
-   git commit -m "feat: initial interactive CV release"
+   git commit -m "feat: customize content and palette via JSON"
    git push origin main
    ```
 2. In your GitHub repository:
    - Go to **Settings** > **Pages**.
-   - Under **Source**, choose **Deploy from a branch**.
-   - Select the `main` branch and `/ (root)` folder.
+   - Under **Source**, select **Deploy from a branch** (`main` / `/ (root)`).
    - Click **Save**.
-3. Your interactive CV will be live at `https://<your-username>.github.io/<repo-name>/`.

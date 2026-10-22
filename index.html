@@ -3,14 +3,31 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Interactive CV & Portfolio | Alex Morgan</title>
-  <meta name="description" content="Modern, responsive, single-page interactive CV and portfolio with granular link-based filtering and custom view generator.">
+  <title>Interactive CV & Portfolio</title>
+  <meta name="description" content="Modern, responsive, single-page interactive CV and portfolio with JSON data customization and granular link-based filtering.">
   <meta name="color-scheme" content="light dark">
 
   <!-- Google Fonts: Inter & JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <!-- Dynamic Palette CSS Variables -->
+  <style id="theme-palette-styles">
+    :root {
+      --brand-50: 238 242 255;
+      --brand-100: 224 231 255;
+      --brand-200: 199 210 254;
+      --brand-300: 165 180 252;
+      --brand-400: 129 140 248;
+      --brand-500: 99 102 241;
+      --brand-600: 79 70 229;
+      --brand-700: 67 56 202;
+      --brand-800: 55 48 163;
+      --brand-900: 49 46 129;
+      --brand-950: 30 27 75;
+    }
+  </style>
 
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -25,17 +42,17 @@
           },
           colors: {
             brand: {
-              50: '#eef2ff',
-              100: '#e0e7ff',
-              200: '#c7d2fe',
-              300: '#a5b4fc',
-              400: '#818cf8',
-              500: '#6366f1',
-              600: '#4f46e5',
-              700: '#4338ca',
-              800: '#3730a3',
-              900: '#312e81',
-              950: '#1e1b4b',
+              50: 'rgb(var(--brand-50) / <alpha-value>)',
+              100: 'rgb(var(--brand-100) / <alpha-value>)',
+              200: 'rgb(var(--brand-200) / <alpha-value>)',
+              300: 'rgb(var(--brand-300) / <alpha-value>)',
+              400: 'rgb(var(--brand-400) / <alpha-value>)',
+              500: 'rgb(var(--brand-500) / <alpha-value>)',
+              600: 'rgb(var(--brand-600) / <alpha-value>)',
+              700: 'rgb(var(--brand-700) / <alpha-value>)',
+              800: 'rgb(var(--brand-800) / <alpha-value>)',
+              900: 'rgb(var(--brand-900) / <alpha-value>)',
+              950: 'rgb(var(--brand-950) / <alpha-value>)',
             }
           }
         }
@@ -63,7 +80,7 @@
 
   <!-- Custom Styles & Print Stylesheet -->
   <style>
-    /* Smooth theme transitions */
+    /* Smooth transitions */
     body {
       transition: background-color 0.2s ease, color 0.2s ease;
     }
@@ -104,9 +121,10 @@
         font-size: 10pt;
       }
       .no-print,
-      header nav,
+      header,
       #filter-controls,
       #share-modal,
+      #customize-modal,
       #toast-container,
       .theme-toggle-btn,
       .action-btn,
@@ -128,18 +146,11 @@
         text-decoration: none !important;
         color: inherit !important;
       }
-      /* Clean card borders for print */
       .cv-card {
         border-color: #cbd5e1 !important;
         background: #ffffff !important;
         margin-bottom: 0.75rem !important;
         padding: 0.75rem !important;
-      }
-      /* Print Header layout */
-      .print-header {
-        border-bottom: 2px solid #0f172a;
-        padding-bottom: 12px;
-        margin-bottom: 16px;
       }
     }
   </style>
@@ -153,17 +164,27 @@
       
       <!-- Brand & Name -->
       <a href="#" class="flex items-center gap-3 group focus:outline-none focus:ring-2 focus:ring-brand-500 rounded-lg p-1" onclick="resetFilters(event)">
-        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-500 to-indigo-700 flex items-center justify-center text-white font-bold text-lg shadow-md shadow-brand-500/20 group-hover:scale-105 transition-transform">
+        <div id="header-avatar" class="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-500 to-brand-700 flex items-center justify-center text-white font-bold text-lg shadow-md shadow-brand-500/20 group-hover:scale-105 transition-transform">
           AM
         </div>
         <div>
-          <span class="font-bold text-slate-900 dark:text-white tracking-tight text-base sm:text-lg block leading-tight">Alex Morgan</span>
-          <span class="text-xs text-slate-500 dark:text-slate-400 font-mono tracking-wide">Interactive CV & Portfolio</span>
+          <span id="header-name" class="font-bold text-slate-900 dark:text-white tracking-tight text-base sm:text-lg block leading-tight">Alex Morgan</span>
+          <span id="header-subtitle" class="text-xs text-slate-500 dark:text-slate-400 font-mono tracking-wide">Interactive CV & Portfolio</span>
         </div>
       </a>
 
       <!-- Quick Actions -->
       <div class="flex items-center gap-2 sm:gap-3">
+
+        <!-- Customize & Palette Button -->
+        <button id="open-customize-btn" type="button" aria-label="Customize Palette and JSON" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:bg-slate-200 dark:hover:bg-slate-700 transition shadow-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+          <svg class="w-4 h-4 text-brand-600 dark:text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4 4.001 4.001 0 014-4h1a4 4 0 004-4V7a4 4 0 118 0v2a4 4 0 004 4h1a4 4 0 014 4 4 4 0 01-4 4H7z"/>
+          </svg>
+          <span class="hidden md:inline">Palette & JSON</span>
+          <span class="md:hidden">Theme</span>
+        </button>
+
         <!-- Share Custom View Button -->
         <button id="open-share-btn" type="button" aria-label="Share Custom View" class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-medium bg-brand-50 dark:bg-brand-950/60 text-brand-700 dark:text-brand-300 border border-brand-200 dark:border-brand-800/70 hover:bg-brand-100 dark:hover:bg-brand-900/50 hover:border-brand-300 dark:hover:border-brand-700 transition shadow-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
           <svg class="w-4 h-4 text-brand-600 dark:text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -178,7 +199,7 @@
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/>
           </svg>
-          <span class="hidden md:inline">Print / PDF</span>
+          <span class="hidden lg:inline">Print / PDF</span>
         </button>
 
         <!-- Theme Mode Switcher -->
@@ -229,8 +250,8 @@
 
   <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
 
-    <!-- CUSTOM FILTERED VIEW ALERT BANNER (Only shown when ?ids= or ?categories= or ?recipient= is present) -->
-    <div id="tailored-view-banner" class="hidden rounded-2xl bg-gradient-to-r from-brand-600/10 via-indigo-600/10 to-purple-600/10 border-2 border-brand-500/30 dark:border-brand-400/30 p-5 sm:p-6 shadow-sm transition-all">
+    <!-- CUSTOM FILTERED VIEW ALERT BANNER (Shown when ?ids= or ?categories= or ?recipient= is present) -->
+    <div id="tailored-view-banner" class="hidden rounded-2xl bg-gradient-to-r from-brand-500/10 via-brand-600/10 to-indigo-600/10 border-2 border-brand-500/30 dark:border-brand-400/30 p-5 sm:p-6 shadow-sm transition-all">
       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div class="space-y-1">
           <div class="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-brand-500 text-white tracking-wide uppercase">
@@ -265,68 +286,38 @@
         <!-- Left: Avatar & Intro -->
         <div class="flex-1 space-y-4">
           <div class="flex flex-wrap items-center gap-3">
-            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/60">
+            <span id="profile-badge-pill" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/60">
               <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-              Available for Staff/Lead Roles & Advisory
+              <span id="profile-status">Available for Staff/Lead Roles & Advisory</span>
             </span>
-            <span class="text-xs text-slate-500 dark:text-slate-400 font-mono flex items-center gap-1">
+            <span id="profile-location" class="text-xs text-slate-500 dark:text-slate-400 font-mono flex items-center gap-1">
               <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-              Zurich, Switzerland (Open to Remote)
+              <span>Zurich, Switzerland (Open to Remote)</span>
             </span>
           </div>
 
           <div>
             <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-              Alex Morgan, <span class="text-brand-600 dark:text-brand-400 text-2xl sm:text-3xl lg:text-4xl font-semibold">M.Sc.</span>
+              <span id="profile-name">Alex Morgan</span><span id="profile-suffix" class="text-brand-600 dark:text-brand-400 text-2xl sm:text-3xl lg:text-4xl font-semibold">, M.Sc.</span>
             </h1>
-            <p class="mt-2 text-lg sm:text-xl font-medium text-slate-600 dark:text-slate-300">
+            <p id="profile-title" class="mt-2 text-lg sm:text-xl font-medium text-slate-600 dark:text-slate-300">
               Senior AI Systems Engineer & Open Source Researcher
             </p>
           </div>
 
-          <p class="text-sm sm:text-base text-slate-600 dark:text-slate-400 max-w-3xl leading-relaxed">
+          <p id="profile-bio" class="text-sm sm:text-base text-slate-600 dark:text-slate-400 max-w-3xl leading-relaxed">
             Specializing in high-throughput distributed AI pipelines, autonomous agentic runtimes, and low-latency systems. Over 8 years of engineering experience bridging research prototypes into mission-critical cloud infrastructure. Active open-source maintainer and conference speaker.
           </p>
 
           <!-- Contact & Social Pills -->
-          <div class="flex flex-wrap items-center gap-2 pt-2 text-xs sm:text-sm">
-            <a href="mailto:alex.morgan@example.com" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition">
-              <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-              alex.morgan@example.com
-            </a>
-            <a href="https://github.com" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition">
-              <svg class="w-4 h-4 text-slate-500" fill="currentColor" viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
-              GitHub / alexmorgan
-            </a>
-            <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition">
-              <svg class="w-4 h-4 text-slate-500" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
-              LinkedIn
-            </a>
-            <a href="https://scholar.google.com" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition">
-              <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/></svg>
-              Google Scholar
-            </a>
+          <div id="profile-contacts-container" class="flex flex-wrap items-center gap-2 pt-2 text-xs sm:text-sm">
+            <!-- Dynamically populated from JSON -->
           </div>
         </div>
 
         <!-- Right: Metrics / Highlights Card -->
-        <div class="w-full md:w-72 lg:w-80 grid grid-cols-2 gap-3 p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/70 border border-slate-200/80 dark:border-slate-700/80">
-          <div class="p-3 bg-white dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800">
-            <span class="text-2xl font-black text-brand-600 dark:text-brand-400 font-mono block">8+</span>
-            <span class="text-xs font-medium text-slate-500 dark:text-slate-400">Years Experience</span>
-          </div>
-          <div class="p-3 bg-white dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800">
-            <span class="text-2xl font-black text-brand-600 dark:text-brand-400 font-mono block">4.2k</span>
-            <span class="text-xs font-medium text-slate-500 dark:text-slate-400">GitHub Stars</span>
-          </div>
-          <div class="p-3 bg-white dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800">
-            <span class="text-2xl font-black text-brand-600 dark:text-brand-400 font-mono block">25+</span>
-            <span class="text-xs font-medium text-slate-500 dark:text-slate-400">Prod Models / APIs</span>
-          </div>
-          <div class="p-3 bg-white dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800">
-            <span class="text-2xl font-black text-brand-600 dark:text-brand-400 font-mono block">7</span>
-            <span class="text-xs font-medium text-slate-500 dark:text-slate-400">Papers & Patents</span>
-          </div>
+        <div id="profile-metrics-container" class="w-full md:w-72 lg:w-80 grid grid-cols-2 gap-3 p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/70 border border-slate-200/80 dark:border-slate-700/80">
+          <!-- Dynamically populated from JSON -->
         </div>
 
       </div>
@@ -369,27 +360,7 @@
 
         <!-- Category Filter Tabs / Jump Links -->
         <div class="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1 text-xs sm:text-sm font-medium" id="category-tabs" role="tablist">
-          <button type="button" data-category="all" class="category-pill active shrink-0 px-3.5 py-1.5 rounded-lg border transition">
-            All (<span id="count-all">0</span>)
-          </button>
-          <button type="button" data-category="work" class="category-pill shrink-0 px-3.5 py-1.5 rounded-lg border transition">
-            Work (<span id="count-work">0</span>)
-          </button>
-          <button type="button" data-category="projects" class="category-pill shrink-0 px-3.5 py-1.5 rounded-lg border transition">
-            Projects (<span id="count-projects">0</span>)
-          </button>
-          <button type="button" data-category="learning" class="category-pill shrink-0 px-3.5 py-1.5 rounded-lg border transition">
-            Learning (<span id="count-learning">0</span>)
-          </button>
-          <button type="button" data-category="certifications" class="category-pill shrink-0 px-3.5 py-1.5 rounded-lg border transition">
-            Certifications (<span id="count-certifications">0</span>)
-          </button>
-          <button type="button" data-category="volunteering" class="category-pill shrink-0 px-3.5 py-1.5 rounded-lg border transition">
-            Volunteering (<span id="count-volunteering">0</span>)
-          </button>
-          <button type="button" data-category="hobbies" class="category-pill shrink-0 px-3.5 py-1.5 rounded-lg border transition">
-            Hobbies (<span id="count-hobbies">0</span>)
-          </button>
+          <!-- Dynamically populated from CATEGORIES_META -->
         </div>
 
         <!-- Active Filter Badges Bar (Shows active tag filters or ID filters) -->
@@ -421,10 +392,14 @@
     <!-- FOOTER -->
     <footer class="pt-12 pb-8 border-t border-slate-200 dark:border-slate-800 text-xs text-slate-500 dark:text-slate-400 flex flex-col sm:flex-row items-center justify-between gap-4">
       <div>
-        <p>© 2026 Alex Morgan. Built with HTML, Tailwind CSS, & Vanilla JS.</p>
-        <p class="text-slate-400 dark:text-slate-500 mt-0.5">Designed for high-impact readability, instant filtering, and clean PDF exports.</p>
+        <p id="footer-copyright">© 2026 Alex Morgan. Built with HTML, Tailwind CSS, & Vanilla JS.</p>
+        <p class="text-slate-400 dark:text-slate-500 mt-0.5">Customizable via <code class="font-mono text-slate-600 dark:text-slate-300">data.json</code> • High-impact filtering & clean PDF export.</p>
       </div>
       <div class="flex items-center gap-4">
+        <button type="button" onclick="openCustomizeModal()" class="hover:text-brand-600 dark:hover:text-brand-400 transition font-medium">
+          Palette & JSON Settings
+        </button>
+        <span class="text-slate-300 dark:text-slate-700">|</span>
         <button type="button" onclick="openShareModal()" class="hover:text-brand-600 dark:hover:text-brand-400 transition font-medium">
           Create Custom Link
         </button>
@@ -436,6 +411,117 @@
     </footer>
 
   </main>
+
+  <!-- CUSTOMIZE PALETTE & JSON CONFIG MODAL -->
+  <dialog id="customize-modal" closedby="any" aria-labelledby="customize-modal-title" class="rounded-3xl bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 p-0 border border-slate-200 dark:border-slate-800 shadow-2xl max-w-2xl w-[92vw] overflow-hidden focus:outline-none">
+    
+    <!-- Modal Header -->
+    <div class="p-6 border-b border-slate-200 dark:border-slate-800 flex items-start justify-between gap-4 bg-slate-50/50 dark:bg-slate-800/40">
+      <div>
+        <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-brand-100 dark:bg-brand-950 text-brand-700 dark:text-brand-300 mb-1.5">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/></svg>
+          Appearance & Data Engine
+        </div>
+        <h2 id="customize-modal-title" class="text-xl font-bold text-slate-900 dark:text-white tracking-tight">Customise Palette & Content</h2>
+        <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
+          Switch the site's accent colour palette, edit the JSON directly, or load an external JSON file.
+        </p>
+      </div>
+      <button type="button" onclick="closeCustomizeModal()" aria-label="Close dialog" class="p-2 rounded-xl text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+
+    <!-- Modal Body -->
+    <div class="p-6 space-y-6 max-h-[65vh] overflow-y-auto overscroll-contain">
+      
+      <!-- Color Palette Picker Section -->
+      <div class="space-y-3">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">Accent Colour Palette</span>
+          <span id="active-palette-name" class="text-xs font-mono text-brand-600 dark:text-brand-400 font-semibold">Active: Indigo</span>
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5" id="palette-buttons-grid">
+          <!-- Dynamically populated palette buttons -->
+        </div>
+
+        <!-- Custom Hex Input -->
+        <div class="pt-2 flex items-center gap-2">
+          <label for="custom-hex-input" class="text-xs font-medium text-slate-600 dark:text-slate-400 shrink-0">Custom Hex:</label>
+          <div class="relative flex-1">
+            <input type="text" id="custom-hex-input" placeholder="#0284c7" maxlength="7"
+              class="w-full px-3 py-1.5 rounded-lg text-xs font-mono bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500">
+          </div>
+          <button type="button" onclick="applyCustomHexFromInput()" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-brand-600 text-white hover:bg-brand-700 transition">
+            Apply Hex
+          </button>
+        </div>
+      </div>
+
+      <hr class="border-slate-200 dark:border-slate-800">
+
+      <!-- JSON Data Source & Actions -->
+      <div class="space-y-3">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">JSON Data Source</span>
+          <span id="json-source-status" class="text-xs font-medium px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">
+            Loaded from data.json
+          </span>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-2">
+          <!-- Upload JSON file -->
+          <label class="cursor-pointer inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 transition shadow-sm">
+            <svg class="w-4 h-4 text-brand-600 dark:text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+            <span>Upload JSON File</span>
+            <input type="file" id="json-file-input" accept=".json,application/json" class="sr-only">
+          </label>
+
+          <!-- Reload data.json from disk -->
+          <button type="button" onclick="loadExternalConfig()" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 transition shadow-sm">
+            <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+            Reload data.json
+          </button>
+
+          <!-- Download current active JSON -->
+          <button type="button" onclick="exportCurrentJson()" class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-700 transition shadow-sm">
+            <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+            Download data.json
+          </button>
+        </div>
+
+        <!-- In-Browser JSON Editor -->
+        <div class="space-y-1.5 pt-2">
+          <div class="flex items-center justify-between">
+            <label for="json-editor-textarea" class="text-xs font-semibold text-slate-700 dark:text-slate-300">
+              Live JSON Config Inspector / Editor:
+            </label>
+            <button type="button" onclick="resetJsonEditorToActive()" class="text-[11px] text-brand-600 dark:text-brand-400 hover:underline">
+              Reset Editor Text
+            </button>
+          </div>
+          <textarea id="json-editor-textarea" rows="8" spellcheck="false"
+            class="w-full p-3 rounded-xl font-mono text-xs bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-500"></textarea>
+          <div class="flex items-center justify-between pt-1">
+            <span class="text-[11px] text-slate-400">Edit items or palette above and click Apply to update the site in real time.</span>
+            <button type="button" onclick="applyJsonFromEditor()" class="px-3.5 py-1.5 rounded-lg text-xs font-bold bg-brand-600 text-white hover:bg-brand-700 transition shadow-sm">
+              Apply JSON Changes
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="p-4 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/40 flex justify-end">
+      <button type="button" onclick="closeCustomizeModal()" class="px-4 py-2 rounded-xl text-xs font-bold bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 transition">
+        Close
+      </button>
+    </div>
+
+  </dialog>
 
   <!-- SHARE CUSTOM VIEW BUILDER MODAL (Native <dialog> element per modern web guidance) -->
   <dialog id="share-modal" closedby="any" aria-labelledby="share-modal-title" class="rounded-3xl bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 p-0 border border-slate-200 dark:border-slate-800 shadow-2xl max-w-2xl w-[92vw] overflow-hidden focus:outline-none">
@@ -545,310 +631,737 @@
   <script>
     /**
      * =========================================================================
-     * 1. CENTRALIZED DATA STORE (CV ENTRIES & PROFILE)
-     * Easily editable JavaScript array containing all CV entries.
+     * 1. PRESET COLOR PALETTES (RGB Format for Tailwind CSS Variables)
      * =========================================================================
      */
-    const CV_DATA = [
-      // ---------------- WORK ----------------
-      {
-        id: "work-staff-ai-systems",
-        category: "work",
-        title: "Staff AI Systems Engineer & Tech Lead",
-        organization: "Cerebral Systems Labs",
-        date: "2023 – Present",
-        location: "Zurich, CH / Hybrid",
-        description: "Leading the distributed systems team responsible for training and serving large reasoning models. Architected a multi-region inference gateway serving **45M+ daily requests** with sub-40ms P99 latency. Engineered speculative decoding pipelines cutting LLM inference costs by **38%**.",
-        tags: ["Python", "Rust", "Distributed Systems", "vLLM", "Kubernetes", "PyTorch", "gRPC"],
-        featured: true,
-        link: "https://cerebralsystems.example.com"
+    const PALETTES = {
+      indigo: {
+        name: "Indigo",
+        previewHex: "#6366f1",
+        shades: {
+          50: '238 242 255',
+          100: '224 231 255',
+          200: '199 210 254',
+          300: '165 180 252',
+          400: '129 140 248',
+          500: '99 102 241',
+          600: '79 70 229',
+          700: '67 56 202',
+          800: '55 48 163',
+          900: '49 46 129',
+          950: '30 27 75'
+        }
       },
-      {
-        id: "work-senior-cloud-architect",
-        category: "work",
-        title: "Senior Cloud & Infrastructure Architect",
-        organization: "Aether Cloud Infrastructure",
-        date: "2020 – 2023",
-        location: "Geneva, CH",
-        description: "Spearheaded the migration of monolithic microservices into modular Kubernetes clusters with Istio service mesh. Mentored a team of 14 engineers across SRE and platform teams. Designed real-time event streaming architectures using Kafka handling **1.2 TB/hour**.",
-        tags: ["Go", "Kubernetes", "Terraform", "Kafka", "AWS", "Prometheus", "Architecture"],
-        featured: true,
-        link: "https://aethercloud.example.com"
+      emerald: {
+        name: "Emerald",
+        previewHex: "#10b981",
+        shades: {
+          50: '236 253 245',
+          100: '209 250 229',
+          200: '167 243 208',
+          300: '110 231 183',
+          400: '52 211 153',
+          500: '16 185 129',
+          600: '5 150 105',
+          700: '4 120 87',
+          800: '6 95 70',
+          900: '6 78 59',
+          950: '2 44 34'
+        }
       },
-      {
-        id: "work-ml-engineer-nova",
-        category: "work",
-        title: "Machine Learning Engineer",
-        organization: "Nova Data Intelligence",
-        date: "2018 – 2020",
-        location: "Berlin, DE",
-        description: "Implemented high-precision NLP classification and entity-resolution models for financial intelligence. Built automated CI/CD evaluation pipelines with MLflow and Docker, reducing model deployment cycles from 2 weeks to under **3 hours**.",
-        tags: ["Python", "Transformers", "NLP", "MLflow", "Docker", "PostgreSQL"],
-        featured: false,
-        link: "https://novaintelligence.example.com"
+      blue: {
+        name: "Ocean Blue",
+        previewHex: "#3b82f6",
+        shades: {
+          50: '239 246 255',
+          100: '219 234 254',
+          200: '191 219 254',
+          300: '147 197 253',
+          400: '96 165 250',
+          500: '59 130 246',
+          600: '37 99 235',
+          700: '29 78 216',
+          800: '30 64 175',
+          900: '30 58 138',
+          950: '23 37 84'
+        }
       },
-      {
-        id: "work-systems-intern",
-        category: "work",
-        title: "Systems Engineering Intern",
-        organization: "Starlight Analytics",
-        date: "Summer 2017",
-        location: "Edinburgh, UK",
-        description: "Developed optimized C++ data parser utilities for time-series sensor telemetry. Benchmarked database indexing strategies across ClickHouse and TimescaleDB, resulting in a **4x query speedup** for historical aggregations.",
-        tags: ["C++", "Time Series", "ClickHouse", "Linux", "Benchmarking"],
-        featured: false
+      violet: {
+        name: "Violet",
+        previewHex: "#8b5cf6",
+        shades: {
+          50: '245 243 255',
+          100: '237 233 254',
+          200: '221 214 254',
+          300: '196 181 253',
+          400: '167 139 250',
+          500: '139 92 246',
+          600: '124 58 237',
+          700: '109 40 217',
+          800: '91 33 182',
+          900: '76 29 149',
+          950: '46 16 101'
+        }
       },
-
-      // ---------------- PROJECTS ----------------
-      {
-        id: "project-omniagent-runtime",
-        category: "projects",
-        title: "OmniAgent: Distributed Multi-Agent Runtime",
-        organization: "Open Source Initiative",
-        date: "2025 – 2026",
-        description: "An open-source asynchronous orchestration runtime for autonomous AI agent networks with verifiable execution traces and cryptographic state checkpoints. Reached **2.8k GitHub stars** and actively used in production by 3 fintech startups.",
-        tags: ["Rust", "TypeScript", "AI Agents", "WebSockets", "Docker", "Open Source"],
-        featured: true,
-        link: "https://github.com/alexmorgan/omniagent"
+      rose: {
+        name: "Rose",
+        previewHex: "#f43f5e",
+        shades: {
+          50: '255 241 242',
+          100: '255 228 230',
+          200: '254 205 211',
+          300: '253 164 175',
+          400: '251 113 133',
+          500: '244 63 94',
+          600: '225 29 72',
+          700: '190 18 60',
+          800: '159 18 57',
+          900: '136 19 55',
+          950: '76 5 25'
+        }
       },
-      {
-        id: "project-hyperindex-vectordb",
-        category: "projects",
-        title: "HyperIndex: Ultra-Low Latency Embedded Vector Index",
-        organization: "Personal Project",
-        date: "2024",
-        description: "SIMD-accelerated Hierarchical Navigable Small World (HNSW) vector search engine written in Rust with Python and WebAssembly bindings. Achieved **15% higher recall** than standard FAISS on 1M 768-dim embedding benchmarks.",
-        tags: ["Rust", "SIMD", "Vector Search", "WASM", "Information Retrieval"],
-        featured: true,
-        link: "https://github.com/alexmorgan/hyperindex"
+      amber: {
+        name: "Amber",
+        previewHex: "#f59e0b",
+        shades: {
+          50: '255 251 235',
+          100: '254 243 199',
+          200: '253 230 138',
+          300: '252 211 77',
+          400: '251 191 36',
+          500: '245 158 11',
+          600: '217 119 6',
+          700: '180 83 9',
+          800: '146 64 14',
+          900: '120 53 15',
+          950: '69 26 3'
+        }
       },
-      {
-        id: "project-syntaxlens-ast",
-        category: "projects",
-        title: "SyntaxLens: Interactive AST & Compiler Visualizer",
-        organization: "Dev Tools Community",
-        date: "2023",
-        description: "Browser-based developer tool for live abstract syntax tree introspection and bytecode comparison across V8, PyPy, and Cranelift. Featured in *JavaScript Weekly* and *Hacker News* front page.",
-        tags: ["TypeScript", "WebAssembly", "Compilers", "Tailwind CSS", "Canvas API"],
-        featured: false,
-        link: "https://syntaxlens.dev"
-      },
-      {
-        id: "project-microvoice-tts",
-        category: "projects",
-        title: "MicroVoice: Local Edge Neural Speech Synthesizer",
-        organization: "Research Build",
-        date: "2022",
-        description: "Zero-dependency pure browser neural text-to-speech synthesizer running entirely clientside via ONNX Runtime Web. Performs realtime acoustic modeling without transmitting voice data to remote servers.",
-        tags: ["WebAudio API", "ONNX", "Edge AI", "Privacy", "JavaScript"],
-        featured: false,
-        link: "https://github.com/alexmorgan/microvoice"
-      },
-
-      // ---------------- LEARNING ----------------
-      {
-        id: "edu-msc-eth-zurich",
-        category: "learning",
-        title: "Master of Science in Computer Science (Distributed Systems)",
-        organization: "ETH Zürich",
-        date: "2018 – 2020",
-        location: "Zurich, Switzerland",
-        description: "Graduated with Distinction (**GPA 5.8 / 6.0**). Master's thesis on *'Asynchronous Consensus under Network Partitions for Byzantine-Tolerant Replicated State Machines'*, supervised by Prof. T. Hoare Chair. Core coursework in High Performance Computing, Machine Learning, and Cryptographic Protocols.",
-        tags: ["Distributed Systems", "Consensus", "Formal Verification", "Algorithms"],
-        featured: true
-      },
-      {
-        id: "edu-bsc-edinburgh",
-        category: "learning",
-        title: "Bachelor of Science in Computer Science & Mathematics",
-        organization: "University of Edinburgh",
-        date: "2014 – 2018",
-        location: "Edinburgh, United Kingdom",
-        description: "First Class Honours. Awarded the *Class Medal in Systems Programming*. Served as Undergraduate Teaching Assistant for Data Structures & Algorithms and Operating Systems courses.",
-        tags: ["Computer Science", "Discrete Math", "Operating Systems", "C"],
-        featured: false
-      },
-      {
-        id: "course-stanford-distributed-ml",
-        category: "learning",
-        title: "Advanced Distributed Machine Learning Systems (CS 329)",
-        organization: "Stanford Online / Center for Professional Development",
-        date: "2022",
-        description: "Intensive 10-week post-graduate curriculum covering parameter servers, pipeline parallelism, tensor parallelism (Megatron-LM), and RDMA networking.",
-        tags: ["Distributed ML", "Parallelism", "NCCL", "GPU Clusters"],
-        featured: false
-      },
-
-      // ---------------- CERTIFICATIONS ----------------
-      {
-        id: "cert-aws-solutions-architect",
-        category: "certifications",
-        title: "AWS Certified Solutions Architect – Professional (SAP-C02)",
-        organization: "Amazon Web Services",
-        date: "2024 – 2027",
-        description: "Comprehensive validation of multi-tier resilient cloud architecture, automated disaster recovery, enterprise security governance, and multi-account cloud topologies.",
-        tags: ["AWS", "Cloud Architecture", "Security", "High Availability"],
-        featured: true,
-        link: "https://aws.amazon.com/verification"
-      },
-      {
-        id: "cert-cncf-cka",
-        category: "certifications",
-        title: "Certified Kubernetes Administrator (CKA)",
-        organization: "Cloud Native Computing Foundation (CNCF)",
-        date: "2023 – 2026",
-        description: "Hands-on performance exam evaluating cluster lifecycle administration, storage networking, ingress controllers, troubleshooting, and production workload orchestration.",
-        tags: ["Kubernetes", "DevOps", "Containers", "CNCF"],
-        featured: true,
-        link: "https://cncf.io/certification/cka"
-      },
-      {
-        id: "cert-deeplearning-specialization",
-        category: "certifications",
-        title: "Deep Learning Specialization",
-        organization: "DeepLearning.AI & Coursera",
-        date: "2021",
-        description: "Five-course sequence covering neural network fundamentals, hyperparameter tuning, structuring ML projects, convolutional models, and sequence sequence models.",
-        tags: ["Deep Learning", "TensorFlow", "Math", "Optimization"],
-        featured: false,
-        link: "https://coursera.org"
-      },
-
-      // ---------------- VOLUNTEERING ----------------
-      {
-        id: "vol-ai-safety-mentor",
-        category: "volunteering",
-        title: "Technical Mentor & Grant Application Reviewer",
-        organization: "AI Safety & Alignment Open Network",
-        date: "2023 – Present",
-        description: "Providing 1-on-1 technical coaching for junior researchers investigating mechanistic interpretability and model red-teaming. Evaluated over 30 micro-grant submissions for compute resources.",
-        tags: ["Mentorship", "AI Safety", "Community", "Research"],
-        featured: true
-      },
-      {
-        id: "vol-pyladies-workshop-lead",
-        category: "volunteering",
-        title: "Open Workshop Lead & Python Instructor",
-        organization: "PyLadies & Women Who Code Zurich",
-        date: "2021 – Present",
-        description: "Organized and delivered 8 free weekend workshops introducing modern Python, Git, and web API development to over 240 career switchers and underrepresented engineers.",
-        tags: ["Teaching", "Python", "Diversity in Tech", "Community"],
-        featured: false
-      },
-      {
-        id: "vol-crisis-mapping-foss",
-        category: "volunteering",
-        title: "Core Contributor & Relief Mapping Engineer",
-        organization: "CrisisResponse Open Source GIS",
-        date: "2019 – 2022",
-        description: "Volunteered emergency map layer data-pipelines during natural disaster responses to assist humanitarian logistics coordinators in real-time routing.",
-        tags: ["GIS", "OpenStreetMap", "Python", "Public Good"],
-        featured: false
-      },
-
-      // ---------------- HOBBIES ----------------
-      {
-        id: "hobby-ultra-trail-running",
-        category: "hobbies",
-        title: "Alpine Trail Running & Ultra-Marathons",
-        organization: "Swiss Alpine Runners Club",
-        date: "2019 – Present",
-        description: "Finisher of the Eiger Ultra Trail 51k and Scenic Trail 54k with over 3,800m vertical ascent. Enduring discipline, pacing strategies, and mental resilience applied directly to long-term engineering challenges.",
-        tags: ["Endurance", "Trail Running", "Outdoors", "Mindset"],
-        featured: true
-      },
-      {
-        id: "hobby-modular-synth",
-        category: "hobbies",
-        title: "Generative Audio & Eurorack Modular Synthesis",
-        organization: "Independent Sound Design",
-        date: "2020 – Present",
-        description: "Designing stochastic generative music patches utilizing control voltage (CV), algorithmic step sequencers, and analog filtering circuits. Exploring the intersection of mathematics and harmony.",
-        tags: ["Music", "Sound Synthesis", "Analog Circuits", "Creativity"],
-        featured: false
-      },
-      {
-        id: "hobby-ergonomic-keyboards",
-        category: "hobbies",
-        title: "Custom Ergonomic Keyboard Design & Micro-soldering",
-        organization: "Maker Community",
-        date: "2022 – Present",
-        description: "Hand-soldered split ergonomic mechanical keyboards (Corne & Dactyl ManuForm) with custom ZMK wireless firmware, Colemak-DH layouts, and micro-controller integration.",
-        tags: ["Hardware", "Soldering", "Ergonomics", "ZMK Firmware"],
-        featured: false
+      cyan: {
+        name: "Cyan",
+        previewHex: "#06b6d4",
+        shades: {
+          50: '236 254 255',
+          100: '207 250 254',
+          200: '165 243 252',
+          300: '103 232 249',
+          400: '34 211 238',
+          500: '6 182 212',
+          600: '8 145 178',
+          700: '14 116 144',
+          800: '21 94 117',
+          900: '22 78 99',
+          950: '8 51 68'
+        }
       }
-    ];
+    };
 
     /**
-     * Category Metadata Configuration (Titles, Descriptions, Colors, Icons)
+     * Helper: Convert Hex color to RGB object
      */
-    const CATEGORIES_META = {
+    function hexToRgb(hex) {
+      hex = hex.replace('#', '').trim();
+      if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');
+      const num = parseInt(hex, 16);
+      if (isNaN(num)) return { r: 99, g: 102, b: 241 };
+      return {
+        r: (num >> 16) & 255,
+        g: (num >> 8) & 255,
+        b: num & 255
+      };
+    }
+
+    /**
+     * Helper: Generate full 50..950 tint & shade scale from a single base HEX color
+     */
+    function generateShadesFromHex(baseHex) {
+      const base = hexToRgb(baseHex);
+      function mix(c1, c2, weight) {
+        return Math.round(c1 * weight + c2 * (1 - weight));
+      }
+      function toRgbStr(r, g, b) {
+        return `${r} ${g} ${b}`;
+      }
+      return {
+        50: toRgbStr(mix(255, base.r, 0.95), mix(255, base.g, 0.95), mix(255, base.b, 0.95)),
+        100: toRgbStr(mix(255, base.r, 0.85), mix(255, base.g, 0.85), mix(255, base.b, 0.85)),
+        200: toRgbStr(mix(255, base.r, 0.70), mix(255, base.g, 0.70), mix(255, base.b, 0.70)),
+        300: toRgbStr(mix(255, base.r, 0.50), mix(255, base.g, 0.50), mix(255, base.b, 0.50)),
+        400: toRgbStr(mix(255, base.r, 0.25), mix(255, base.g, 0.25), mix(255, base.b, 0.25)),
+        500: toRgbStr(base.r, base.g, base.b),
+        600: toRgbStr(mix(0, base.r, 0.15), mix(0, base.g, 0.15), mix(0, base.b, 0.15)),
+        700: toRgbStr(mix(0, base.r, 0.30), mix(0, base.g, 0.30), mix(0, base.b, 0.30)),
+        800: toRgbStr(mix(0, base.r, 0.45), mix(0, base.g, 0.45), mix(0, base.b, 0.45)),
+        900: toRgbStr(mix(0, base.r, 0.60), mix(0, base.g, 0.60), mix(0, base.b, 0.60)),
+        950: toRgbStr(mix(0, base.r, 0.75), mix(0, base.g, 0.75), mix(0, base.b, 0.75)),
+      };
+    }
+
+    /**
+     * Apply Palette dynamically to CSS variables
+     */
+    let currentPaletteName = 'indigo';
+    function applyPalette(paletteKeyOrConfig, notify = false) {
+      let shades = null;
+      let displayName = "Custom";
+
+      if (typeof paletteKeyOrConfig === 'string') {
+        const key = paletteKeyOrConfig.toLowerCase();
+        if (PALETTES[key]) {
+          shades = PALETTES[key].shades;
+          displayName = PALETTES[key].name;
+          currentPaletteName = key;
+        } else if (paletteKeyOrConfig.startsWith('#')) {
+          shades = generateShadesFromHex(paletteKeyOrConfig);
+          displayName = `Custom (${paletteKeyOrConfig})`;
+          currentPaletteName = 'custom';
+        }
+      } else if (typeof paletteKeyOrConfig === 'object' && paletteKeyOrConfig !== null) {
+        if (paletteKeyOrConfig.customShades) {
+          shades = paletteKeyOrConfig.customShades;
+          displayName = "Custom Shades";
+        } else if (paletteKeyOrConfig.palette) {
+          return applyPalette(paletteKeyOrConfig.palette, notify);
+        }
+      }
+
+      if (!shades) {
+        shades = PALETTES.indigo.shades;
+        displayName = "Indigo";
+        currentPaletteName = 'indigo';
+      }
+
+      // Update CSS variables on documentElement
+      const root = document.documentElement;
+      Object.keys(shades).forEach(shade => {
+        let val = shades[shade];
+        if (typeof val === 'string' && val.startsWith('#')) {
+          const rgb = hexToRgb(val);
+          val = `${rgb.r} ${rgb.g} ${rgb.b}`;
+        }
+        root.style.setProperty(`--brand-${shade}`, val);
+      });
+
+      // Update active badge in customize modal
+      const activeNameEl = document.getElementById('active-palette-name');
+      if (activeNameEl) activeNameEl.textContent = `Active: ${displayName}`;
+
+      // Update buttons highlight in customize modal
+      document.querySelectorAll('[data-palette-btn]').forEach(btn => {
+        const pKey = btn.getAttribute('data-palette-btn');
+        if (pKey === currentPaletteName) {
+          btn.classList.add('ring-2', 'ring-brand-500', 'border-brand-500');
+        } else {
+          btn.classList.remove('ring-2', 'ring-brand-500', 'border-brand-500');
+        }
+      });
+
+      if (notify) {
+        showToast(`Palette switched to ${displayName}`);
+      }
+    }
+
+    /**
+     * =========================================================================
+     * 2. CENTRALIZED DATA STORE (EMBEDDED FALLBACK + LOADED DATA)
+     * =========================================================================
+     */
+    let ACTIVE_DATA = null;
+    let CV_DATA = [];
+    let PROFILE_DATA = {};
+    let CATEGORIES_META = {
       work: {
         title: "Professional Experience",
         badge: "Work",
-        icon: `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>`,
-        accentColor: "indigo"
+        icon: `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>`
       },
       projects: {
         title: "Key Projects & Builds",
         badge: "Projects",
-        icon: `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>`,
-        accentColor: "violet"
+        icon: `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>`
       },
       learning: {
         title: "Education & Learning",
         badge: "Learning",
-        icon: `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/></svg>`,
-        accentColor: "blue"
+        icon: `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/></svg>`
       },
       certifications: {
         title: "Certifications & Credentials",
         badge: "Certifications",
-        icon: `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/></svg>`,
-        accentColor: "emerald"
+        icon: `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138z"/></svg>`
       },
       volunteering: {
         title: "Community & Volunteering",
         badge: "Volunteering",
-        icon: `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>`,
-        accentColor: "rose"
+        icon: `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>`
       },
       hobbies: {
         title: "Interests & Pursuits",
         badge: "Hobbies",
-        icon: `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>`,
-        accentColor: "amber"
+        icon: `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>`
       }
     };
-
-    /**
-     * Ordered category keys for standard rendering
-     */
     const CATEGORY_ORDER = ['work', 'projects', 'learning', 'certifications', 'volunteering', 'hobbies'];
 
     /**
-     * =========================================================================
-     * 2. STATE MANAGEMENT & URL PARAMETER PARSING
-     * =========================================================================
+     * Embedded fallback data in case external fetch fails (e.g. running from file:// URL)
      */
-    const state = {
-      activeCategory: 'all',     // 'all' or one of the 6 categories
-      searchQuery: '',           // live text filter
-      featuredOnly: false,       // boolean
-      selectedTag: null,         // optional tag filter
-      urlCategoryFilter: [],     // categories specified in ?categories=...
-      urlIdFilter: [],           // ids specified in ?ids=...
-      recipientName: '',         // ?recipient=...
-      customContext: ''          // ?context=...
+    const FALLBACK_DEFAULT_DATA = {
+      theme: {
+        palette: "indigo"
+      },
+      profile: {
+        name: "Alex Morgan",
+        suffix: "M.Sc.",
+        initials: "AM",
+        title: "Senior AI Systems Engineer & Open Source Researcher",
+        status: "Available for Staff/Lead Roles & Advisory",
+        location: "Zurich, Switzerland (Open to Remote)",
+        bio: "Specializing in high-throughput distributed AI pipelines, autonomous agentic runtimes, and low-latency systems. Over 8 years of engineering experience bridging research prototypes into mission-critical cloud infrastructure. Active open-source maintainer and conference speaker.",
+        email: "alex.morgan@example.com",
+        github: "https://github.com/alexmorgan",
+        githubUsername: "alexmorgan",
+        linkedin: "https://linkedin.com/in/alexmorgan-dev",
+        scholar: "https://scholar.google.com",
+        website: "https://alexmorgan.dev",
+        metrics: [
+          { value: "8+", label: "Years Experience" },
+          { value: "4.2k", label: "GitHub Stars" },
+          { value: "25+", label: "Prod Models / APIs" },
+          { value: "7", label: "Papers & Patents" }
+        ]
+      },
+      categories: {
+        work: { title: "Professional Experience", badge: "Work" },
+        projects: { title: "Key Projects & Builds", badge: "Projects" },
+        learning: { title: "Education & Learning", badge: "Learning" },
+        certifications: { title: "Certifications & Credentials", badge: "Certifications" },
+        volunteering: { title: "Community & Volunteering", badge: "Volunteering" },
+        hobbies: { title: "Interests & Pursuits", badge: "Hobbies" }
+      },
+      items: [
+        {
+          id: "work-staff-ai-systems",
+          category: "work",
+          title: "Staff AI Systems Engineer & Tech Lead",
+          organization: "Cerebral Systems Labs",
+          date: "2023 – Present",
+          location: "Zurich, CH / Hybrid",
+          description: "Leading the distributed systems team responsible for training and serving large reasoning models. Architected a multi-region inference gateway serving **45M+ daily requests** with sub-40ms P99 latency. Engineered speculative decoding pipelines cutting LLM inference costs by **38%**.",
+          tags: ["Python", "Rust", "Distributed Systems", "vLLM", "Kubernetes", "PyTorch", "gRPC"],
+          featured: true,
+          link: "https://cerebralsystems.example.com"
+        },
+        {
+          id: "work-senior-cloud-architect",
+          category: "work",
+          title: "Senior Cloud & Infrastructure Architect",
+          organization: "Aether Cloud Infrastructure",
+          date: "2020 – 2023",
+          location: "Geneva, CH",
+          description: "Spearheaded the migration of monolithic microservices into modular Kubernetes clusters with Istio service mesh. Mentored a team of 14 engineers across SRE and platform teams. Designed real-time event streaming architectures using Kafka handling **1.2 TB/hour**.",
+          tags: ["Go", "Kubernetes", "Terraform", "Kafka", "AWS", "Prometheus", "Architecture"],
+          featured: true,
+          link: "https://aethercloud.example.com"
+        },
+        {
+          id: "work-ml-engineer-nova",
+          category: "work",
+          title: "Machine Learning Engineer",
+          organization: "Nova Data Intelligence",
+          date: "2018 – 2020",
+          location: "Berlin, DE",
+          description: "Implemented high-precision NLP classification and entity-resolution models for financial intelligence. Built automated CI/CD evaluation pipelines with MLflow and Docker, reducing model deployment cycles from 2 weeks to under **3 hours**.",
+          tags: ["Python", "Transformers", "NLP", "MLflow", "Docker", "PostgreSQL"],
+          featured: false,
+          link: "https://novaintelligence.example.com"
+        },
+        {
+          id: "work-systems-intern",
+          category: "work",
+          title: "Systems Engineering Intern",
+          organization: "Starlight Analytics",
+          date: "Summer 2017",
+          location: "Edinburgh, UK",
+          description: "Developed optimized C++ data parser utilities for time-series sensor telemetry. Benchmarked database indexing strategies across ClickHouse and TimescaleDB, resulting in a **4x query speedup** for historical aggregations.",
+          tags: ["C++", "Time Series", "ClickHouse", "Linux", "Benchmarking"],
+          featured: false
+        },
+        {
+          id: "project-omniagent-runtime",
+          category: "projects",
+          title: "OmniAgent: Distributed Multi-Agent Runtime",
+          organization: "Open Source Initiative",
+          date: "2025 – 2026",
+          description: "An open-source asynchronous orchestration runtime for autonomous AI agent networks with verifiable execution traces and cryptographic state checkpoints. Reached **2.8k GitHub stars** and actively used in production by 3 fintech startups.",
+          tags: ["Rust", "TypeScript", "AI Agents", "WebSockets", "Docker", "Open Source"],
+          featured: true,
+          link: "https://github.com/alexmorgan/omniagent"
+        },
+        {
+          id: "project-hyperindex-vectordb",
+          category: "projects",
+          title: "HyperIndex: Ultra-Low Latency Embedded Vector Index",
+          organization: "Personal Project",
+          date: "2024",
+          description: "SIMD-accelerated Hierarchical Navigable Small World (HNSW) vector search engine written in Rust with Python and WebAssembly bindings. Achieved **15% higher recall** than standard FAISS on 1M 768-dim embedding benchmarks.",
+          tags: ["Rust", "SIMD", "Vector Search", "WASM", "Information Retrieval"],
+          featured: true,
+          link: "https://github.com/alexmorgan/hyperindex"
+        },
+        {
+          id: "project-syntaxlens-ast",
+          category: "projects",
+          title: "SyntaxLens: Interactive AST & Compiler Visualizer",
+          organization: "Dev Tools Community",
+          date: "2023",
+          description: "Browser-based developer tool for live abstract syntax tree introspection and bytecode comparison across V8, PyPy, and Cranelift. Featured in *JavaScript Weekly* and *Hacker News* front page.",
+          tags: ["TypeScript", "WebAssembly", "Compilers", "Tailwind CSS", "Canvas API"],
+          featured: false,
+          link: "https://syntaxlens.dev"
+        },
+        {
+          id: "project-microvoice-tts",
+          category: "projects",
+          title: "MicroVoice: Local Edge Neural Speech Synthesizer",
+          organization: "Research Build",
+          date: "2022",
+          description: "Zero-dependency pure browser neural text-to-speech synthesizer running entirely clientside via ONNX Runtime Web. Performs realtime acoustic modeling without transmitting voice data to remote servers.",
+          tags: ["WebAudio API", "ONNX", "Edge AI", "Privacy", "JavaScript"],
+          featured: false,
+          link: "https://github.com/alexmorgan/microvoice"
+        },
+        {
+          id: "edu-msc-eth-zurich",
+          category: "learning",
+          title: "Master of Science in Computer Science (Distributed Systems)",
+          organization: "ETH Zürich",
+          date: "2018 – 2020",
+          location: "Zurich, Switzerland",
+          description: "Graduated with Distinction (**GPA 5.8 / 6.0**). Master's thesis on *'Asynchronous Consensus under Network Partitions for Byzantine-Tolerant Replicated State Machines'*, supervised by Prof. T. Hoare Chair. Core coursework in High Performance Computing, Machine Learning, and Cryptographic Protocols.",
+          tags: ["Distributed Systems", "Consensus", "Formal Verification", "Algorithms"],
+          featured: true
+        },
+        {
+          id: "edu-bsc-edinburgh",
+          category: "learning",
+          title: "Bachelor of Science in Computer Science & Mathematics",
+          organization: "University of Edinburgh",
+          date: "2014 – 2018",
+          location: "Edinburgh, United Kingdom",
+          description: "First Class Honours. Awarded the *Class Medal in Systems Programming*. Served as Undergraduate Teaching Assistant for Data Structures & Algorithms and Operating Systems courses.",
+          tags: ["Computer Science", "Discrete Math", "Operating Systems", "C"],
+          featured: false
+        },
+        {
+          id: "course-stanford-distributed-ml",
+          category: "learning",
+          title: "Advanced Distributed Machine Learning Systems (CS 329)",
+          organization: "Stanford Online / Center for Professional Development",
+          date: "2022",
+          description: "Intensive 10-week post-graduate curriculum covering parameter servers, pipeline parallelism, tensor parallelism (Megatron-LM), and RDMA networking.",
+          tags: ["Distributed ML", "Parallelism", "NCCL", "GPU Clusters"],
+          featured: false
+        },
+        {
+          id: "cert-aws-solutions-architect",
+          category: "certifications",
+          title: "AWS Certified Solutions Architect – Professional (SAP-C02)",
+          organization: "Amazon Web Services",
+          date: "2024 – 2027",
+          description: "Comprehensive validation of multi-tier resilient cloud architecture, automated disaster recovery, enterprise security governance, and multi-account cloud topologies.",
+          tags: ["AWS", "Cloud Architecture", "Security", "High Availability"],
+          featured: true,
+          link: "https://aws.amazon.com/verification"
+        },
+        {
+          id: "cert-cncf-cka",
+          category: "certifications",
+          title: "Certified Kubernetes Administrator (CKA)",
+          organization: "Cloud Native Computing Foundation (CNCF)",
+          date: "2023 – 2026",
+          description: "Hands-on performance exam evaluating cluster lifecycle administration, storage networking, ingress controllers, troubleshooting, and production workload orchestration.",
+          tags: ["Kubernetes", "DevOps", "Containers", "CNCF"],
+          featured: true,
+          link: "https://cncf.io/certification/cka"
+        },
+        {
+          id: "cert-deeplearning-specialization",
+          category: "certifications",
+          title: "Deep Learning Specialization",
+          organization: "DeepLearning.AI & Coursera",
+          date: "2021",
+          description: "Five-course sequence covering neural network fundamentals, hyperparameter tuning, structuring ML projects, convolutional models, and sequence sequence models.",
+          tags: ["Deep Learning", "TensorFlow", "Math", "Optimization"],
+          featured: false,
+          link: "https://coursera.org"
+        },
+        {
+          id: "vol-ai-safety-mentor",
+          category: "volunteering",
+          title: "Technical Mentor & Grant Application Reviewer",
+          organization: "AI Safety & Alignment Open Network",
+          date: "2023 – Present",
+          description: "Providing 1-on-1 technical coaching for junior researchers investigating mechanistic interpretability and model red-teaming. Evaluated over 30 micro-grant submissions for compute resources.",
+          tags: ["Mentorship", "AI Safety", "Community", "Research"],
+          featured: true
+        },
+        {
+          id: "vol-pyladies-workshop-lead",
+          category: "volunteering",
+          title: "Open Workshop Lead & Python Instructor",
+          organization: "PyLadies & Women Who Code Zurich",
+          date: "2021 – Present",
+          description: "Organized and delivered 8 free weekend workshops introducing modern Python, Git, and web API development to over 240 career switchers and underrepresented engineers.",
+          tags: ["Teaching", "Python", "Diversity in Tech", "Community"],
+          featured: false
+        },
+        {
+          id: "vol-crisis-mapping-foss",
+          category: "volunteering",
+          title: "Core Contributor & Relief Mapping Engineer",
+          organization: "CrisisResponse Open Source GIS",
+          date: "2019 – 2022",
+          description: "Volunteered emergency map layer data-pipelines during natural disaster responses to assist humanitarian logistics coordinators in real-time routing.",
+          tags: ["GIS", "OpenStreetMap", "Python", "Public Good"],
+          featured: false
+        },
+        {
+          id: "hobby-ultra-trail-running",
+          category: "hobbies",
+          title: "Alpine Trail Running & Ultra-Marathons",
+          organization: "Swiss Alpine Runners Club",
+          date: "2019 – Present",
+          description: "Finisher of the Eiger Ultra Trail 51k and Scenic Trail 54k with over 3,800m vertical ascent. Enduring discipline, pacing strategies, and mental resilience applied directly to long-term engineering challenges.",
+          tags: ["Endurance", "Trail Running", "Outdoors", "Mindset"],
+          featured: true
+        },
+        {
+          id: "hobby-modular-synth",
+          category: "hobbies",
+          title: "Generative Audio & Eurorack Modular Synthesis",
+          organization: "Independent Sound Design",
+          date: "2020 – Present",
+          description: "Designing stochastic generative music patches utilizing control voltage (CV), algorithmic step sequencers, and analog filtering circuits. Exploring the intersection of mathematics and harmony.",
+          tags: ["Music", "Sound Synthesis", "Analog Circuits", "Creativity"],
+          featured: false
+        },
+        {
+          id: "hobby-ergonomic-keyboards",
+          category: "hobbies",
+          title: "Custom Ergonomic Keyboard Design & Micro-soldering",
+          organization: "Maker Community",
+          date: "2022 – Present",
+          description: "Hand-soldered split ergonomic mechanical keyboards (Corne & Dactyl ManuForm) with custom ZMK wireless firmware, Colemak-DH layouts, and micro-controller integration.",
+          tags: ["Hardware", "Soldering", "Ergonomics", "ZMK Firmware"],
+          featured: false
+        }
+      ]
     };
 
     /**
-     * Parse URL search parameters on initialization
+     * Apply loaded JSON configuration across the app
      */
+    function applyData(config, sourceName = "data.json") {
+      ACTIVE_DATA = config;
+
+      // 1. Theme & Palette
+      if (config.theme) {
+        applyPalette(config.theme);
+      }
+
+      // 2. Profile Details
+      if (config.profile) {
+        PROFILE_DATA = config.profile;
+        renderProfileSection(PROFILE_DATA);
+      }
+
+      // 3. Category Metadata overrides
+      if (config.categories) {
+        Object.keys(config.categories).forEach(catKey => {
+          if (CATEGORIES_META[catKey]) {
+            CATEGORIES_META[catKey].title = config.categories[catKey].title || CATEGORIES_META[catKey].title;
+            CATEGORIES_META[catKey].badge = config.categories[catKey].badge || CATEGORIES_META[catKey].badge;
+          }
+        });
+      }
+
+      // 4. CV Items
+      if (Array.isArray(config.items)) {
+        CV_DATA = config.items;
+      } else if (Array.isArray(config)) {
+        CV_DATA = config;
+      }
+
+      // 5. Update Status in Customize Modal
+      const statusEl = document.getElementById('json-source-status');
+      if (statusEl) {
+        statusEl.textContent = `Loaded from ${sourceName} (${CV_DATA.length} items)`;
+      }
+
+      // 6. Update JSON Editor text
+      const editor = document.getElementById('json-editor-textarea');
+      if (editor) {
+        editor.value = JSON.stringify(config, null, 2);
+      }
+
+      // 7. Refresh Navigation, Tally Counts, Modal Checklist, and Cards
+      renderCategoryTabs();
+      updateCategoryCounts();
+      initModalChecklist();
+      renderCV();
+    }
+
+    /**
+     * Render Profile Hero from loaded JSON data
+     */
+    function renderProfileSection(p) {
+      if (!p) return;
+
+      const nameEl = document.getElementById('profile-name');
+      const suffixEl = document.getElementById('profile-suffix');
+      const titleEl = document.getElementById('profile-title');
+      const bioEl = document.getElementById('profile-bio');
+      const statusEl = document.getElementById('profile-status');
+      const locationEl = document.getElementById('profile-location');
+      const headerAvatar = document.getElementById('header-avatar');
+      const headerName = document.getElementById('header-name');
+      const footerCopyright = document.getElementById('footer-copyright');
+
+      if (nameEl) nameEl.textContent = p.name || 'Alex Morgan';
+      if (suffixEl) suffixEl.textContent = p.suffix ? `, ${p.suffix}` : '';
+      if (titleEl) titleEl.textContent = p.title || '';
+      if (bioEl) bioEl.textContent = p.bio || '';
+      if (statusEl) statusEl.textContent = p.status || 'Available for technical roles';
+      if (locationEl) {
+        const span = locationEl.querySelector('span');
+        if (span) span.textContent = p.location || '';
+      }
+      if (headerAvatar) headerAvatar.textContent = p.initials || 'AM';
+      if (headerName) headerName.textContent = p.name || 'Alex Morgan';
+      if (footerCopyright) footerCopyright.textContent = `© 2026 ${p.name || 'Alex Morgan'}. Built with HTML, Tailwind CSS, & Vanilla JS.`;
+
+      // Render Contact Pills
+      const contactsContainer = document.getElementById('profile-contacts-container');
+      if (contactsContainer) {
+        contactsContainer.innerHTML = '';
+        if (p.email) {
+          contactsContainer.innerHTML += `
+            <a href="mailto:${p.email}" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition">
+              <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+              ${p.email}
+            </a>
+          `;
+        }
+        if (p.github) {
+          contactsContainer.innerHTML += `
+            <a href="${p.github}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition">
+              <svg class="w-4 h-4 text-slate-500" fill="currentColor" viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+              GitHub / ${p.githubUsername || 'Profile'}
+            </a>
+          `;
+        }
+        if (p.linkedin) {
+          contactsContainer.innerHTML += `
+            <a href="${p.linkedin}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition">
+              <svg class="w-4 h-4 text-slate-500" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+              LinkedIn
+            </a>
+          `;
+        }
+        if (p.scholar) {
+          contactsContainer.innerHTML += `
+            <a href="${p.scholar}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition">
+              <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/></svg>
+              Google Scholar
+            </a>
+          `;
+        }
+        if (p.website) {
+          contactsContainer.innerHTML += `
+            <a href="${p.website}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition">
+              <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/></svg>
+              Website
+            </a>
+          `;
+        }
+      }
+
+      // Render Metrics Grid
+      const metricsContainer = document.getElementById('profile-metrics-container');
+      if (metricsContainer && Array.isArray(p.metrics)) {
+        metricsContainer.innerHTML = p.metrics.map(m => `
+          <div class="p-3 bg-white dark:bg-slate-900 rounded-xl border border-slate-100 dark:border-slate-800">
+            <span class="text-2xl font-black text-brand-600 dark:text-brand-400 font-mono block">${m.value}</span>
+            <span class="text-xs font-medium text-slate-500 dark:text-slate-400">${m.label}</span>
+          </div>
+        `).join('');
+      }
+    }
+
+    /**
+     * Render category filter tabs
+     */
+    function renderCategoryTabs() {
+      const container = document.getElementById('category-tabs');
+      if (!container) return;
+
+      let html = `
+        <button type="button" data-category="all" class="category-pill ${state.activeCategory === 'all' ? 'active' : ''} shrink-0 px-3.5 py-1.5 rounded-lg border transition">
+          All (<span id="count-all">0</span>)
+        </button>
+      `;
+
+      CATEGORY_ORDER.forEach(cat => {
+        const meta = CATEGORIES_META[cat];
+        html += `
+          <button type="button" data-category="${cat}" class="category-pill ${state.activeCategory === cat ? 'active' : ''} shrink-0 px-3.5 py-1.5 rounded-lg border transition">
+            ${meta?.badge || cat} (<span id="count-${cat}">0</span>)
+          </button>
+        `;
+      });
+
+      container.innerHTML = html;
+    }
+
+    /**
+     * Load external data.json via Fetch API with automatic fallback
+     */
+    async function loadExternalConfig() {
+      try {
+        const response = await fetch('data.json', { cache: 'no-cache' });
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const jsonData = await response.json();
+        applyData(jsonData, "data.json");
+        showToast("✓ Successfully loaded data and palette from data.json");
+      } catch (err) {
+        console.warn("Could not fetch data.json (e.g. running from file:// protocol or file unserved). Using embedded default data.", err);
+        applyData(FALLBACK_DEFAULT_DATA, "Embedded Default");
+        showToast("Loaded default embedded data (running locally)");
+      }
+    }
+
+    /**
+     * =========================================================================
+     * 3. STATE MANAGEMENT & URL PARAMETER PARSING
+     * =========================================================================
+     */
+    const state = {
+      activeCategory: 'all',
+      searchQuery: '',
+      featuredOnly: false,
+      selectedTag: null,
+      urlCategoryFilter: [],
+      urlIdFilter: [],
+      recipientName: '',
+      customContext: ''
+    };
+
     function parseUrlParameters() {
       const params = new URLSearchParams(window.location.search);
       
-      // ?categories=work,projects
       if (params.has('categories')) {
         const rawCategories = params.get('categories')
           .split(',')
@@ -857,7 +1370,6 @@
         state.urlCategoryFilter = rawCategories;
       }
 
-      // ?ids=job-1,project-x,cert-2
       if (params.has('ids')) {
         const rawIds = params.get('ids')
           .split(',')
@@ -866,19 +1378,16 @@
         state.urlIdFilter = rawIds;
       }
 
-      // ?featured=true
       if (params.get('featured') === 'true') {
         state.featuredOnly = true;
         const toggle = document.getElementById('featured-toggle');
         if (toggle) toggle.checked = true;
       }
 
-      // ?tag=Python
       if (params.has('tag')) {
         state.selectedTag = params.get('tag').trim();
       }
 
-      // ?recipient=Google or ?context=AI%20Staff%20Role
       if (params.has('recipient')) {
         state.recipientName = params.get('recipient').trim();
       }
@@ -886,19 +1395,18 @@
         state.customContext = params.get('context').trim();
       }
 
+      // Allow overriding palette from URL param: ?palette=emerald
+      if (params.has('palette')) {
+        applyPalette(params.get('palette').trim());
+      }
+
       updateTailoredBanner();
     }
 
-    /**
-     * Checks if a custom link filter is currently active
-     */
     function isCustomFilteredView() {
       return state.urlIdFilter.length > 0 || state.urlCategoryFilter.length > 0 || Boolean(state.recipientName) || Boolean(state.customContext);
     }
 
-    /**
-     * Displays or hides the tailored view banner
-     */
     function updateTailoredBanner() {
       const banner = document.getElementById('tailored-view-banner');
       const titleEl = document.getElementById('tailored-banner-title');
@@ -909,7 +1417,6 @@
       if (isCustomFilteredView()) {
         banner.classList.remove('hidden');
 
-        // Personalize the title
         let titleText = "Custom Curated Portfolio View";
         if (state.recipientName && state.customContext) {
           titleText = `Custom CV View for ${state.recipientName} (${state.customContext})`;
@@ -920,7 +1427,6 @@
         }
         titleEl.textContent = titleText;
 
-        // Subtitle explanation
         const filteredEntries = getFilteredEntries();
         let subtitle = `Displaying ${filteredEntries.length} hand-selected entries`;
         if (state.urlCategoryFilter.length > 0) {
@@ -933,9 +1439,6 @@
       }
     }
 
-    /**
-     * Helper to parse inline markdown (bold, italic, code, links)
-     */
     function parseMarkdown(text) {
       if (!text) return '';
       let escaped = text
@@ -943,16 +1446,9 @@
         .replace(/</g, "&lt;")
         .replace(/>/g, "&gt;");
 
-      // Code: `code`
       escaped = escaped.replace(/`([^`]+)`/g, '<code class="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-brand-600 dark:text-brand-300 font-mono text-xs">$1</code>');
-      
-      // Bold: **text**
       escaped = escaped.replace(/\*\*([^*]+)\*\*/g, '<strong class="font-semibold text-slate-900 dark:text-white">$1</strong>');
-      
-      // Italic: *text*
       escaped = escaped.replace(/\*([^*]+)\*/g, '<em class="italic">$1</em>');
-      
-      // Link: [text](url)
       escaped = escaped.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" class="text-brand-600 dark:text-brand-400 underline underline-offset-2 hover:text-brand-700 transition">$1</a>');
 
       return escaped;
@@ -960,64 +1456,48 @@
 
     /**
      * =========================================================================
-     * 3. FILTERING ENGINE & RENDERER
+     * 4. FILTERING ENGINE & RENDERER
      * =========================================================================
      */
     function getFilteredEntries() {
       return CV_DATA.filter(item => {
-        // 1. URL ID filter takes priority if present
         if (state.urlIdFilter.length > 0) {
-          if (!state.urlIdFilter.includes(item.id)) {
-            return false;
-          }
+          if (!state.urlIdFilter.includes(item.id)) return false;
         }
 
-        // 2. URL Category filter
         if (state.urlCategoryFilter.length > 0) {
-          if (!state.urlCategoryFilter.includes(item.category)) {
-            return false;
-          }
+          if (!state.urlCategoryFilter.includes(item.category)) return false;
         }
 
-        // 3. UI Active Category Tab
         if (state.activeCategory !== 'all' && item.category !== state.activeCategory) {
           return false;
         }
 
-        // 4. Featured Only Toggle
         if (state.featuredOnly && !item.featured) {
           return false;
         }
 
-        // 5. Selected Tag filter
         if (state.selectedTag && !item.tags.some(t => t.toLowerCase() === state.selectedTag.toLowerCase())) {
           return false;
         }
 
-        // 6. Search Query (Title, Org, Description, Tags)
         if (state.searchQuery) {
           const q = state.searchQuery.toLowerCase();
           const matchTitle = item.title.toLowerCase().includes(q);
           const matchOrg = item.organization.toLowerCase().includes(q);
           const matchDesc = item.description.toLowerCase().includes(q);
           const matchTags = item.tags.some(t => t.toLowerCase().includes(q));
-          if (!matchTitle && !matchOrg && !matchDesc && !matchTags) {
-            return false;
-          }
+          if (!matchTitle && !matchOrg && !matchDesc && !matchTags) return false;
         }
 
         return true;
       });
     }
 
-    /**
-     * Update Category count badges in the filter bar
-     */
     function updateCategoryCounts() {
       const counts = { all: 0 };
       CATEGORY_ORDER.forEach(cat => counts[cat] = 0);
 
-      // Compute counts based on the base dataset adhering to active URL filters if any
       CV_DATA.forEach(item => {
         if (state.urlIdFilter.length > 0 && !state.urlIdFilter.includes(item.id)) return;
         if (state.urlCategoryFilter.length > 0 && !state.urlCategoryFilter.includes(item.category)) return;
@@ -1028,16 +1508,15 @@
         }
       });
 
-      document.getElementById('count-all').textContent = counts.all;
+      const countAllEl = document.getElementById('count-all');
+      if (countAllEl) countAllEl.textContent = counts.all;
+
       CATEGORY_ORDER.forEach(cat => {
         const el = document.getElementById(`count-${cat}`);
         if (el) el.textContent = counts[cat];
       });
     }
 
-    /**
-     * Render CV content cards grouped by Category
-     */
     function renderCV() {
       const container = document.getElementById('cv-content-area');
       const emptyState = document.getElementById('empty-state');
@@ -1047,7 +1526,6 @@
       if (!container) return;
       container.innerHTML = '';
 
-      // Update active tag filter chip display
       if (state.selectedTag || state.urlIdFilter.length > 0 || state.urlCategoryFilter.length > 0) {
         activeTagsBar.classList.remove('hidden');
         activeFilterChips.innerHTML = '';
@@ -1063,9 +1541,9 @@
 
         if (state.urlIdFilter.length > 0) {
           activeFilterChips.innerHTML += `
-            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800">
+            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-brand-100 dark:bg-brand-950 text-brand-700 dark:text-brand-300 border border-brand-200 dark:border-brand-800">
               ${state.urlIdFilter.length} Curated Items
-              <button type="button" onclick="clearUrlIdFilter()" class="hover:text-indigo-900 dark:hover:text-white" aria-label="Clear ID filter">✕</button>
+              <button type="button" onclick="clearUrlIdFilter()" class="hover:text-brand-900 dark:hover:text-white" aria-label="Clear ID filter">✕</button>
             </span>
           `;
         }
@@ -1082,7 +1560,6 @@
         emptyState.classList.add('hidden');
       }
 
-      // Determine which categories should be shown
       const categoriesToShow = state.activeCategory === 'all'
         ? CATEGORY_ORDER
         : [state.activeCategory];
@@ -1093,12 +1570,10 @@
 
         if (itemsInCat.length === 0) return;
 
-        // Create Section Element
         const sectionEl = document.createElement('section');
         sectionEl.id = `section-${catKey}`;
         sectionEl.className = 'space-y-4';
 
-        // Section Header
         sectionEl.innerHTML = `
           <div class="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-800">
             <div class="flex items-center gap-3">
@@ -1121,16 +1596,13 @@
 
         const grid = sectionEl.querySelector(`#grid-${catKey}`);
 
-        // Render Cards
         itemsInCat.forEach(item => {
           const card = document.createElement('article');
           card.id = `card-${item.id}`;
           card.className = "cv-card page-break-avoid rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 p-5 sm:p-6 shadow-sm hover:shadow-md hover:border-slate-300 dark:hover:border-slate-700 transition relative group";
 
-          // Format description markdown
           const descHtml = parseMarkdown(item.description);
 
-          // Tags pill HTML
           const tagsHtml = item.tags.map(tag => `
             <button type="button" onclick="filterByTag('${tag}')" class="text-xs px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-brand-50 hover:text-brand-700 dark:hover:bg-brand-950/60 dark:hover:text-brand-300 transition font-mono">
               #${tag}
@@ -1175,12 +1647,10 @@
               </div>
             </div>
 
-            <!-- Description -->
             <div class="mt-3 text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed space-y-2">
               <p>${descHtml}</p>
             </div>
 
-            <!-- Tags Container -->
             <div class="mt-4 flex flex-wrap gap-1.5 pt-2 border-t border-slate-100 dark:border-slate-800/80">
               ${tagsHtml}
             </div>
@@ -1195,7 +1665,7 @@
 
     /**
      * =========================================================================
-     * 4. DYNAMIC LINK GENERATOR UI (MODAL & BUILDER)
+     * 5. DYNAMIC LINK GENERATOR UI (MODAL & BUILDER)
      * =========================================================================
      */
     const shareModal = document.getElementById('share-modal');
@@ -1204,12 +1674,8 @@
     const modalUrlOutput = document.getElementById('modal-url-output');
     const modalSelectionCount = document.getElementById('modal-selection-count');
 
-    // Track checked item IDs in the modal
     let modalSelectedIds = new Set();
 
-    /**
-     * Initialize modal checklist structure
-     */
     function initModalChecklist() {
       if (!modalChecklistContainer) return;
       modalChecklistContainer.innerHTML = '';
@@ -1222,7 +1688,6 @@
         const groupEl = document.createElement('div');
         groupEl.className = 'border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden bg-white dark:bg-slate-900';
 
-        // Category Master Header with bulk toggle
         groupEl.innerHTML = `
           <div class="px-4 py-3 bg-slate-50 dark:bg-slate-800/60 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
             <label class="inline-flex items-center gap-2 cursor-pointer font-bold text-xs sm:text-sm text-slate-800 dark:text-slate-200 select-none">
@@ -1257,7 +1722,6 @@
         modalChecklistContainer.appendChild(groupEl);
       });
 
-      // Bind listeners on master category checkboxes
       document.querySelectorAll('[data-cat-master]').forEach(masterCheck => {
         masterCheck.addEventListener('change', (e) => {
           const cat = e.target.getAttribute('data-cat-master');
@@ -1274,7 +1738,6 @@
         });
       });
 
-      // Bind listeners on individual item checkboxes
       document.querySelectorAll('.item-checkbox').forEach(cb => {
         cb.addEventListener('change', (e) => {
           if (e.target.checked) {
@@ -1287,7 +1750,6 @@
         });
       });
 
-      // Bind recipient input listener
       if (modalRecipientInput) {
         modalRecipientInput.addEventListener('input', () => {
           updateModalUrl();
@@ -1295,9 +1757,6 @@
       }
     }
 
-    /**
-     * Keep master category checkboxes in sync with item checks
-     */
     function syncMasterCheckboxes() {
       CATEGORY_ORDER.forEach(cat => {
         const catCheckboxes = Array.from(document.querySelectorAll(`.item-checkbox[data-category="${cat}"]`));
@@ -1312,9 +1771,6 @@
       });
     }
 
-    /**
-     * Generate the share URL string based on modal state
-     */
     function generateShareUrl() {
       const baseUrl = window.location.origin + window.location.pathname;
       const params = new URLSearchParams();
@@ -1324,7 +1780,11 @@
         params.set('recipient', recipient);
       }
 
-      // Check if all items in whole categories are selected
+      // Preserve current active palette in share URL if customized
+      if (currentPaletteName && currentPaletteName !== 'indigo') {
+        params.set('palette', currentPaletteName);
+      }
+
       const selectedCategories = [];
       const leftoverIds = [];
 
@@ -1339,19 +1799,14 @@
         }
       });
 
-      // If all items of every category are selected, clean URL
       if (modalSelectedIds.size === CV_DATA.length) {
-        if (recipient) {
-          return `${baseUrl}?${params.toString()}`;
-        }
-        return baseUrl;
+        const q = params.toString();
+        return q ? `${baseUrl}?${q}` : baseUrl;
       }
 
-      // If whole categories are checked and no individual leftovers, use clean ?categories=...
       if (selectedCategories.length > 0 && leftoverIds.length === 0) {
         params.set('categories', selectedCategories.join(','));
       } else {
-        // Otherwise specify precise IDs for exact curation
         if (modalSelectedIds.size > 0) {
           params.set('ids', Array.from(modalSelectedIds).join(','));
         }
@@ -1361,9 +1816,6 @@
       return queryString ? `${baseUrl}?${queryString}` : baseUrl;
     }
 
-    /**
-     * Update the live preview URL inside the modal
-     */
     function updateModalUrl() {
       if (!modalUrlOutput) return;
       const url = generateShareUrl();
@@ -1371,9 +1823,6 @@
       modalSelectionCount.textContent = `${modalSelectedIds.size} of ${CV_DATA.length} items selected`;
     }
 
-    /**
-     * Apply quick selection presets in the modal
-     */
     function applySharePreset(preset) {
       modalSelectedIds.clear();
 
@@ -1387,11 +1836,8 @@
         CV_DATA.filter(i => ['learning', 'certifications'].includes(i.category)).forEach(i => modalSelectedIds.add(i.id));
       } else if (preset === 'community') {
         CV_DATA.filter(i => ['work', 'volunteering'].includes(i.category)).forEach(i => modalSelectedIds.add(i.id));
-      } else if (preset === 'none') {
-        // modalSelectedIds already cleared
       }
 
-      // Update checkboxes in UI
       document.querySelectorAll('.item-checkbox').forEach(cb => {
         cb.checked = modalSelectedIds.has(cb.value);
       });
@@ -1400,13 +1846,8 @@
       updateModalUrl();
     }
 
-    /**
-     * Open Share Modal
-     */
     function openShareModal() {
       if (!shareModal) return;
-
-      // Populate current selection into the modal based on active page state
       modalSelectedIds.clear();
 
       if (state.urlIdFilter.length > 0) {
@@ -1416,7 +1857,6 @@
       } else if (state.activeCategory !== 'all') {
         CV_DATA.filter(i => i.category === state.activeCategory).forEach(i => modalSelectedIds.add(i.id));
       } else {
-        // Default to all or featured
         CV_DATA.forEach(i => modalSelectedIds.add(i.id));
       }
 
@@ -1430,21 +1870,13 @@
 
       syncMasterCheckboxes();
       updateModalUrl();
-
-      // Show native modal
       shareModal.showModal();
     }
 
-    /**
-     * Close Share Modal
-     */
     function closeShareModal() {
       if (shareModal) shareModal.close();
     }
 
-    /**
-     * Fallback for closedby on non-supporting browsers per modern web guidance
-     */
     if (shareModal && !('closedBy' in HTMLDialogElement.prototype)) {
       shareModal.addEventListener('click', (event) => {
         if (event.target !== shareModal) return;
@@ -1455,15 +1887,10 @@
           rect.left <= event.clientX &&
           event.clientX <= rect.left + rect.width
         );
-        if (!isInContent) {
-          shareModal.close();
-        }
+        if (!isInContent) shareModal.close();
       });
     }
 
-    /**
-     * Copy share URL to clipboard
-     */
     function copyShareUrl() {
       const url = modalUrlOutput.value;
       if (!url) return;
@@ -1487,17 +1914,11 @@
       });
     }
 
-    /**
-     * Open generated link in a new browser tab
-     */
     function openShareUrlInNewTab() {
       const url = modalUrlOutput.value;
       if (url) window.open(url, '_blank');
     }
 
-    /**
-     * Quick share for single item direct link
-     */
     function shareSingleItem(itemId, event) {
       if (event) event.stopPropagation();
       const baseUrl = window.location.origin + window.location.pathname;
@@ -1508,9 +1929,6 @@
       });
     }
 
-    /**
-     * Quick share for an entire category
-     */
     function shareCategoryDirectly(catKey) {
       const baseUrl = window.location.origin + window.location.pathname;
       const catUrl = `${baseUrl}?categories=${catKey}`;
@@ -1523,7 +1941,125 @@
 
     /**
      * =========================================================================
-     * 5. TOAST NOTIFICATIONS
+     * 6. CUSTOMIZE PALETTE & JSON MODAL LOGIC
+     * =========================================================================
+     */
+    const customizeModal = document.getElementById('customize-modal');
+
+    function initPaletteButtons() {
+      const grid = document.getElementById('palette-buttons-grid');
+      if (!grid) return;
+      grid.innerHTML = '';
+
+      Object.keys(PALETTES).forEach(pKey => {
+        const p = PALETTES[pKey];
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.setAttribute('data-palette-btn', pKey);
+        btn.className = `p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 text-left transition flex items-center gap-2.5 ${currentPaletteName === pKey ? 'ring-2 ring-brand-500 border-brand-500' : ''}`;
+        
+        btn.innerHTML = `
+          <div class="w-4 h-4 rounded-full shadow-sm shrink-0" style="background-color: ${p.previewHex};"></div>
+          <span class="text-xs font-semibold text-slate-800 dark:text-slate-200">${p.name}</span>
+        `;
+
+        btn.addEventListener('click', () => {
+          applyPalette(pKey, true);
+        });
+
+        grid.appendChild(btn);
+      });
+    }
+
+    function openCustomizeModal() {
+      if (!customizeModal) return;
+      initPaletteButtons();
+      resetJsonEditorToActive();
+      customizeModal.showModal();
+    }
+
+    function closeCustomizeModal() {
+      if (customizeModal) customizeModal.close();
+    }
+
+    if (customizeModal && !('closedBy' in HTMLDialogElement.prototype)) {
+      customizeModal.addEventListener('click', (event) => {
+        if (event.target !== customizeModal) return;
+        const rect = customizeModal.getBoundingClientRect();
+        const isInContent = (
+          rect.top <= event.clientY &&
+          event.clientY <= rect.top + rect.height &&
+          rect.left <= event.clientX &&
+          event.clientX <= rect.left + rect.width
+        );
+        if (!isInContent) customizeModal.close();
+      });
+    }
+
+    function applyCustomHexFromInput() {
+      const input = document.getElementById('custom-hex-input');
+      if (!input) return;
+      const hex = input.value.trim();
+      if (!hex.startsWith('#') || (hex.length !== 4 && hex.length !== 7)) {
+        showToast("Please enter a valid hex color (e.g. #0284c7)");
+        return;
+      }
+      applyPalette(hex, true);
+    }
+
+    function resetJsonEditorToActive() {
+      const editor = document.getElementById('json-editor-textarea');
+      if (editor && ACTIVE_DATA) {
+        editor.value = JSON.stringify(ACTIVE_DATA, null, 2);
+      }
+    }
+
+    function applyJsonFromEditor() {
+      const editor = document.getElementById('json-editor-textarea');
+      if (!editor) return;
+      try {
+        const parsed = JSON.parse(editor.value);
+        applyData(parsed, "JSON Editor");
+        showToast("✓ Custom JSON applied successfully!");
+      } catch (err) {
+        alert("JSON syntax error: " + err.message);
+      }
+    }
+
+    function exportCurrentJson() {
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(ACTIVE_DATA, null, 2));
+      const downloadAnchor = document.createElement('a');
+      downloadAnchor.setAttribute("href", dataStr);
+      downloadAnchor.setAttribute("download", "data.json");
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
+      showToast("✓ data.json downloaded!");
+    }
+
+    // File input listener for uploading local JSON files
+    const jsonFileInput = document.getElementById('json-file-input');
+    if (jsonFileInput) {
+      jsonFileInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          try {
+            const parsed = JSON.parse(event.target.result);
+            applyData(parsed, file.name);
+            showToast(`✓ Loaded ${file.name} successfully!`);
+          } catch (err) {
+            alert("Error parsing JSON file: " + err.message);
+          }
+        };
+        reader.readAsText(file);
+      });
+    }
+
+    /**
+     * =========================================================================
+     * 7. TOAST NOTIFICATIONS
      * =========================================================================
      */
     function showToast(message, duration = 3000) {
@@ -1536,12 +2072,10 @@
 
       container.appendChild(toast);
 
-      // Animate in
       requestAnimationFrame(() => {
         toast.classList.remove('translate-y-2', 'opacity-0');
       });
 
-      // Animate out & remove
       setTimeout(() => {
         toast.classList.add('translate-y-2', 'opacity-0');
         setTimeout(() => toast.remove(), 250);
@@ -1550,7 +2084,7 @@
 
     /**
      * =========================================================================
-     * 6. FILTER ACTIONS & USER CONTROLS
+     * 8. FILTER ACTIONS & USER CONTROLS
      * =========================================================================
      */
     function filterByTag(tagName) {
@@ -1586,7 +2120,6 @@
       state.recipientName = '';
       state.customContext = '';
 
-      // Reset DOM controls
       const searchInput = document.getElementById('search-input');
       const clearSearchBtn = document.getElementById('clear-search-btn');
       const featuredToggle = document.getElementById('featured-toggle');
@@ -1594,7 +2127,6 @@
       if (clearSearchBtn) clearSearchBtn.classList.add('hidden');
       if (featuredToggle) featuredToggle.checked = false;
 
-      // Update pills
       document.querySelectorAll('.category-pill').forEach(pill => {
         if (pill.getAttribute('data-category') === 'all') {
           pill.classList.add('active');
@@ -1603,7 +2135,6 @@
         }
       });
 
-      // Clean URL without reloading
       const cleanUrl = window.location.origin + window.location.pathname;
       window.history.pushState({}, '', cleanUrl);
 
@@ -1615,7 +2146,7 @@
 
     /**
      * =========================================================================
-     * 7. THEME & DARK MODE SYSTEM
+     * 9. THEME & DARK MODE SYSTEM
      * =========================================================================
      */
     function getStoredTheme() {
@@ -1632,13 +2163,11 @@
         document.documentElement.classList.remove('dark');
       }
 
-      // Update color-scheme meta for native scrollbars and form controls
       const meta = document.querySelector('meta[name="color-scheme"]');
       if (meta) {
         meta.content = theme === 'system' ? 'light dark' : theme;
       }
 
-      // Update Icons in header
       const iconLight = document.getElementById('theme-icon-light');
       const iconDark = document.getElementById('theme-icon-dark');
       const iconSystem = document.getElementById('theme-icon-system');
@@ -1653,7 +2182,6 @@
         else iconSystem.classList.remove('hidden');
       }
 
-      // Update Dropdown checks
       ['light', 'dark', 'system'].forEach(t => {
         const check = document.getElementById(`check-${t}`);
         if (check) {
@@ -1680,7 +2208,6 @@
       if (menu) menu.classList.add('hidden');
     }
 
-    // Listen to OS system theme changes
     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
       if (getStoredTheme() === 'system') {
         applyTheme('system');
@@ -1689,22 +2216,21 @@
 
     /**
      * =========================================================================
-     * 8. EVENT LISTENERS & APP INITIALIZATION
+     * 10. APP INITIALIZATION & EVENT LISTENERS
      * =========================================================================
      */
-    document.addEventListener('DOMContentLoaded', () => {
-      // 1. Initialize Theme
+    document.addEventListener('DOMContentLoaded', async () => {
+      // 1. Initialize Dark/Light Theme
       applyTheme(getStoredTheme());
 
-      // 2. Parse URL parameters
+      // 2. Initialize Palette buttons in customize modal
+      initPaletteButtons();
+
+      // 3. Load Data from external data.json (with automatic fallback to embedded data)
+      await loadExternalConfig();
+
+      // 4. Parse URL parameters (IDs, categories, recipient, custom palette)
       parseUrlParameters();
-
-      // 3. Initialize Category Counts & Render Content
-      updateCategoryCounts();
-      renderCV();
-
-      // 4. Initialize Modal Checklist
-      initModalChecklist();
 
       // 5. Category Tab Click Handlers
       const categoryTabs = document.getElementById('category-tabs');
@@ -1758,13 +2284,19 @@
         });
       }
 
-      // 8. Open Share Modal Buttons
+      // 8. Open Share Modal Button
       const openShareBtn = document.getElementById('open-share-btn');
       if (openShareBtn) {
         openShareBtn.addEventListener('click', openShareModal);
       }
 
-      // 9. Print / PDF Button
+      // 9. Open Customize Modal Button
+      const openCustomizeBtn = document.getElementById('open-customize-btn');
+      if (openCustomizeBtn) {
+        openCustomizeBtn.addEventListener('click', openCustomizeModal);
+      }
+
+      // 10. Print / PDF Button
       const printBtn = document.getElementById('print-cv-btn');
       if (printBtn) {
         printBtn.addEventListener('click', () => {
@@ -1772,7 +2304,7 @@
         });
       }
 
-      // 10. Theme Menu Toggle & Outside click handler
+      // 11. Theme Menu Toggle & Outside click handler
       const themeToggleBtn = document.getElementById('theme-toggle-btn');
       if (themeToggleBtn) {
         themeToggleBtn.addEventListener('click', (e) => {
@@ -1787,13 +2319,14 @@
         }
       });
 
-      // 11. Keyboard Shortcuts (Esc closes modal, / focuses search)
+      // 12. Keyboard Shortcuts (Esc closes modals, / focuses search)
       document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
           closeShareModal();
+          closeCustomizeModal();
           closeThemeMenu();
         }
-        if (e.key === '/' && document.activeElement !== searchInput && (!shareModal || !shareModal.open)) {
+        if (e.key === '/' && document.activeElement !== searchInput && (!shareModal || !shareModal.open) && (!customizeModal || !customizeModal.open)) {
           e.preventDefault();
           if (searchInput) searchInput.focus();
         }
@@ -1801,7 +2334,7 @@
     });
   </script>
 
-  <!-- Category Pill Active CSS Style (Clean, minimal aesthetic) -->
+  <!-- Category Pill Active CSS Style -->
   <style>
     .category-pill {
       background-color: transparent;
@@ -1822,17 +2355,16 @@
     }
     .category-pill.active {
       background-color: #ffffff;
-      color: #4f46e5;
+      color: rgb(var(--brand-600));
       border-color: #cbd5e1;
       font-weight: 700;
       box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
     }
     .dark .category-pill.active {
       background-color: #1e293b;
-      color: #818cf8;
+      color: rgb(var(--brand-400));
       border-color: #334155;
     }
-    /* Hide scrollbar for category tabs on mobile */
     .no-scrollbar::-webkit-scrollbar {
       display: none;
     }

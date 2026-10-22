@@ -1,0 +1,273 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "theme": {
+    "palette": "indigo",
+    "note": "Choose from presets ('indigo', 'emerald', 'blue', 'violet', 'rose', 'amber', 'cyan') or provide a custom hex in customShades.",
+    "customShades": null
+  },
+  "profile": {
+    "name": "Alex Morgan",
+    "suffix": "M.Sc.",
+    "initials": "AM",
+    "title": "Senior AI Systems Engineer & Open Source Researcher",
+    "status": "Available for Staff/Lead Roles & Advisory",
+    "location": "Zurich, Switzerland (Open to Remote)",
+    "bio": "Specializing in high-throughput distributed AI pipelines, autonomous agentic runtimes, and low-latency systems. Over 8 years of engineering experience bridging research prototypes into mission-critical cloud infrastructure. Active open-source maintainer and conference speaker.",
+    "email": "alex.morgan@example.com",
+    "github": "https://github.com/alexmorgan",
+    "githubUsername": "alexmorgan",
+    "linkedin": "https://linkedin.com/in/alexmorgan-dev",
+    "scholar": "https://scholar.google.com",
+    "website": "https://alexmorgan.dev",
+    "metrics": [
+      { "value": "8+", "label": "Years Experience" },
+      { "value": "4.2k", "label": "GitHub Stars" },
+      { "value": "25+", "label": "Prod Models / APIs" },
+      { "value": "7", "label": "Papers & Patents" }
+    ]
+  },
+  "categories": {
+    "work": {
+      "title": "Professional Experience",
+      "badge": "Work"
+    },
+    "projects": {
+      "title": "Key Projects & Builds",
+      "badge": "Projects"
+    },
+    "learning": {
+      "title": "Education & Learning",
+      "badge": "Learning"
+    },
+    "certifications": {
+      "title": "Certifications & Credentials",
+      "badge": "Certifications"
+    },
+    "volunteering": {
+      "title": "Community & Volunteering",
+      "badge": "Volunteering"
+    },
+    "hobbies": {
+      "title": "Interests & Pursuits",
+      "badge": "Hobbies"
+    }
+  },
+  "items": [
+    {
+      "id": "work-staff-ai-systems",
+      "category": "work",
+      "title": "Staff AI Systems Engineer & Tech Lead",
+      "organization": "Cerebral Systems Labs",
+      "date": "2023 – Present",
+      "location": "Zurich, CH / Hybrid",
+      "description": "Leading the distributed systems team responsible for training and serving large reasoning models. Architected a multi-region inference gateway serving **45M+ daily requests** with sub-40ms P99 latency. Engineered speculative decoding pipelines cutting LLM inference costs by **38%**.",
+      "tags": ["Python", "Rust", "Distributed Systems", "vLLM", "Kubernetes", "PyTorch", "gRPC"],
+      "featured": true,
+      "link": "https://cerebralsystems.example.com"
+    },
+    {
+      "id": "work-senior-cloud-architect",
+      "category": "work",
+      "title": "Senior Cloud & Infrastructure Architect",
+      "organization": "Aether Cloud Infrastructure",
+      "date": "2020 – 2023",
+      "location": "Geneva, CH",
+      "description": "Spearheaded the migration of monolithic microservices into modular Kubernetes clusters with Istio service mesh. Mentored a team of 14 engineers across SRE and platform teams. Designed real-time event streaming architectures using Kafka handling **1.2 TB/hour**.",
+      "tags": ["Go", "Kubernetes", "Terraform", "Kafka", "AWS", "Prometheus", "Architecture"],
+      "featured": true,
+      "link": "https://aethercloud.example.com"
+    },
+    {
+      "id": "work-ml-engineer-nova",
+      "category": "work",
+      "title": "Machine Learning Engineer",
+      "organization": "Nova Data Intelligence",
+      "date": "2018 – 2020",
+      "location": "Berlin, DE",
+      "description": "Implemented high-precision NLP classification and entity-resolution models for financial intelligence. Built automated CI/CD evaluation pipelines with MLflow and Docker, reducing model deployment cycles from 2 weeks to under **3 hours**.",
+      "tags": ["Python", "Transformers", "NLP", "MLflow", "Docker", "PostgreSQL"],
+      "featured": false,
+      "link": "https://novaintelligence.example.com"
+    },
+    {
+      "id": "work-systems-intern",
+      "category": "work",
+      "title": "Systems Engineering Intern",
+      "organization": "Starlight Analytics",
+      "date": "Summer 2017",
+      "location": "Edinburgh, UK",
+      "description": "Developed optimized C++ data parser utilities for time-series sensor telemetry. Benchmarked database indexing strategies across ClickHouse and TimescaleDB, resulting in a **4x query speedup** for historical aggregations.",
+      "tags": ["C++", "Time Series", "ClickHouse", "Linux", "Benchmarking"],
+      "featured": false
+    },
+    {
+      "id": "project-omniagent-runtime",
+      "category": "projects",
+      "title": "OmniAgent: Distributed Multi-Agent Runtime",
+      "organization": "Open Source Initiative",
+      "date": "2025 – 2026",
+      "description": "An open-source asynchronous orchestration runtime for autonomous AI agent networks with verifiable execution traces and cryptographic state checkpoints. Reached **2.8k GitHub stars** and actively used in production by 3 fintech startups.",
+      "tags": ["Rust", "TypeScript", "AI Agents", "WebSockets", "Docker", "Open Source"],
+      "featured": true,
+      "link": "https://github.com/alexmorgan/omniagent"
+    },
+    {
+      "id": "project-hyperindex-vectordb",
+      "category": "projects",
+      "title": "HyperIndex: Ultra-Low Latency Embedded Vector Index",
+      "organization": "Personal Project",
+      "date": "2024",
+      "description": "SIMD-accelerated Hierarchical Navigable Small World (HNSW) vector search engine written in Rust with Python and WebAssembly bindings. Achieved **15% higher recall** than standard FAISS on 1M 768-dim embedding benchmarks.",
+      "tags": ["Rust", "SIMD", "Vector Search", "WASM", "Information Retrieval"],
+      "featured": true,
+      "link": "https://github.com/alexmorgan/hyperindex"
+    },
+    {
+      "id": "project-syntaxlens-ast",
+      "category": "projects",
+      "title": "SyntaxLens: Interactive AST & Compiler Visualizer",
+      "organization": "Dev Tools Community",
+      "date": "2023",
+      "description": "Browser-based developer tool for live abstract syntax tree introspection and bytecode comparison across V8, PyPy, and Cranelift. Featured in *JavaScript Weekly* and *Hacker News* front page.",
+      "tags": ["TypeScript", "WebAssembly", "Compilers", "Tailwind CSS", "Canvas API"],
+      "featured": false,
+      "link": "https://syntaxlens.dev"
+    },
+    {
+      "id": "project-microvoice-tts",
+      "category": "projects",
+      "title": "MicroVoice: Local Edge Neural Speech Synthesizer",
+      "organization": "Research Build",
+      "date": "2022",
+      "description": "Zero-dependency pure browser neural text-to-speech synthesizer running entirely clientside via ONNX Runtime Web. Performs realtime acoustic modeling without transmitting voice data to remote servers.",
+      "tags": ["WebAudio API", "ONNX", "Edge AI", "Privacy", "JavaScript"],
+      "featured": false,
+      "link": "https://github.com/alexmorgan/microvoice"
+    },
+    {
+      "id": "edu-msc-eth-zurich",
+      "category": "learning",
+      "title": "Master of Science in Computer Science (Distributed Systems)",
+      "organization": "ETH Zürich",
+      "date": "2018 – 2020",
+      "location": "Zurich, Switzerland",
+      "description": "Graduated with Distinction (**GPA 5.8 / 6.0**). Master's thesis on *'Asynchronous Consensus under Network Partitions for Byzantine-Tolerant Replicated State Machines'*, supervised by Prof. T. Hoare Chair. Core coursework in High Performance Computing, Machine Learning, and Cryptographic Protocols.",
+      "tags": ["Distributed Systems", "Consensus", "Formal Verification", "Algorithms"],
+      "featured": true
+    },
+    {
+      "id": "edu-bsc-edinburgh",
+      "category": "learning",
+      "title": "Bachelor of Science in Computer Science & Mathematics",
+      "organization": "University of Edinburgh",
+      "date": "2014 – 2018",
+      "location": "Edinburgh, United Kingdom",
+      "description": "First Class Honours. Awarded the *Class Medal in Systems Programming*. Served as Undergraduate Teaching Assistant for Data Structures & Algorithms and Operating Systems courses.",
+      "tags": ["Computer Science", "Discrete Math", "Operating Systems", "C"],
+      "featured": false
+    },
+    {
+      "id": "course-stanford-distributed-ml",
+      "category": "learning",
+      "title": "Advanced Distributed Machine Learning Systems (CS 329)",
+      "organization": "Stanford Online / Center for Professional Development",
+      "date": "2022",
+      "description": "Intensive 10-week post-graduate curriculum covering parameter servers, pipeline parallelism, tensor parallelism (Megatron-LM), and RDMA networking.",
+      "tags": ["Distributed ML", "Parallelism", "NCCL", "GPU Clusters"],
+      "featured": false
+    },
+    {
+      "id": "cert-aws-solutions-architect",
+      "category": "certifications",
+      "title": "AWS Certified Solutions Architect – Professional (SAP-C02)",
+      "organization": "Amazon Web Services",
+      "date": "2024 – 2027",
+      "description": "Comprehensive validation of multi-tier resilient cloud architecture, automated disaster recovery, enterprise security governance, and multi-account cloud topologies.",
+      "tags": ["AWS", "Cloud Architecture", "Security", "High Availability"],
+      "featured": true,
+      "link": "https://aws.amazon.com/verification"
+    },
+    {
+      "id": "cert-cncf-cka",
+      "category": "certifications",
+      "title": "Certified Kubernetes Administrator (CKA)",
+      "organization": "Cloud Native Computing Foundation (CNCF)",
+      "date": "2023 – 2026",
+      "description": "Hands-on performance exam evaluating cluster lifecycle administration, storage networking, ingress controllers, troubleshooting, and production workload orchestration.",
+      "tags": ["Kubernetes", "DevOps", "Containers", "CNCF"],
+      "featured": true,
+      "link": "https://cncf.io/certification/cka"
+    },
+    {
+      "id": "cert-deeplearning-specialization",
+      "category": "certifications",
+      "title": "Deep Learning Specialization",
+      "organization": "DeepLearning.AI & Coursera",
+      "date": "2021",
+      "description": "Five-course sequence covering neural network fundamentals, hyperparameter tuning, structuring ML projects, convolutional models, and sequence sequence models.",
+      "tags": ["Deep Learning", "TensorFlow", "Math", "Optimization"],
+      "featured": false,
+      "link": "https://coursera.org"
+    },
+    {
+      "id": "vol-ai-safety-mentor",
+      "category": "volunteering",
+      "title": "Technical Mentor & Grant Application Reviewer",
+      "organization": "AI Safety & Alignment Open Network",
+      "date": "2023 – Present",
+      "description": "Providing 1-on-1 technical coaching for junior researchers investigating mechanistic interpretability and model red-teaming. Evaluated over 30 micro-grant submissions for compute resources.",
+      "tags": ["Mentorship", "AI Safety", "Community", "Research"],
+      "featured": true
+    },
+    {
+      "id": "vol-pyladies-workshop-lead",
+      "category": "volunteering",
+      "title": "Open Workshop Lead & Python Instructor",
+      "organization": "PyLadies & Women Who Code Zurich",
+      "date": "2021 – Present",
+      "description": "Organized and delivered 8 free weekend workshops introducing modern Python, Git, and web API development to over 240 career switchers and underrepresented engineers.",
+      "tags": ["Teaching", "Python", "Diversity in Tech", "Community"],
+      "featured": false
+    },
+    {
+      "id": "vol-crisis-mapping-foss",
+      "category": "volunteering",
+      "title": "Core Contributor & Relief Mapping Engineer",
+      "organization": "CrisisResponse Open Source GIS",
+      "date": "2019 – 2022",
+      "description": "Volunteered emergency map layer data-pipelines during natural disaster responses to assist humanitarian logistics coordinators in real-time routing.",
+      "tags": ["GIS", "OpenStreetMap", "Python", "Public Good"],
+      "featured": false
+    },
+    {
+      "id": "hobby-ultra-trail-running",
+      "category": "hobbies",
+      "title": "Alpine Trail Running & Ultra-Marathons",
+      "organization": "Swiss Alpine Runners Club",
+      "date": "2019 – Present",
+      "description": "Finisher of the Eiger Ultra Trail 51k and Scenic Trail 54k with over 3,800m vertical ascent. Enduring discipline, pacing strategies, and mental resilience applied directly to long-term engineering challenges.",
+      "tags": ["Endurance", "Trail Running", "Outdoors", "Mindset"],
+      "featured": true
+    },
+    {
+      "id": "hobby-modular-synth",
+      "category": "hobbies",
+      "title": "Generative Audio & Eurorack Modular Synthesis",
+      "organization": "Independent Sound Design",
+      "date": "2020 – Present",
+      "description": "Designing stochastic generative music patches utilizing control voltage (CV), algorithmic step sequencers, and analog filtering circuits. Exploring the intersection of mathematics and harmony.",
+      "tags": ["Music", "Sound Synthesis", "Analog Circuits", "Creativity"],
+      "featured": false
+    },
+    {
+      "id": "hobby-ergonomic-keyboards",
+      "category": "hobbies",
+      "title": "Custom Ergonomic Keyboard Design & Micro-soldering",
+      "organization": "Maker Community",
+      "date": "2022 – Present",
+      "description": "Hand-soldered split ergonomic mechanical keyboards (Corne & Dactyl ManuForm) with custom ZMK wireless firmware, Colemak-DH layouts, and micro-controller integration.",
+      "tags": ["Hardware", "Soldering", "Ergonomics", "ZMK Firmware"],
+      "featured": false
+    }
+  ]
+}
