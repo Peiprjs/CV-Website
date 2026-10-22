@@ -351,6 +351,11 @@
       <span>Share Custom Link</span>
     </button>
 
+    <!-- PDF CV Link -->
+    <a id="mobile-pdf-btn" href="https://cv.peiphy.xyz/CV.pdf" target="_blank" rel="noopener noreferrer" aria-label="Official PDF CV" title="Official PDF CV" class="p-2.5 rounded-xl text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 transition active:scale-95 flex items-center justify-center">
+      <svg class="w-4 h-4 text-brand-600 dark:text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+    </a>
+
     <!-- Scroll to Top -->
     <button type="button" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" aria-label="Scroll to top" class="p-2.5 rounded-xl text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 transition active:scale-95">
       <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"/></svg>
@@ -554,6 +559,12 @@
         if (p.email) contacts.innerHTML += `<a href="mailto:${p.email}" class="px-2 py-1 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">✉ Email</a>`;
         if (p.github) contacts.innerHTML += `<a href="${p.github}" target="_blank" class="px-2 py-1 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">GitHub</a>`;
         if (p.linkedin) contacts.innerHTML += `<a href="${p.linkedin}" target="_blank" class="px-2 py-1 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">LinkedIn</a>`;
+        if (p.scholar) contacts.innerHTML += `<a href="${p.scholar}" target="_blank" class="px-2 py-1 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">Scholar</a>`;
+        if (p.website) contacts.innerHTML += `<a href="${p.website}" target="_blank" rel="noopener noreferrer" class="px-2 py-1 rounded bg-brand-50 dark:bg-brand-950/60 text-brand-700 dark:text-brand-300 font-medium">📄 PDF CV</a>`;
+      }
+      const pdfBtn = document.getElementById('mobile-pdf-btn');
+      if (pdfBtn && p.website) {
+        pdfBtn.href = p.website;
       }
     }
 

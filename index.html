@@ -197,13 +197,14 @@
           <span class="sm:hidden">Share</span>
         </button>
 
-        <!-- Print / PDF Export Button -->
-        <button id="print-cv-btn" type="button" aria-label="Print or Export CV to PDF" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:bg-slate-200 dark:hover:bg-slate-700 transition shadow-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/>
+        <!-- Print / PDF Redirect Link -->
+        <a id="print-cv-btn" href="https://cv.peiphy.xyz/CV.pdf" target="_blank" rel="noopener noreferrer" aria-label="Official CV PDF" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:bg-slate-200 dark:hover:bg-slate-700 transition shadow-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+          <svg class="w-4 h-4 text-brand-600 dark:text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
           </svg>
-          <span class="hidden lg:inline">Print / PDF</span>
-        </button>
+          <span class="hidden lg:inline">PDF CV</span>
+          <span class="lg:hidden">PDF</span>
+        </a>
 
         <!-- Merged Edition (Desktop/Smartphone) & Theme (Light/Dark) Control Capsule -->
         <div class="flex items-center p-0.5 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700/80 shadow-sm text-xs font-semibold">
@@ -1105,13 +1106,19 @@
           `;
         }
         if (p.website) {
+          const isPdf = p.website.toLowerCase().endsWith('.pdf');
           contactsContainer.innerHTML += `
-            <a href="${p.website}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition">
-              <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"/></svg>
-              Website
+            <a href="${p.website}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-brand-50 dark:bg-brand-950/60 text-brand-700 dark:text-brand-300 font-medium hover:bg-brand-100 dark:hover:bg-brand-900/60 transition">
+              <svg class="w-4 h-4 text-brand-600 dark:text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+              ${isPdf ? 'PDF CV' : 'Website'}
             </a>
           `;
         }
+      }
+
+      const printBtn = document.getElementById('print-cv-btn');
+      if (printBtn && p.website) {
+        printBtn.href = p.website;
       }
 
       // Render Metrics Grid
@@ -2018,10 +2025,8 @@
 
       // 9. Print / PDF Button
       const printBtn = document.getElementById('print-cv-btn');
-      if (printBtn) {
-        printBtn.addEventListener('click', () => {
-          window.print();
-        });
+      if (printBtn && ACTIVE_DATA?.profile?.website) {
+        printBtn.href = ACTIVE_DATA.profile.website;
       }
 
       // 10. Theme Menu Toggle & Outside click handler

@@ -188,11 +188,11 @@
           Share Custom View
         </button>
 
-        <!-- Print Button -->
-        <button id="print-cv-btn" type="button" aria-label="Print or Export CV to PDF" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:bg-slate-200 dark:hover:bg-slate-700 transition shadow-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
-          Print / PDF
-        </button>
+        <!-- Print / PDF Redirect Link -->
+        <a id="print-cv-btn" href="https://cv.peiphy.xyz/CV.pdf" target="_blank" rel="noopener noreferrer" aria-label="Official CV PDF" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:bg-slate-200 dark:hover:bg-slate-700 transition shadow-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+          <svg class="w-4 h-4 text-brand-600 dark:text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+          <span>PDF CV</span>
+        </a>
 
         <!-- Merged View & Theme Control Capsule -->
         <div class="flex items-center p-0.5 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700/80 shadow-sm text-xs font-semibold">
@@ -672,6 +672,12 @@
         if (p.github) contacts.innerHTML += `<a href="${p.github}" target="_blank" class="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 transition">GitHub</a>`;
         if (p.linkedin) contacts.innerHTML += `<a href="${p.linkedin}" target="_blank" class="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 transition">LinkedIn</a>`;
         if (p.scholar) contacts.innerHTML += `<a href="${p.scholar}" target="_blank" class="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 transition">Scholar</a>`;
+        if (p.website) contacts.innerHTML += `<a href="${p.website}" target="_blank" rel="noopener noreferrer" class="px-2.5 py-1 rounded-lg bg-brand-50 dark:bg-brand-950/60 text-brand-700 dark:text-brand-300 font-medium hover:bg-brand-100 transition">📄 PDF CV</a>`;
+      }
+
+      const printBtn = document.getElementById('print-cv-btn');
+      if (printBtn && p.website) {
+        printBtn.href = p.website;
       }
 
       const metrics = document.getElementById('profile-metrics-container');
@@ -1023,7 +1029,10 @@
         document.getElementById('theme-dropdown').classList.toggle('hidden');
       });
       document.getElementById('open-share-btn').addEventListener('click', openShareModal);
-      document.getElementById('print-cv-btn').addEventListener('click', () => window.print());
+      const printBtn = document.getElementById('print-cv-btn');
+      if (printBtn && ACTIVE_DATA?.profile?.website) {
+        printBtn.href = ACTIVE_DATA.profile.website;
+      }
       
       const search = document.getElementById('search-input');
       search.addEventListener('input', (e) => {
