@@ -1,7 +1,7 @@
 /**
  * AUTO-GENERATED FILE — DO NOT EDIT DIRECTLY.
- * Generated from data.json via scripts/update-data.js
- * Last generated: 2026-10-22T13:09:41.905Z
+ * Generated from data.json via scripts/update_data.py
+ * Last generated: 2026-10-22T15:12:13.722874
  * 
  * Exposes window.CV_DEFAULT_DATA for instant 0ms first-paint
  * and offline / file:// protocol compatibility.
@@ -161,19 +161,19 @@ window.CV_DEFAULT_DATA = {
   "languages": [
     {
       "name": "Catalan",
-      "nativeName": "Català",
+      "nativeName": "Catal\u00e0",
       "framework": "CEFR",
       "level": "C2",
       "descriptor": "Native / Bilingual",
-      "description": "Native language with full bilingual fluency in educational, administrative, and creative contexts."
+      "description": "Native language with complete proficiency. Certified by GENCAT."
     },
     {
       "name": "Spanish",
-      "nativeName": "Español",
+      "nativeName": "Espa\u00f1ol",
       "framework": "CEFR",
       "level": "C2",
       "descriptor": "Native / Bilingual",
-      "description": "Native language with complete proficiency across academic, professional, and scientific communication."
+      "description": "Native language with complete proficiency. Certified by GENCAT."
     },
     {
       "name": "English",
@@ -181,7 +181,7 @@ window.CV_DEFAULT_DATA = {
       "framework": "CEFR",
       "level": "C2",
       "descriptor": "Mastery / Full Professional",
-      "description": "Full academic and research fluency (C2). Teaching assistant, international conference speaker, and scientific author."
+      "description": "Full academic and research fluency (C2). Certified by Cambridge English."
     },
     {
       "name": "Dutch",
@@ -189,23 +189,23 @@ window.CV_DEFAULT_DATA = {
       "framework": "CEFR",
       "level": "B2",
       "descriptor": "Upper Intermediate / Vantage",
-      "description": "Professional working proficiency living and studying at Maastricht University in the Netherlands."
+      "description": "Professional working proficiency. Certified by DUO."
     },
     {
       "name": "French",
-      "nativeName": "Français",
+      "nativeName": "Fran\u00e7ais",
       "framework": "CEFR",
       "level": "A2",
       "descriptor": "Elementary / Waystage",
-      "description": "Basic conversational ability, reading comprehension, and everyday vocabulary."
+      "description": "Basic conversational ability, reading comprehension, and everyday vocabulary. Certified by DELF."
     },
     {
       "name": "Japanese",
-      "nativeName": "日本語",
+      "nativeName": "\u65e5\u672c\u8a9e",
       "framework": "JLPT",
       "level": "N5",
-      "descriptor": "Introductory / Basic (JLPT N5 ≈ CEFR A1)",
-      "description": "Basic kanji, hiragana, katakana, and elementary daily conversational phrases."
+      "descriptor": "Introductory / Basic (JLPT N5 \u2248 CEFR A1)",
+      "description": "Basic kanji, hiragana, katakana, and elementary daily conversational phrases. Non-certified."
     }
   ],
   "items": [
@@ -214,7 +214,7 @@ window.CV_DEFAULT_DATA = {
       "category": "work",
       "title": "Laboratory and Teaching Assistant",
       "organization": "Maastricht University (Onderwijsinstituut FHML)",
-      "date": "Sep 2024 – Present",
+      "date": "Sep 2024 \u2013 Present",
       "location": "Maastricht, NL",
       "description": "Assisting in practical laboratory sessions, guiding undergraduate students in biomedical techniques, and digitizing standardized experimental protocols for the Faculty of Health, Medicine and Life Sciences.",
       "tags": [
@@ -232,7 +232,7 @@ window.CV_DEFAULT_DATA = {
       "category": "work",
       "title": "Head of Education",
       "organization": "Study Association Helix",
-      "date": "Jun 2025 – Jun 2026",
+      "date": "Jun 2025 \u2013 Jun 2026",
       "location": "Maastricht, NL",
       "description": "Representing biomedical sciences student interests, managing educational quality assurance initiatives, and collaborating with faculty administration on curriculum development.",
       "tags": [
@@ -249,7 +249,7 @@ window.CV_DEFAULT_DATA = {
       "category": "work",
       "title": "Department Co-Manager & Software Developer",
       "organization": "PGamerX Legacy",
-      "date": "Nov 2021 – Sep 2023",
+      "date": "Nov 2021 \u2013 Sep 2023",
       "location": "Remote",
       "description": "Co-managed the automation software development department and engineered open-source applications and high-availability Discord bots for community and developer workflows.",
       "tags": [
@@ -267,7 +267,7 @@ window.CV_DEFAULT_DATA = {
       "category": "work",
       "title": "Technical Support Agent",
       "organization": "Something Host",
-      "date": "Aug 2020 – Dec 2020",
+      "date": "Aug 2020 \u2013 Dec 2020",
       "location": "Remote",
       "description": "Provided technical support, troubleshooting, and server deployment assistance for cloud and web hosting infrastructure clients.",
       "tags": [
@@ -385,7 +385,7 @@ window.CV_DEFAULT_DATA = {
       "category": "learning",
       "title": "Bachelor of Science in Biomedical Sciences",
       "organization": "Maastricht University Faculty of Health, Medicine and Life Sciences",
-      "date": "2023 – 2026",
+      "date": "2023 \u2013 2026",
       "location": "Maastricht, Netherlands",
       "description": "Focusing on toxicology, genomics, molecular biology, and biomedical data analysis. Active in educational improvement and open-access protocol standardization.",
       "tags": [
@@ -403,7 +403,7 @@ window.CV_DEFAULT_DATA = {
       "category": "learning",
       "title": "Radiation Protection Officer (TMS-VRS D)",
       "organization": "Maastricht University (FHML - Radiation Protection Unit Randwyck)",
-      "date": "Sep 2025 – Oct 2025",
+      "date": "Sep 2025 \u2013 Oct 2025",
       "location": "Maastricht, NL",
       "description": "Specialized certification for handling dispersible radioactive substances level D safely within biomedical research laboratories.",
       "tags": [
@@ -435,7 +435,7 @@ window.CV_DEFAULT_DATA = {
       "category": "learning",
       "title": "International Baccalaureate (IB) Diploma Programme & Batxillerat",
       "organization": "INS Jaume Vicens Vives / International Baccalaureate",
-      "date": "2021 – 2023",
+      "date": "2021 \u2013 2023",
       "location": "Girona, Spain",
       "description": "Rigorous bilingual secondary education program combining the IB Diploma and Spanish Batxillerat with a strong focus on experimental sciences and mathematics.",
       "tags": [
@@ -450,7 +450,7 @@ window.CV_DEFAULT_DATA = {
       "id": "cert-catalan-biology-olympiad",
       "category": "certifications",
       "title": "Q1 + 3rd Place in Subregionals (Catalan Biology Olympiad)",
-      "organization": "Col·legi de Biòlegs de Catalunya",
+      "organization": "Col\u00b7legi de Bi\u00f2legs de Catalunya",
       "date": "Feb 2023",
       "description": "Achieved top placement in the regional phase of the Catalan Biology Olympiad, demonstrating advanced competency in molecular and organismal biology.",
       "tags": [
@@ -465,7 +465,7 @@ window.CV_DEFAULT_DATA = {
       "id": "cert-physics-olympiad",
       "category": "certifications",
       "title": "Top 50 - Regional Selection (Physics Olympiad)",
-      "organization": "Societat Catalana de Física",
+      "organization": "Societat Catalana de F\u00edsica",
       "date": "Feb 2023",
       "description": "Selected among the top 50 pre-regional participants in the Catalan Physics Olympiad.",
       "tags": [
@@ -482,7 +482,7 @@ window.CV_DEFAULT_DATA = {
       "title": "Probability - First Place (DITMAE)",
       "organization": "Institut d'Estudis Catalans",
       "date": "Mar 2022",
-      "description": "First place award in probability and mathematical modeling at the Dissabte Transfronterer de les Matemàtiques a l'Alt Empordà.",
+      "description": "First place award in probability and mathematical modeling at the Dissabte Transfronterer de les Matem\u00e0tiques a l'Alt Empord\u00e0.",
       "tags": [
         "Mathematics",
         "Probability",
@@ -494,8 +494,8 @@ window.CV_DEFAULT_DATA = {
     {
       "id": "cert-idescat-stats",
       "category": "certifications",
-      "title": "Categoria IDESCAT - First Place (Planter d'Estadística)",
-      "organization": "Institut d'Estadística de Catalunya",
+      "title": "Categoria IDESCAT - First Place (Planter d'Estad\u00edstica)",
+      "organization": "Institut d'Estad\u00edstica de Catalunya",
       "date": "May 2021",
       "description": "First place award for statistical research report on population health and sedentary behavior among youth.",
       "tags": [
@@ -510,7 +510,7 @@ window.CV_DEFAULT_DATA = {
       "id": "cert-first-aid",
       "category": "certifications",
       "title": "First Aid Certificate",
-      "organization": "Generalitat de Catalunya Servei Català de la Salut (SEM)",
+      "organization": "Generalitat de Catalunya Servei Catal\u00e0 de la Salut (SEM)",
       "date": "Aug 2018",
       "description": "Certified emergency first aid training administered by the Medical Emergency Service of Catalonia.",
       "tags": [
@@ -524,8 +524,8 @@ window.CV_DEFAULT_DATA = {
       "id": "vol-friquis-ciencia",
       "category": "volunteering",
       "title": "Co-organizer",
-      "organization": "Friquis X Ciència",
-      "date": "Feb 2020 – Present",
+      "organization": "Friquis X Ci\u00e8ncia",
+      "date": "Feb 2020 \u2013 Present",
       "location": "Sant Pere de Ribes, ES",
       "description": "Co-organizing science communication initiatives, public engagement events, and educational workshops to bridge science and community.",
       "tags": [
@@ -542,7 +542,7 @@ window.CV_DEFAULT_DATA = {
       "category": "volunteering",
       "title": "Club Organizer",
       "organization": "HackClub",
-      "date": "Sep 2022 – Aug 2023",
+      "date": "Sep 2022 \u2013 Aug 2023",
       "location": "Shelburne, VT, US",
       "description": "Facilitated coding workshops, hardware hacking sessions, and peer programming projects for youth developers.",
       "tags": [
@@ -558,7 +558,7 @@ window.CV_DEFAULT_DATA = {
       "category": "volunteering",
       "title": "Journalist & Public Relations",
       "organization": "INS Jaume Vicens Vives",
-      "date": "Sep 2021 – Aug 2023",
+      "date": "Sep 2021 \u2013 Aug 2023",
       "location": "Girona, Catalunya, ES",
       "description": "Managed public relations and authored school journal articles covering academic achievements, scientific developments, and student life.",
       "tags": [
@@ -574,7 +574,7 @@ window.CV_DEFAULT_DATA = {
       "category": "volunteering",
       "title": "Collection Curator (Geology and Natural History)",
       "organization": "INS Jaume Vicens Vives",
-      "date": "Sep 2021 – Jun 2022",
+      "date": "Sep 2021 \u2013 Jun 2022",
       "location": "Girona, Catalunya, ES",
       "description": "Curated, cataloged, and maintained geological and natural history specimens for educational exhibition and classroom instruction.",
       "tags": [
@@ -588,9 +588,9 @@ window.CV_DEFAULT_DATA = {
     {
       "id": "vol-lexcit",
       "category": "volunteering",
-      "title": "Volunteer in Lèxcit",
+      "title": "Volunteer in L\u00e8xcit",
       "organization": "Generalitat de Catalunya (Escola Annexa)",
-      "date": "Sep 2021 – Jun 2022",
+      "date": "Sep 2021 \u2013 Jun 2022",
       "location": "Girona, Catalunya, ES",
       "description": "Volunteered in reading and literacy support programs for children to improve linguistic comprehension and academic success.",
       "tags": [
@@ -606,7 +606,7 @@ window.CV_DEFAULT_DATA = {
       "category": "volunteering",
       "title": "Teaching Assistant for English",
       "organization": "Departament d'Ensenyament (Escola Annexa)",
-      "date": "Sep 2021 – Jun 2022",
+      "date": "Sep 2021 \u2013 Jun 2022",
       "location": "Girona, Catalunya, ES",
       "description": "Assisted teachers in conducting interactive English language classes and conversational practice for primary students.",
       "tags": [
