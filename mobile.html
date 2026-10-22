@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Mobile CV & Portfolio | Smartphone Edition</title>
+  <meta name="description" content="Touch-optimized smartphone edition of interactive CV and portfolio with mobile navigation, quick sharing, and theme controls.">
+  <meta name="color-scheme" content="light dark">
+
+  <!-- Google Fonts: Inter & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <!-- Dynamic Palette CSS Variables -->
+  <style id="theme-palette-styles">
+    :root {
+      --brand-50: 238 242 255;
+      --brand-100: 224 231 255;
+      --brand-200: 199 210 254;
+      --brand-300: 165 180 252;
+      --brand-400: 129 140 248;
+      --brand-500: 99 102 241;
+      --brand-600: 79 70 229;
+      --brand-700: 67 56 202;
+      --brand-800: 55 48 163;
+      --brand-900: 49 46 129;
+      --brand-950: 30 27 75;
+    }
+  </style>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+            mono: ['JetBrains Mono', 'ui-monospace', 'Menlo', 'monospace'],
+          },
+          colors: {
+            brand: {
+              50: 'rgb(var(--brand-50) / <alpha-value>)',
+              100: 'rgb(var(--brand-100) / <alpha-value>)',
+              200: 'rgb(var(--brand-200) / <alpha-value>)',
+              300: 'rgb(var(--brand-300) / <alpha-value>)',
+              400: 'rgb(var(--brand-400) / <alpha-value>)',
+              500: 'rgb(var(--brand-500) / <alpha-value>)',
+              600: 'rgb(var(--brand-600) / <alpha-value>)',
+              700: 'rgb(var(--brand-700) / <alpha-value>)',
+              800: 'rgb(var(--brand-800) / <alpha-value>)',
+              900: 'rgb(var(--brand-900) / <alpha-value>)',
+              950: 'rgb(var(--brand-950) / <alpha-value>)',
+            }
+          }
+        }
+      }
+    };
+  </script>
+
+  <!-- Prevent FOUC -->
+  <script>
+    (function () {
+      try {
+        const storedTheme = localStorage.getItem('cv_theme') || 'system';
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const isDark = storedTheme === 'dark' || (storedTheme === 'system' && prefersDark);
+        if (isDark) {
+          document.documentElement.classList.add('dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+        }
+      } catch (e) {
+        console.error('Error applying theme early:', e);
+      }
+    })();
+  </script>
+
+  <!-- Custom Mobile Styles -->
+  <style>
+    body {
+      transition: background-color 0.2s ease, color 0.2s ease;
+      padding-bottom: 5rem; /* Space for sticky bottom bar */
+    }
+
+    dialog:modal {
+      overscroll-behavior: contain;
+    }
+    dialog::backdrop {
+      overflow: hidden;
+      overscroll-behavior: contain;
+      background-color: rgba(15, 23, 42, 0.7);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    /* Active Mobile Category Chip */
+    .mobile-category-pill {
+      color: #64748b;
+      background-color: transparent;
+      border-color: transparent;
+    }
+    .dark .mobile-category-pill {
+      color: #94a3b8;
+    }
+    .mobile-category-pill.active {
+      background-color: rgb(var(--brand-600));
+      color: #ffffff;
+      font-weight: 700;
+      box-shadow: 0 2px 6px rgba(99, 102, 241, 0.25);
+    }
+
+    @media print {
+      body {
+        background: #ffffff !important;
+        color: #0f172a !important;
+        font-size: 10pt;
+        padding-bottom: 0 !important;
+      }
+      header, #mobile-filter-bar, #mobile-bottom-bar, dialog, #toast-container {
+        display: none !important;
+      }
+    }
+  </style>
+</head>
+
+<body class="bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-100 min-h-screen font-sans antialiased selection:bg-brand-500 selection:text-white">
+
+  <!-- MOBILE STICKY TOP BAR -->
+  <header class="sticky top-0 z-40 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-slate-200/80 dark:border-slate-800/80 transition-colors">
+    <div class="px-4 h-14 flex items-center justify-between gap-3 max-w-lg mx-auto">
+      
+      <!-- Brand & Name -->
+      <a href="#" class="flex items-center gap-2.5 focus:outline-none" onclick="resetFilters(event)">
+        <div id="header-avatar" class="w-8 h-8 rounded-lg bg-gradient-to-br from-brand-500 to-brand-700 flex items-center justify-center text-white font-bold text-sm shadow-sm">
+          AM
+        </div>
+        <div>
+          <span id="header-name" class="font-bold text-slate-900 dark:text-white text-sm block leading-tight">Alex Morgan</span>
+          <span class="text-[10px] text-brand-600 dark:text-brand-400 font-mono tracking-tight font-medium">📱 Smartphone Edition</span>
+        </div>
+      </a>
+
+      <!-- Quick Header Controls -->
+      <div class="flex items-center gap-2">
+        <!-- Switch to Desktop Link -->
+        <a href="desktop.html" class="px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 flex items-center gap-1" title="Switch to Full-Width Desktop Edition">
+          <svg class="w-3 h-3 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+          Desktop
+        </a>
+
+        <!-- Theme Toggle Button -->
+        <button id="theme-toggle-btn" type="button" aria-label="Toggle Dark Mode" class="p-2 rounded-lg text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 transition">
+          <svg id="theme-icon-light" class="w-4 h-4 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 9H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+          <svg id="theme-icon-dark" class="w-4 h-4 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+          <svg id="theme-icon-system" class="w-4 h-4 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- MAIN MOBILE CONTENT CONTAINER -->
+  <main class="max-w-lg mx-auto px-4 py-4 space-y-4">
+
+    <!-- TAILORED VIEW BANNER (Only when active) -->
+    <div id="tailored-view-banner" class="hidden rounded-2xl bg-gradient-to-r from-brand-500/10 via-brand-600/10 to-indigo-600/10 border border-brand-500/30 dark:border-brand-400/30 p-4 shadow-sm">
+      <div class="space-y-2">
+        <div class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-brand-500 text-white tracking-wide uppercase">
+          Curated View
+        </div>
+        <h2 id="tailored-banner-title" class="text-sm font-bold text-slate-900 dark:text-white">
+          Custom Tailored CV View
+        </h2>
+        <div class="flex items-center gap-2 pt-1">
+          <button type="button" onclick="openShareModal()" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+            Adjust
+          </button>
+          <button type="button" onclick="resetFilters(event)" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-brand-600 text-white">
+            Full CV
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MOBILE PROFILE CARD -->
+    <section class="rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 p-4 shadow-sm space-y-3.5 transition-colors">
+      
+      <!-- Top Row: Name & Availability -->
+      <div class="space-y-1.5">
+        <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/60">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+          <span id="profile-status">Available for Staff/Lead Roles</span>
+        </div>
+
+        <h1 class="text-xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+          <span id="profile-name">Alex Morgan</span><span id="profile-suffix" class="text-brand-600 dark:text-brand-400 text-base font-semibold">, M.Sc.</span>
+        </h1>
+        <p id="profile-title" class="text-xs font-semibold text-slate-600 dark:text-slate-300">
+          Senior AI Systems Engineer & Open Source Researcher
+        </p>
+      </div>
+
+      <!-- Collapsible Bio -->
+      <div class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+        <p id="profile-bio-preview">
+          Specializing in high-throughput distributed AI pipelines, autonomous agentic runtimes, and low-latency systems...
+        </p>
+        <p id="profile-bio-full" class="hidden mt-1">
+          Over 8 years of engineering experience bridging research prototypes into mission-critical cloud infrastructure. Active open-source maintainer and conference speaker.
+        </p>
+        <button id="toggle-bio-btn" type="button" onclick="toggleBio()" class="text-[11px] text-brand-600 dark:text-brand-400 font-semibold hover:underline mt-1 block">
+          Read more ↓
+        </button>
+      </div>
+
+      <!-- Mobile Metrics Strip -->
+      <div id="profile-metrics-container" class="grid grid-cols-4 gap-1.5 pt-2 border-t border-slate-100 dark:border-slate-800 text-center">
+        <!-- Dynamically populated -->
+      </div>
+
+      <!-- Contact Tap Targets -->
+      <div id="profile-contacts-container" class="flex flex-wrap gap-1.5 pt-1 text-xs">
+        <!-- Dynamically populated -->
+      </div>
+
+    </section>
+
+    <!-- MOBILE STICKY FILTER BAR -->
+    <section id="mobile-filter-bar" class="sticky top-14 z-30 py-2.5 -mx-4 px-4 bg-slate-50/95 dark:bg-slate-950/95 backdrop-blur-md border-y border-slate-200 dark:border-slate-800 space-y-2">
+      
+      <!-- Live Search Input -->
+      <div class="relative">
+        <input type="text" id="search-input" placeholder="Search roles, skills (e.g. Python, AI)..." 
+          class="w-full pl-8 pr-8 py-2 rounded-xl text-xs bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500 shadow-sm">
+        <span class="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none text-slate-400 text-xs">🔍</span>
+        <button id="clear-search-btn" type="button" class="hidden absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400">✕</button>
+      </div>
+
+      <!-- Horizontal Scrollable Category Chips -->
+      <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5 text-xs font-semibold" id="category-tabs" role="tablist">
+        <!-- Dynamically populated -->
+      </div>
+
+      <!-- Featured toggle & active tags -->
+      <div class="flex items-center justify-between text-xs pt-0.5">
+        <label class="inline-flex items-center gap-2 cursor-pointer select-none text-slate-700 dark:text-slate-300 font-medium">
+          <input type="checkbox" id="featured-toggle" class="rounded border-slate-300 text-brand-600 focus:ring-brand-500">
+          <span>Featured Only</span>
+        </label>
+        <button type="button" onclick="resetFilters(event)" class="text-brand-600 dark:text-brand-400 font-semibold text-[11px]">
+          Reset
+        </button>
+      </div>
+
+      <!-- Active Tag Filter Chip -->
+      <div id="active-tags-bar" class="hidden text-xs">
+        <div id="active-filter-chips" class="flex flex-wrap gap-1"></div>
+      </div>
+
+    </section>
+
+    <!-- CV CONTENT AREA -->
+    <div id="cv-content-area" class="space-y-6">
+      <!-- Cards rendered dynamically -->
+    </div>
+
+    <!-- Empty State -->
+    <div id="empty-state" class="hidden text-center py-12 px-4 space-y-3 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+      <div class="text-3xl">🔍</div>
+      <h3 class="text-sm font-bold text-slate-900 dark:text-white">No items found</h3>
+      <p class="text-xs text-slate-500">Try adjusting your search query or category filters.</p>
+      <button type="button" onclick="resetFilters(event)" class="px-3.5 py-1.5 rounded-lg text-xs font-bold bg-brand-600 text-white">
+        Reset Filters
+      </button>
+    </div>
+
+    <!-- Footer -->
+    <footer class="pt-6 pb-12 text-center text-xs text-slate-400 space-y-2">
+      <p id="footer-copyright">© 2026 Alex Morgan • Smartphone Edition</p>
+      <p><a href="desktop.html" class="text-brand-600 underline font-medium">Switch to Desktop Version (2-Column)</a></p>
+    </footer>
+
+  </main>
+
+  <!-- MOBILE FLOATING BOTTOM ACTION BAR (Within Easy Thumb Reach) -->
+  <div id="mobile-bottom-bar" class="fixed bottom-0 inset-x-0 z-40 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-t border-slate-200 dark:border-slate-800 px-4 py-2.5 flex items-center justify-between gap-3 shadow-lg max-w-lg mx-auto">
+    
+    <!-- Share Custom View (Primary Action) -->
+    <button type="button" onclick="openShareModal()" class="flex-1 py-2.5 px-4 rounded-xl text-xs font-bold bg-brand-600 hover:bg-brand-700 text-white shadow-md shadow-brand-600/20 flex items-center justify-center gap-2 transition active:scale-95">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/></svg>
+      <span>Share Custom Link</span>
+    </button>
+
+    <!-- Palette / JSON settings -->
+    <button type="button" onclick="openCustomizeModal()" aria-label="Palette and settings" class="p-2.5 rounded-xl text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 transition active:scale-95">
+      <svg class="w-4 h-4 text-brand-600 dark:text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4 4.001 4.001 0 014-4h1a4 4 0 004-4V7a4 4 0 118 0v2a4 4 0 004 4h1a4 4 0 014 4 4 4 0 01-4 4H7z"/></svg>
+    </button>
+
+    <!-- Scroll to Top -->
+    <button type="button" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" aria-label="Scroll to top" class="p-2.5 rounded-xl text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 transition active:scale-95">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"/></svg>
+    </button>
+
+  </div>
+
+  <!-- SHARE MODAL -->
+  <dialog id="share-modal" closedby="any" class="rounded-3xl bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 p-0 border border-slate-200 dark:border-slate-800 shadow-2xl w-[95vw] max-w-md overflow-hidden focus:outline-none">
+    <div class="p-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between bg-slate-50 dark:bg-slate-800/40">
+      <h2 class="text-base font-bold">Share Custom View</h2>
+      <button type="button" onclick="closeShareModal()" class="p-1 text-slate-400">✕</button>
+    </div>
+
+    <div class="p-4 space-y-4 max-h-[60vh] overflow-y-auto overscroll-contain text-xs">
+      <div>
+        <label for="modal-recipient-input" class="block font-semibold mb-1">Target Recipient (Optional)</label>
+        <input type="text" id="modal-recipient-input" placeholder="e.g. Acme Corp" class="w-full p-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+      </div>
+
+      <div class="flex flex-wrap gap-1">
+        <button type="button" onclick="applySharePreset('all')" class="px-2 py-1 rounded bg-slate-100 dark:bg-slate-800">All</button>
+        <button type="button" onclick="applySharePreset('featured')" class="px-2 py-1 rounded bg-slate-100 dark:bg-slate-800">★ Featured</button>
+        <button type="button" onclick="applySharePreset('engineering')" class="px-2 py-1 rounded bg-slate-100 dark:bg-slate-800">Code & Tech</button>
+        <button type="button" onclick="applySharePreset('none')" class="px-2 py-1 rounded text-rose-600 bg-rose-50 dark:bg-rose-950/40">Clear</button>
+      </div>
+
+      <div id="modal-checklist-container" class="space-y-3"></div>
+    </div>
+
+    <div class="p-4 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/40 space-y-2">
+      <input type="text" id="modal-url-output" readonly class="w-full p-2 rounded-xl text-[11px] font-mono bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 select-all">
+      <button type="button" onclick="copyShareUrl()" class="w-full py-2.5 rounded-xl text-xs font-bold bg-brand-600 text-white">Copy Link</button>
+    </div>
+  </dialog>
+
+  <!-- CUSTOMIZE MODAL -->
+  <dialog id="customize-modal" closedby="any" class="rounded-3xl bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 p-0 border border-slate-200 dark:border-slate-800 shadow-2xl w-[95vw] max-w-md overflow-hidden focus:outline-none">
+    <div class="p-4 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+      <h2 class="text-base font-bold">Palette & Theme</h2>
+      <button type="button" onclick="closeCustomizeModal()" class="p-1 text-slate-400">✕</button>
+    </div>
+    <div class="p-4 space-y-4 text-xs">
+      <span class="font-bold uppercase tracking-wider text-slate-400 block">Choose Colour Palette</span>
+      <div class="grid grid-cols-2 gap-2" id="palette-buttons-grid"></div>
+    </div>
+    <div class="p-3 border-t border-slate-200 dark:border-slate-800 text-right">
+      <button type="button" onclick="closeCustomizeModal()" class="px-4 py-1.5 rounded-xl bg-slate-200 dark:bg-slate-700 font-bold text-xs">Done</button>
+    </div>
+  </dialog>
+
+  <!-- TOAST CONTAINER -->
+  <div id="toast-container" class="fixed top-4 inset-x-4 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+  <!-- JAVASCRIPT FOR SMARTPHONE EDITION -->
+  <script>
+    const PALETTES = {
+      indigo: { name: "Indigo", previewHex: "#6366f1", shades: { 50: '238 242 255', 100: '224 231 255', 200: '199 210 254', 300: '165 180 252', 400: '129 140 248', 500: '99 102 241', 600: '79 70 229', 700: '67 56 202', 800: '55 48 163', 900: '49 46 129', 950: '30 27 75' } },
+      emerald: { name: "Emerald", previewHex: "#10b981", shades: { 50: '236 253 245', 100: '209 250 229', 200: '167 243 208', 300: '110 231 183', 400: '52 211 153', 500: '16 185 129', 600: '5 150 105', 700: '4 120 87', 800: '6 95 70', 900: '6 78 59', 950: '2 44 34' } },
+      blue: { name: "Ocean Blue", previewHex: "#3b82f6", shades: { 50: '239 246 255', 100: '219 234 254', 200: '191 219 254', 300: '147 197 253', 400: '96 165 250', 500: '59 130 246', 600: '37 99 235', 700: '29 78 216', 800: '30 64 175', 900: '30 58 138', 950: '23 37 84' } },
+      violet: { name: "Violet", previewHex: "#8b5cf6", shades: { 50: '245 243 255', 100: '237 233 254', 200: '221 214 254', 300: '196 181 253', 400: '167 139 250', 500: '139 92 246', 600: '124 58 237', 700: '109 40 217', 800: '91 33 182', 900: '76 29 149', 950: '46 16 101' } },
+      rose: { name: "Rose", previewHex: "#f43f5e", shades: { 50: '255 241 242', 100: '255 228 230', 200: '254 205 211', 300: '253 164 175', 400: '251 113 133', 500: '244 63 94', 600: '225 29 72', 700: '190 18 60', 800: '159 18 57', 900: '136 19 55', 950: '76 5 25' } },
+      amber: { name: "Amber", previewHex: "#f59e0b", shades: { 50: '255 251 235', 100: '254 243 199', 200: '253 230 138', 300: '252 211 77', 400: '251 191 36', 500: '245 158 11', 600: '217 119 6', 700: '180 83 9', 800: '146 64 14', 900: '120 53 15', 950: '69 26 3' } },
+      cyan: { name: "Cyan", previewHex: "#06b6d4", shades: { 50: '236 254 255', 100: '207 250 254', 200: '165 243 252', 300: '103 232 249', 400: '34 211 238', 500: '6 182 212', 600: '8 145 178', 700: '14 116 144', 800: '21 94 117', 900: '22 78 99', 950: '8 51 68' } }
+    };
+
+    function applyPalette(key, notify = false) {
+      const shades = (PALETTES[key] || PALETTES.indigo).shades;
+      const root = document.documentElement;
+      Object.keys(shades).forEach(s => root.style.setProperty(`--brand-${s}`, shades[s]));
+      if (notify) showToast(`Switched palette to ${PALETTES[key]?.name || key}`);
+    }
+
+    let CV_DATA = [];
+    let CATEGORIES_META = {
+      work: { title: "Professional Experience", badge: "Work" },
+      projects: { title: "Key Projects & Builds", badge: "Projects" },
+      learning: { title: "Education & Learning", badge: "Learning" },
+      certifications: { title: "Certifications & Credentials", badge: "Certifications" },
+      volunteering: { title: "Community & Volunteering", badge: "Volunteering" },
+      hobbies: { title: "Interests & Pursuits", badge: "Hobbies" }
+    };
+    const CATEGORY_ORDER = ['work', 'projects', 'learning', 'certifications', 'volunteering', 'hobbies'];
+
+    function applyData(data) {
+      if (data.theme) applyPalette(data.theme.palette);
+      if (data.profile) renderProfile(data.profile);
+      if (Array.isArray(data.items)) CV_DATA = data.items;
+      renderMobileCategoryTabs();
+      updateCategoryCounts();
+      renderCV();
+    }
+
+    function renderProfile(p) {
+      document.getElementById('profile-name').textContent = p.name || 'Alex Morgan';
+      document.getElementById('profile-suffix').textContent = p.suffix ? `, ${p.suffix}` : '';
+      document.getElementById('profile-title').textContent = p.title || '';
+      document.getElementById('profile-status').textContent = p.status || 'Available';
+      document.getElementById('header-avatar').textContent = p.initials || 'AM';
+      document.getElementById('header-name').textContent = p.name || 'Alex Morgan';
+
+      const metrics = document.getElementById('profile-metrics-container');
+      if (metrics && Array.isArray(p.metrics)) {
+        metrics.innerHTML = p.metrics.map(m => `
+          <div class="p-1.5 rounded-lg bg-slate-50 dark:bg-slate-800">
+            <span class="text-sm font-black text-brand-600 block">${m.value}</span>
+            <span class="text-[9px] text-slate-400 block truncate">${m.label}</span>
+          </div>
+        `).join('');
+      }
+
+      const contacts = document.getElementById('profile-contacts-container');
+      if (contacts) {
+        contacts.innerHTML = '';
+        if (p.email) contacts.innerHTML += `<a href="mailto:${p.email}" class="px-2 py-1 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">✉ Email</a>`;
+        if (p.github) contacts.innerHTML += `<a href="${p.github}" target="_blank" class="px-2 py-1 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">GitHub</a>`;
+        if (p.linkedin) contacts.innerHTML += `<a href="${p.linkedin}" target="_blank" class="px-2 py-1 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">LinkedIn</a>`;
+      }
+    }
+
+    let bioExpanded = false;
+    function toggleBio() {
+      bioExpanded = !bioExpanded;
+      document.getElementById('profile-bio-full').classList.toggle('hidden', !bioExpanded);
+      document.getElementById('toggle-bio-btn').textContent = bioExpanded ? 'Show less ↑' : 'Read more ↓';
+    }
+
+    function renderMobileCategoryTabs() {
+      const container = document.getElementById('category-tabs');
+      if (!container) return;
+      let html = `<button type="button" data-category="all" class="mobile-category-pill active shrink-0 px-3 py-1 rounded-full border border-slate-200 dark:border-slate-800 transition">All (<span id="count-all">0</span>)</button>`;
+      CATEGORY_ORDER.forEach(cat => {
+        html += `<button type="button" data-category="${cat}" class="mobile-category-pill shrink-0 px-3 py-1 rounded-full border border-slate-200 dark:border-slate-800 transition">${CATEGORIES_META[cat].badge} (<span id="count-${cat}">0</span>)</button>`;
+      });
+      container.innerHTML = html;
+      container.querySelectorAll('.mobile-category-pill').forEach(btn => {
+        btn.addEventListener('click', () => {
+          state.activeCategory = btn.getAttribute('data-category');
+          container.querySelectorAll('.mobile-category-pill').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          renderCV();
+        });
+      });
+    }
+
+    const state = {
+      activeCategory: 'all',
+      searchQuery: '',
+      featuredOnly: false,
+      selectedTag: null,
+      urlCategoryFilter: [],
+      urlIdFilter: [],
+      recipientName: ''
+    };
+
+    function parseUrlParameters() {
+      const params = new URLSearchParams(window.location.search);
+      if (params.has('categories')) state.urlCategoryFilter = params.get('categories').split(',').map(c => c.trim().toLowerCase());
+      if (params.has('ids')) state.urlIdFilter = params.get('ids').split(',').map(i => i.trim());
+      if (params.get('featured') === 'true') {
+        state.featuredOnly = true;
+        document.getElementById('featured-toggle').checked = true;
+      }
+      if (params.has('tag')) state.selectedTag = params.get('tag').trim();
+      if (params.has('recipient')) state.recipientName = params.get('recipient').trim();
+      if (params.has('palette')) applyPalette(params.get('palette').trim());
+      if (state.urlIdFilter.length > 0 || state.urlCategoryFilter.length > 0 || state.recipientName) {
+        document.getElementById('tailored-view-banner').classList.remove('hidden');
+        document.getElementById('tailored-banner-title').textContent = state.recipientName ? `Custom View for ${state.recipientName}` : `Custom Curated View`;
+      }
+    }
+
+    function parseMarkdown(text) {
+      if (!text) return '';
+      return text
+        .replace(/`([^`]+)`/g, '<code class="px-1 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-brand-600 font-mono text-[11px]">$1</code>')
+        .replace(/\*\*([^*]+)\*\*/g, '<strong class="font-semibold text-slate-900 dark:text-white">$1</strong>')
+        .replace(/\*([^*]+)\*/g, '<em class="italic">$1</em>');
+    }
+
+    function getFilteredEntries() {
+      return CV_DATA.filter(item => {
+        if (state.urlIdFilter.length > 0 && !state.urlIdFilter.includes(item.id)) return false;
+        if (state.urlCategoryFilter.length > 0 && !state.urlCategoryFilter.includes(item.category)) return false;
+        if (state.activeCategory !== 'all' && item.category !== state.activeCategory) return false;
+        if (state.featuredOnly && !item.featured) return false;
+        if (state.selectedTag && !item.tags.some(t => t.toLowerCase() === state.selectedTag.toLowerCase())) return false;
+        if (state.searchQuery) {
+          const q = state.searchQuery.toLowerCase();
+          const match = item.title.toLowerCase().includes(q) || item.organization.toLowerCase().includes(q) || item.description.toLowerCase().includes(q) || item.tags.some(t => t.toLowerCase().includes(q));
+          if (!match) return false;
+        }
+        return true;
+      });
+    }
+
+    function updateCategoryCounts() {
+      const counts = { all: 0 };
+      CATEGORY_ORDER.forEach(cat => counts[cat] = 0);
+      CV_DATA.forEach(item => {
+        if (state.urlIdFilter.length > 0 && !state.urlIdFilter.includes(item.id)) return;
+        counts.all++;
+        if (counts[item.category] !== undefined) counts[item.category]++;
+      });
+      document.getElementById('count-all').textContent = counts.all;
+      CATEGORY_ORDER.forEach(cat => {
+        const el = document.getElementById(`count-${cat}`);
+        if (el) el.textContent = counts[cat];
+      });
+    }
+
+    function renderCV() {
+      const container = document.getElementById('cv-content-area');
+      const emptyState = document.getElementById('empty-state');
+      if (!container) return;
+      container.innerHTML = '';
+
+      const filtered = getFilteredEntries();
+      if (filtered.length === 0) {
+        emptyState.classList.remove('hidden');
+        return;
+      }
+      emptyState.classList.add('hidden');
+
+      const catsToShow = state.activeCategory === 'all' ? CATEGORY_ORDER : [state.activeCategory];
+      catsToShow.forEach(catKey => {
+        const items = filtered.filter(i => i.category === catKey);
+        if (items.length === 0) return;
+
+        const sec = document.createElement('section');
+        sec.className = 'space-y-3';
+        sec.innerHTML = `
+          <div class="flex items-center justify-between pb-1 border-b border-slate-200 dark:border-slate-800">
+            <h3 class="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider">${CATEGORIES_META[catKey].title}</h3>
+            <span class="text-[11px] font-mono text-slate-400">${items.length}</span>
+          </div>
+          <div class="space-y-3" id="mobile-grid-${catKey}"></div>
+        `;
+
+        const grid = sec.querySelector(`#mobile-grid-${catKey}`);
+        items.forEach(item => {
+          const card = document.createElement('article');
+          card.className = "rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 p-4 shadow-sm space-y-2";
+          
+          const tags = item.tags.map(t => `<button type="button" onclick="filterByTag('${t}')" class="text-[11px] px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-mono">#${t}</button>`).join('');
+
+          card.innerHTML = `
+            <div class="flex items-start justify-between gap-2">
+              <div>
+                <h4 class="text-sm font-bold text-slate-900 dark:text-white">${item.title}</h4>
+                <div class="text-xs font-semibold text-brand-600 mt-0.5">${item.organization}</div>
+              </div>
+              <span class="text-[10px] font-mono text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-full shrink-0">${item.date}</span>
+            </div>
+            <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">${parseMarkdown(item.description)}</p>
+            <div class="pt-2 flex items-center justify-between border-t border-slate-100 dark:border-slate-800">
+              <div class="flex flex-wrap gap-1">${tags}</div>
+              <button type="button" onclick="shareSingleItem('${item.id}')" title="Share item" class="p-1 text-slate-400 hover:text-brand-600">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/></svg>
+              </button>
+            </div>
+          `;
+          grid.appendChild(card);
+        });
+        container.appendChild(sec);
+      });
+    }
+
+    function filterByTag(t) {
+      state.selectedTag = t;
+      document.getElementById('active-tags-bar').classList.remove('hidden');
+      document.getElementById('active-filter-chips').innerHTML = `<span class="px-2 py-0.5 rounded bg-brand-100 text-brand-700 text-[11px] font-semibold">#${t} <button onclick="clearTag()">✕</button></span>`;
+      renderCV();
+    }
+    function clearTag() {
+      state.selectedTag = null;
+      document.getElementById('active-tags-bar').classList.add('hidden');
+      renderCV();
+    }
+
+    function resetFilters(e) {
+      if (e) e.preventDefault();
+      state.activeCategory = 'all';
+      state.searchQuery = '';
+      state.featuredOnly = false;
+      state.selectedTag = null;
+      state.urlIdFilter = [];
+      state.urlCategoryFilter = [];
+      document.getElementById('search-input').value = '';
+      document.getElementById('featured-toggle').checked = false;
+      document.querySelectorAll('.mobile-category-pill').forEach(b => {
+        if (b.getAttribute('data-category') === 'all') b.classList.add('active');
+        else b.classList.remove('active');
+      });
+      document.getElementById('tailored-view-banner').classList.add('hidden');
+      renderCV();
+      showToast("Reset to full CV");
+    }
+
+    // Modal logic
+    const shareModal = document.getElementById('share-modal');
+    function openShareModal() {
+      initModalChecklist();
+      updateModalUrl();
+      shareModal.showModal();
+    }
+    function closeShareModal() { shareModal.close(); }
+
+    let modalSelectedIds = new Set();
+    function initModalChecklist() {
+      const container = document.getElementById('modal-checklist-container');
+      container.innerHTML = '';
+      CV_DATA.forEach(i => modalSelectedIds.add(i.id));
+      CV_DATA.forEach(i => {
+        container.innerHTML += `
+          <label class="flex items-center gap-2 p-1 text-xs">
+            <input type="checkbox" value="${i.id}" checked class="modal-cb rounded text-brand-600">
+            <span>${i.title} (${i.organization})</span>
+          </label>
+        `;
+      });
+      container.querySelectorAll('.modal-cb').forEach(cb => {
+        cb.addEventListener('change', () => {
+          if (cb.checked) modalSelectedIds.add(cb.value);
+          else modalSelectedIds.delete(cb.value);
+          updateModalUrl();
+        });
+      });
+    }
+
+    function updateModalUrl() {
+      const baseUrl = window.location.origin + window.location.pathname;
+      const params = new URLSearchParams();
+      const rec = document.getElementById('modal-recipient-input').value.trim();
+      if (rec) params.set('recipient', rec);
+      if (modalSelectedIds.size < CV_DATA.length) {
+        params.set('ids', Array.from(modalSelectedIds).join(','));
+      }
+      const q = params.toString();
+      document.getElementById('modal-url-output').value = q ? `${baseUrl}?${q}` : baseUrl;
+    }
+
+    function copyShareUrl() {
+      navigator.clipboard.writeText(document.getElementById('modal-url-output').value).then(() => {
+        showToast("✓ Link copied!");
+      });
+    }
+
+    function shareSingleItem(id) {
+      const url = `${window.location.origin}${window.location.pathname}?ids=${id}`;
+      navigator.clipboard.writeText(url).then(() => showToast("✓ Item link copied!"));
+    }
+
+    function applySharePreset(p) {
+      modalSelectedIds.clear();
+      if (p === 'all') CV_DATA.forEach(i => modalSelectedIds.add(i.id));
+      if (p === 'featured') CV_DATA.filter(i => i.featured).forEach(i => modalSelectedIds.add(i.id));
+      if (p === 'engineering') CV_DATA.filter(i => ['work', 'projects'].includes(i.category)).forEach(i => modalSelectedIds.add(i.id));
+      document.querySelectorAll('.modal-cb').forEach(cb => cb.checked = modalSelectedIds.has(cb.value));
+      updateModalUrl();
+    }
+
+    const customizeModal = document.getElementById('customize-modal');
+    function openCustomizeModal() {
+      const grid = document.getElementById('palette-buttons-grid');
+      grid.innerHTML = Object.keys(PALETTES).map(k => `
+        <button type="button" onclick="applyPalette('${k}', true)" class="p-2 rounded-xl border border-slate-200 dark:border-slate-800 text-xs font-semibold flex items-center gap-2">
+          <span class="w-3.5 h-3.5 rounded-full" style="background-color: ${PALETTES[k].previewHex}"></span>
+          ${PALETTES[k].name}
+        </button>
+      `).join('');
+      customizeModal.showModal();
+    }
+    function closeCustomizeModal() { customizeModal.close(); }
+
+    function showToast(msg) {
+      const c = document.getElementById('toast-container');
+      const t = document.createElement('div');
+      t.className = 'bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-4 py-2 rounded-xl text-xs font-bold shadow-lg text-center';
+      t.textContent = msg;
+      c.appendChild(t);
+      setTimeout(() => t.remove(), 2200);
+    }
+
+    async function loadConfig() {
+      try {
+        const res = await fetch('data.json', { cache: 'no-cache' });
+        const json = await res.json();
+        applyData(json);
+      } catch (e) {
+        console.warn("Using default embedded fallback data", e);
+        applyData({
+          theme: { palette: 'indigo' },
+          profile: { name: 'Alex Morgan', suffix: 'M.Sc.', initials: 'AM', title: 'Senior AI Systems Engineer' },
+          items: []
+        });
+      }
+    }
+
+    function toggleTheme() {
+      const current = localStorage.getItem('cv_theme') || 'system';
+      const next = current === 'dark' ? 'light' : 'dark';
+      localStorage.setItem('cv_theme', next);
+      if (next === 'dark') document.documentElement.classList.add('dark');
+      else document.documentElement.classList.remove('dark');
+      showToast(`Theme: ${next}`);
+    }
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      document.getElementById('theme-toggle-btn').addEventListener('click', toggleTheme);
+      document.getElementById('search-input').addEventListener('input', (e) => {
+        state.searchQuery = e.target.value.trim();
+        renderCV();
+      });
+      document.getElementById('featured-toggle').addEventListener('change', (e) => {
+        state.featuredOnly = e.target.checked;
+        renderCV();
+      });
+
+      await loadConfig();
+      parseUrlParameters();
+    });
+  </script>
+
+</body>
+</html>

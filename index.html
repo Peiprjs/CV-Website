@@ -163,15 +163,32 @@
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
       
       <!-- Brand & Name -->
-      <a href="#" class="flex items-center gap-3 group focus:outline-none focus:ring-2 focus:ring-brand-500 rounded-lg p-1" onclick="resetFilters(event)">
-        <div id="header-avatar" class="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-500 to-brand-700 flex items-center justify-center text-white font-bold text-lg shadow-md shadow-brand-500/20 group-hover:scale-105 transition-transform">
-          AM
+      <div class="flex items-center gap-4">
+        <a href="#" class="flex items-center gap-3 group focus:outline-none focus:ring-2 focus:ring-brand-500 rounded-lg p-1" onclick="resetFilters(event)">
+          <div id="header-avatar" class="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-500 to-brand-700 flex items-center justify-center text-white font-bold text-lg shadow-md shadow-brand-500/20 group-hover:scale-105 transition-transform">
+            AM
+          </div>
+          <div>
+            <span id="header-name" class="font-bold text-slate-900 dark:text-white tracking-tight text-base sm:text-lg block leading-tight">Alex Morgan</span>
+            <span id="header-subtitle" class="text-xs text-slate-500 dark:text-slate-400 font-mono tracking-wide">Interactive CV & Portfolio</span>
+          </div>
+        </a>
+
+        <!-- Version Switcher Pills -->
+        <div class="hidden md:flex items-center gap-1 p-1 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700/80 text-xs font-semibold">
+          <span class="px-2.5 py-1 rounded-lg bg-white dark:bg-slate-900 text-brand-600 dark:text-brand-400 shadow-sm flex items-center gap-1.5">
+            ⚡ Auto
+          </span>
+          <a href="desktop.html" class="px-2.5 py-1 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200/60 dark:hover:bg-slate-700/60 transition flex items-center gap-1.5" title="Switch to Full-Width Desktop Edition">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+            Desktop (2-Col)
+          </a>
+          <a href="mobile.html" class="px-2.5 py-1 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200/60 dark:hover:bg-slate-700/60 transition flex items-center gap-1.5" title="Switch to Smartphone Edition">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+            Smartphone
+          </a>
         </div>
-        <div>
-          <span id="header-name" class="font-bold text-slate-900 dark:text-white tracking-tight text-base sm:text-lg block leading-tight">Alex Morgan</span>
-          <span id="header-subtitle" class="text-xs text-slate-500 dark:text-slate-400 font-mono tracking-wide">Interactive CV & Portfolio</span>
-        </div>
-      </a>
+      </div>
 
       <!-- Quick Actions -->
       <div class="flex items-center gap-2 sm:gap-3">

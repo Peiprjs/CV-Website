@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Desktop CV & Portfolio | Two-Column Full-Width</title>
+  <meta name="description" content="Full-width, two-column desktop interactive CV and portfolio with live filtering, JSON customization, and theme controls.">
+  <meta name="color-scheme" content="light dark">
+
+  <!-- Google Fonts: Inter & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <!-- Dynamic Palette CSS Variables -->
+  <style id="theme-palette-styles">
+    :root {
+      --brand-50: 238 242 255;
+      --brand-100: 224 231 255;
+      --brand-200: 199 210 254;
+      --brand-300: 165 180 252;
+      --brand-400: 129 140 248;
+      --brand-500: 99 102 241;
+      --brand-600: 79 70 229;
+      --brand-700: 67 56 202;
+      --brand-800: 55 48 163;
+      --brand-900: 49 46 129;
+      --brand-950: 30 27 75;
+    }
+  </style>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+            mono: ['JetBrains Mono', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'monospace'],
+          },
+          colors: {
+            brand: {
+              50: 'rgb(var(--brand-50) / <alpha-value>)',
+              100: 'rgb(var(--brand-100) / <alpha-value>)',
+              200: 'rgb(var(--brand-200) / <alpha-value>)',
+              300: 'rgb(var(--brand-300) / <alpha-value>)',
+              400: 'rgb(var(--brand-400) / <alpha-value>)',
+              500: 'rgb(var(--brand-500) / <alpha-value>)',
+              600: 'rgb(var(--brand-600) / <alpha-value>)',
+              700: 'rgb(var(--brand-700) / <alpha-value>)',
+              800: 'rgb(var(--brand-800) / <alpha-value>)',
+              900: 'rgb(var(--brand-900) / <alpha-value>)',
+              950: 'rgb(var(--brand-950) / <alpha-value>)',
+            }
+          }
+        }
+      }
+    };
+  </script>
+
+  <!-- Prevent FOUC -->
+  <script>
+    (function () {
+      try {
+        const storedTheme = localStorage.getItem('cv_theme') || 'system';
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const isDark = storedTheme === 'dark' || (storedTheme === 'system' && prefersDark);
+        if (isDark) {
+          document.documentElement.classList.add('dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+        }
+      } catch (e) {
+        console.error('Error applying theme early:', e);
+      }
+    })();
+  </script>
+
+  <!-- Custom Styles & Print Stylesheet -->
+  <style>
+    body {
+      transition: background-color 0.2s ease, color 0.2s ease;
+    }
+
+    dialog:modal {
+      overscroll-behavior: contain;
+    }
+    dialog::backdrop {
+      overflow: hidden;
+      overscroll-behavior: contain;
+      background-color: rgba(15, 23, 42, 0.65);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+    }
+
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(148, 163, 184, 0.4);
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(148, 163, 184, 0.6);
+    }
+
+    @media print {
+      body {
+        background: #ffffff !important;
+        color: #0f172a !important;
+        font-size: 10pt;
+      }
+      .no-print,
+      header,
+      #desktop-sidebar-controls,
+      #share-modal,
+      #customize-modal,
+      #toast-container,
+      .theme-toggle-btn,
+      .action-btn,
+      .copy-btn {
+        display: none !important;
+      }
+      .print-only {
+        display: block !important;
+      }
+      .page-break-avoid {
+        break-inside: avoid;
+        page-break-inside: avoid;
+      }
+      .shadow-sm, .shadow-md, .shadow-lg, .shadow-xl {
+        box-shadow: none !important;
+      }
+      a {
+        text-decoration: none !important;
+        color: inherit !important;
+      }
+      .cv-card {
+        border-color: #cbd5e1 !important;
+        background: #ffffff !important;
+        margin-bottom: 0.75rem !important;
+        padding: 0.75rem !important;
+      }
+    }
+  </style>
+</head>
+
+<body class="bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-100 min-h-screen font-sans selection:bg-brand-500 selection:text-white antialiased">
+
+  <!-- TOP HEADER -->
+  <header class="sticky top-0 z-40 bg-white/85 dark:bg-slate-900/85 backdrop-blur-md border-b border-slate-200/80 dark:border-slate-800/80 transition-colors">
+    <div class="w-full max-w-[1720px] mx-auto px-6 lg:px-10 h-16 flex items-center justify-between gap-4">
+      
+      <!-- Brand & Name -->
+      <div class="flex items-center gap-4">
+        <a href="#" class="flex items-center gap-3 group focus:outline-none focus:ring-2 focus:ring-brand-500 rounded-lg p-1" onclick="resetFilters(event)">
+          <div id="header-avatar" class="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-500 to-brand-700 flex items-center justify-center text-white font-bold text-lg shadow-md shadow-brand-500/20 group-hover:scale-105 transition-transform">
+            AM
+          </div>
+          <div>
+            <span id="header-name" class="font-bold text-slate-900 dark:text-white tracking-tight text-base lg:text-lg block leading-tight">Alex Morgan</span>
+            <span class="text-xs text-slate-500 dark:text-slate-400 font-mono tracking-wide">Desktop Edition • Full-Width 2-Column</span>
+          </div>
+        </a>
+
+        <!-- Version Switcher Pills -->
+        <div class="hidden md:flex items-center gap-1.5 p-1 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700/80 text-xs font-semibold">
+          <span class="px-2.5 py-1 rounded-lg bg-white dark:bg-slate-900 text-brand-600 dark:text-brand-400 shadow-sm flex items-center gap-1.5">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+            Desktop (2-Col)
+          </span>
+          <a href="mobile.html" class="px-2.5 py-1 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200/60 dark:hover:bg-slate-700/60 transition flex items-center gap-1.5" title="Switch to Mobile / Smartphone Version">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+            Smartphone View
+          </a>
+          <a href="index.html" class="px-2 py-1 rounded-lg text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 transition" title="Responsive Auto View">
+            Auto
+          </a>
+        </div>
+      </div>
+
+      <!-- Quick Actions Header -->
+      <div class="flex items-center gap-3">
+        <!-- Palette & JSON Button -->
+        <button id="open-customize-btn" type="button" aria-label="Customize Palette and JSON" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:bg-slate-200 dark:hover:bg-slate-700 transition shadow-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+          <svg class="w-4 h-4 text-brand-600 dark:text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4 4.001 4.001 0 014-4h1a4 4 0 004-4V7a4 4 0 118 0v2a4 4 0 004 4h1a4 4 0 014 4 4 4 0 01-4 4H7z"/></svg>
+          Palette & JSON
+        </button>
+
+        <!-- Share Custom View Button -->
+        <button id="open-share-btn" type="button" aria-label="Share Custom View" class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-brand-50 dark:bg-brand-950/60 text-brand-700 dark:text-brand-300 border border-brand-200 dark:border-brand-800/70 hover:bg-brand-100 dark:hover:bg-brand-900/50 hover:border-brand-300 dark:hover:border-brand-700 transition shadow-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+          <svg class="w-4 h-4 text-brand-600 dark:text-brand-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/></svg>
+          Share Custom View
+        </button>
+
+        <!-- Print Button -->
+        <button id="print-cv-btn" type="button" aria-label="Print or Export CV to PDF" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:bg-slate-200 dark:hover:bg-slate-700 transition shadow-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
+          Print / PDF
+        </button>
+
+        <!-- Theme Mode Switcher -->
+        <div class="relative" id="theme-menu-container">
+          <button id="theme-toggle-btn" type="button" aria-label="Toggle Theme Menu" class="p-2 rounded-lg text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 transition focus:outline-none focus:ring-2 focus:ring-brand-500">
+            <svg id="theme-icon-light" class="w-4 h-4 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 9H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+            <svg id="theme-icon-dark" class="w-4 h-4 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+            <svg id="theme-icon-system" class="w-4 h-4 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+          </button>
+
+          <div id="theme-dropdown" class="hidden absolute right-0 mt-2 w-36 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xl py-1 text-xs font-medium z-50">
+            <button type="button" onclick="setTheme('light')" class="w-full text-left px-3 py-2 flex items-center justify-between text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+              <span>Light</span>
+              <span id="check-light" class="text-brand-600 hidden font-bold">✓</span>
+            </button>
+            <button type="button" onclick="setTheme('dark')" class="w-full text-left px-3 py-2 flex items-center justify-between text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+              <span>Dark</span>
+              <span id="check-dark" class="text-brand-600 hidden font-bold">✓</span>
+            </button>
+            <button type="button" onclick="setTheme('system')" class="w-full text-left px-3 py-2 flex items-center justify-between text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+              <span>System</span>
+              <span id="check-system" class="text-brand-600 hidden font-bold">✓</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- TWO-COLUMN FULL-WIDTH DESKTOP LAYOUT -->
+  <div class="w-full max-w-[1720px] mx-auto px-6 lg:px-10 py-8">
+    <div class="flex flex-col lg:flex-row items-start gap-8 xl:gap-10">
+
+      <!-- =========================================================================
+           LEFT COLUMN: STICKY PROFILE & FILTER CONTROLS SIDEBAR (W-96 TO W-[420PX])
+           ========================================================================= -->
+      <aside class="w-full lg:w-[380px] xl:w-[420px] lg:shrink-0 lg:sticky lg:top-24 space-y-6">
+        
+        <!-- Profile Card -->
+        <div class="rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 p-6 shadow-sm relative overflow-hidden transition-colors">
+          <div class="space-y-4">
+            
+            <div class="flex items-center justify-between gap-2">
+              <span id="profile-badge-pill" class="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/60">
+                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span id="profile-status">Available for Staff/Lead Roles</span>
+              </span>
+              <span class="text-xs font-mono text-slate-400">Zurich, CH</span>
+            </div>
+
+            <div>
+              <h1 class="text-2xl xl:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+                <span id="profile-name">Alex Morgan</span><span id="profile-suffix" class="text-brand-600 dark:text-brand-400 text-xl font-semibold">, M.Sc.</span>
+              </h1>
+              <p id="profile-title" class="mt-1 text-sm font-semibold text-slate-600 dark:text-slate-300">
+                Senior AI Systems Engineer & Open Source Researcher
+              </p>
+            </div>
+
+            <p id="profile-bio" class="text-xs xl:text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+              Specializing in high-throughput distributed AI pipelines, autonomous agentic runtimes, and low-latency systems. Over 8 years of engineering experience bridging research prototypes into mission-critical cloud infrastructure.
+            </p>
+
+            <!-- Contact Links -->
+            <div id="profile-contacts-container" class="flex flex-wrap gap-2 pt-1 text-xs">
+              <!-- Dynamically populated from JSON -->
+            </div>
+
+            <!-- Metrics 2x2 Grid -->
+            <div id="profile-metrics-container" class="grid grid-cols-2 gap-2 pt-2 border-t border-slate-100 dark:border-slate-800">
+              <!-- Dynamically populated from JSON -->
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Filter & Search Controls Sidebar Box -->
+        <div id="desktop-sidebar-controls" class="rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 p-6 shadow-sm space-y-5 transition-colors">
+          
+          <div class="flex items-center justify-between">
+            <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Filter Portfolio</h3>
+            <button type="button" onclick="resetFilters(event)" class="text-xs text-brand-600 dark:text-brand-400 hover:underline font-semibold">
+              Reset Filters
+            </button>
+          </div>
+
+          <!-- Live Search -->
+          <div class="relative">
+            <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+            </div>
+            <input type="text" id="search-input" placeholder="Search title, org, or skill..." 
+              class="w-full pl-10 pr-8 py-2 rounded-xl text-xs bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500 transition">
+            <button id="clear-search-btn" type="button" class="hidden absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600">
+              ✕
+            </button>
+          </div>
+
+          <!-- Featured Switch -->
+          <label class="flex items-center justify-between cursor-pointer select-none text-xs font-semibold text-slate-700 dark:text-slate-300 p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+            <span>Show Featured Items Only</span>
+            <div class="relative">
+              <input type="checkbox" id="featured-toggle" class="sr-only peer">
+              <div class="w-8 h-4 bg-slate-300 dark:bg-slate-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:bg-brand-600"></div>
+            </div>
+          </label>
+
+          <!-- Vertical Category Navigation Pills -->
+          <div class="space-y-1" id="category-tabs" role="tablist">
+            <!-- Dynamically populated vertical pills -->
+          </div>
+
+          <!-- Active Tag Filters Chips -->
+          <div id="active-tags-bar" class="hidden pt-2 border-t border-slate-100 dark:border-slate-800 space-y-1.5">
+            <span class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider block">Active Filter:</span>
+            <div id="active-filter-chips" class="flex flex-wrap gap-1.5"></div>
+          </div>
+
+        </div>
+
+      </aside>
+
+      <!-- =========================================================================
+           RIGHT COLUMN: MAIN CONTENT FEED (EXPANDS ACROSS REMAINING WIDTH)
+           ========================================================================= -->
+      <main class="flex-1 min-w-0 space-y-8">
+
+        <!-- Custom Filtered Alert Banner (Only when filtered) -->
+        <div id="tailored-view-banner" class="hidden rounded-2xl bg-gradient-to-r from-brand-500/10 via-brand-600/10 to-indigo-600/10 border-2 border-brand-500/30 dark:border-brand-400/30 p-5 shadow-sm transition-all">
+          <div class="flex items-center justify-between gap-4">
+            <div class="space-y-1">
+              <div class="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-brand-500 text-white tracking-wide uppercase">
+                Curated View Active
+              </div>
+              <h2 id="tailored-banner-title" class="text-lg font-bold text-slate-900 dark:text-white tracking-tight">
+                Custom Tailored CV View
+              </h2>
+              <p id="tailored-banner-subtitle" class="text-xs text-slate-600 dark:text-slate-300">
+                Displaying selected entries.
+              </p>
+            </div>
+            <div class="flex items-center gap-2">
+              <button type="button" onclick="openShareModal()" class="px-3.5 py-2 rounded-xl text-xs font-semibold bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 transition">
+                Adjust
+              </button>
+              <button type="button" onclick="resetFilters(event)" class="px-3.5 py-2 rounded-xl text-xs font-semibold bg-brand-600 text-white hover:bg-brand-700 transition">
+                Full CV
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- CV Content Cards Section Area -->
+        <div id="cv-content-area" class="space-y-10">
+          <!-- Rendered dynamically -->
+        </div>
+
+        <!-- Empty State -->
+        <div id="empty-state" class="hidden text-center py-20 px-4 space-y-4 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+          <div class="w-16 h-16 mx-auto rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-400">
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          </div>
+          <h3 class="text-lg font-bold text-slate-900 dark:text-white">No items match your active filters</h3>
+          <p class="text-xs text-slate-500 max-w-sm mx-auto">Try clearing search terms, unchecking "Featured", or switching categories on the left.</p>
+          <button type="button" onclick="resetFilters(event)" class="px-4 py-2 rounded-xl text-xs font-semibold bg-brand-600 text-white hover:bg-brand-700 transition">
+            Reset All Filters
+          </button>
+        </div>
+
+        <!-- Footer -->
+        <footer class="pt-8 pb-12 border-t border-slate-200 dark:border-slate-800 text-xs text-slate-500 flex items-center justify-between">
+          <p id="footer-copyright">© 2026 Alex Morgan. Desktop 2-Column Edition.</p>
+          <div class="flex items-center gap-4">
+            <a href="mobile.html" class="hover:text-brand-600 dark:hover:text-brand-400 font-medium">Switch to Smartphone Version →</a>
+            <span>•</span>
+            <button type="button" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" class="hover:text-brand-600">Back to Top ↑</button>
+          </div>
+        </footer>
+
+      </main>
+
+    </div>
+  </div>
+
+  <!-- SHARE CUSTOM VIEW BUILDER MODAL -->
+  <dialog id="share-modal" closedby="any" aria-labelledby="share-modal-title" class="rounded-3xl bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 p-0 border border-slate-200 dark:border-slate-800 shadow-2xl max-w-2xl w-[92vw] overflow-hidden focus:outline-none">
+    <div class="p-6 border-b border-slate-200 dark:border-slate-800 flex items-start justify-between gap-4 bg-slate-50/50 dark:bg-slate-800/40">
+      <div>
+        <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-brand-100 dark:bg-brand-950 text-brand-700 dark:text-brand-300 mb-1.5">
+          Granular Link Generator
+        </div>
+        <h2 id="share-modal-title" class="text-xl font-bold text-slate-900 dark:text-white tracking-tight">Share Custom CV View</h2>
+        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Pick specific entries to generate a tailored link.</p>
+      </div>
+      <button type="button" onclick="closeShareModal()" class="p-2 rounded-xl text-slate-400 hover:text-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800 transition">✕</button>
+    </div>
+
+    <div class="p-6 space-y-6 max-h-[60vh] overflow-y-auto overscroll-contain">
+      <div class="space-y-1.5">
+        <label for="modal-recipient-input" class="block text-xs font-semibold text-slate-700 dark:text-slate-300">Recipient or Role Context (Optional)</label>
+        <input type="text" id="modal-recipient-input" placeholder="e.g. Acme AI Team, Zurich Quantum Lab"
+          class="w-full px-3.5 py-2 rounded-xl text-xs bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500">
+      </div>
+
+      <div class="space-y-2">
+        <span class="block text-xs font-semibold text-slate-700 dark:text-slate-300">Quick Presets:</span>
+        <div class="flex flex-wrap gap-1.5">
+          <button type="button" onclick="applySharePreset('all')" class="px-2.5 py-1 rounded-lg text-xs bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition">Select All</button>
+          <button type="button" onclick="applySharePreset('featured')" class="px-2.5 py-1 rounded-lg text-xs bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 transition">★ Featured Only</button>
+          <button type="button" onclick="applySharePreset('engineering')" class="px-2.5 py-1 rounded-lg text-xs bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 transition">Code & Tech</button>
+          <button type="button" onclick="applySharePreset('academic')" class="px-2.5 py-1 rounded-lg text-xs bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 transition">Research & Edu</button>
+          <button type="button" onclick="applySharePreset('none')" class="px-2.5 py-1 rounded-lg text-xs text-rose-600 bg-rose-50 dark:bg-rose-950/40 hover:bg-rose-100 transition">Clear All</button>
+        </div>
+      </div>
+
+      <div class="space-y-4" id="modal-checklist-container"></div>
+    </div>
+
+    <div class="p-6 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/40 space-y-3">
+      <div class="flex items-center justify-between text-xs font-semibold text-slate-700 dark:text-slate-300">
+        <span>Live Generated Share Link</span>
+        <span id="modal-selection-count" class="font-mono text-brand-600 dark:text-brand-400">0 items selected</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <input type="text" id="modal-url-output" readonly class="flex-1 px-3.5 py-2 rounded-xl text-xs font-mono bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 select-all">
+        <button id="modal-copy-btn" type="button" onclick="copyShareUrl()" class="px-4 py-2 rounded-xl text-xs font-bold bg-brand-600 hover:bg-brand-700 text-white transition flex items-center gap-1.5 shrink-0">
+          <span id="copy-text">Copy Link</span>
+        </button>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- CUSTOMIZE PALETTE & JSON MODAL -->
+  <dialog id="customize-modal" closedby="any" class="rounded-3xl bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 p-0 border border-slate-200 dark:border-slate-800 shadow-2xl max-w-2xl w-[92vw] overflow-hidden focus:outline-none">
+    <div class="p-6 border-b border-slate-200 dark:border-slate-800 flex items-start justify-between gap-4 bg-slate-50/50 dark:bg-slate-800/40">
+      <div>
+        <h2 class="text-xl font-bold tracking-tight">Customise Palette & JSON Content</h2>
+        <p class="text-xs text-slate-500 mt-1">Switch accent palettes or upload a customized JSON file.</p>
+      </div>
+      <button type="button" onclick="closeCustomizeModal()" class="p-2 text-slate-400 hover:text-slate-600">✕</button>
+    </div>
+
+    <div class="p-6 space-y-6 max-h-[65vh] overflow-y-auto overscroll-contain">
+      <div class="space-y-3">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Accent Colour Palette</span>
+          <span id="active-palette-name" class="text-xs font-mono font-semibold text-brand-600">Active: Indigo</span>
+        </div>
+        <div class="grid grid-cols-4 gap-2.5" id="palette-buttons-grid"></div>
+        
+        <div class="pt-2 flex items-center gap-2">
+          <label for="custom-hex-input" class="text-xs font-medium text-slate-500">Custom Hex:</label>
+          <input type="text" id="custom-hex-input" placeholder="#0284c7" maxlength="7" class="px-3 py-1.5 rounded-lg text-xs font-mono bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+          <button type="button" onclick="applyCustomHexFromInput()" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-brand-600 text-white">Apply</button>
+        </div>
+      </div>
+
+      <hr class="border-slate-200 dark:border-slate-800">
+
+      <div class="space-y-3">
+        <span class="text-xs font-bold uppercase tracking-wider text-slate-500">JSON Data Source</span>
+        <div class="flex flex-wrap items-center gap-2">
+          <label class="cursor-pointer inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 transition shadow-sm">
+            <span>Upload JSON File</span>
+            <input type="file" id="json-file-input" accept=".json,application/json" class="sr-only">
+          </label>
+          <button type="button" onclick="loadExternalConfig()" class="px-3 py-2 rounded-xl text-xs font-semibold bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 transition">Reload data.json</button>
+          <button type="button" onclick="exportCurrentJson()" class="px-3 py-2 rounded-xl text-xs font-semibold bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 transition">Download data.json</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="p-4 border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/40 flex justify-end">
+      <button type="button" onclick="closeCustomizeModal()" class="px-4 py-2 rounded-xl text-xs font-bold bg-slate-200 dark:bg-slate-700">Close</button>
+    </div>
+  </dialog>
+
+  <!-- TOAST CONTAINER -->
+  <div id="toast-container" class="fixed bottom-6 right-6 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+  <!-- JAVASCRIPT FOR TWO-COLUMN DESKTOP -->
+  <script>
+    const PALETTES = {
+      indigo: { name: "Indigo", previewHex: "#6366f1", shades: { 50: '238 242 255', 100: '224 231 255', 200: '199 210 254', 300: '165 180 252', 400: '129 140 248', 500: '99 102 241', 600: '79 70 229', 700: '67 56 202', 800: '55 48 163', 900: '49 46 129', 950: '30 27 75' } },
+      emerald: { name: "Emerald", previewHex: "#10b981", shades: { 50: '236 253 245', 100: '209 250 229', 200: '167 243 208', 300: '110 231 183', 400: '52 211 153', 500: '16 185 129', 600: '5 150 105', 700: '4 120 87', 800: '6 95 70', 900: '6 78 59', 950: '2 44 34' } },
+      blue: { name: "Ocean Blue", previewHex: "#3b82f6", shades: { 50: '239 246 255', 100: '219 234 254', 200: '191 219 254', 300: '147 197 253', 400: '96 165 250', 500: '59 130 246', 600: '37 99 235', 700: '29 78 216', 800: '30 64 175', 900: '30 58 138', 950: '23 37 84' } },
+      violet: { name: "Violet", previewHex: "#8b5cf6", shades: { 50: '245 243 255', 100: '237 233 254', 200: '221 214 254', 300: '196 181 253', 400: '167 139 250', 500: '139 92 246', 600: '124 58 237', 700: '109 40 217', 800: '91 33 182', 900: '76 29 149', 950: '46 16 101' } },
+      rose: { name: "Rose", previewHex: "#f43f5e", shades: { 50: '255 241 242', 100: '255 228 230', 200: '254 205 211', 300: '253 164 175', 400: '251 113 133', 500: '244 63 94', 600: '225 29 72', 700: '190 18 60', 800: '159 18 57', 900: '136 19 55', 950: '76 5 25' } },
+      amber: { name: "Amber", previewHex: "#f59e0b", shades: { 50: '255 251 235', 100: '254 243 199', 200: '253 230 138', 300: '252 211 77', 400: '251 191 36', 500: '245 158 11', 600: '217 119 6', 700: '180 83 9', 800: '146 64 14', 900: '120 53 15', 950: '69 26 3' } },
+      cyan: { name: "Cyan", previewHex: "#06b6d4", shades: { 50: '236 254 255', 100: '207 250 254', 200: '165 243 252', 300: '103 232 249', 400: '34 211 238', 500: '6 182 212', 600: '8 145 178', 700: '14 116 144', 800: '21 94 117', 900: '22 78 99', 950: '8 51 68' } }
+    };
+
+    function hexToRgb(hex) {
+      hex = hex.replace('#', '').trim();
+      if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');
+      const num = parseInt(hex, 16);
+      if (isNaN(num)) return { r: 99, g: 102, b: 241 };
+      return { r: (num >> 16) & 255, g: (num >> 8) & 255, b: num & 255 };
+    }
+
+    let currentPaletteName = 'indigo';
+    function applyPalette(paletteKeyOrConfig, notify = false) {
+      let shades = null;
+      let displayName = "Custom";
+      if (typeof paletteKeyOrConfig === 'string') {
+        const k = paletteKeyOrConfig.toLowerCase();
+        if (PALETTES[k]) {
+          shades = PALETTES[k].shades;
+          displayName = PALETTES[k].name;
+          currentPaletteName = k;
+        }
+      }
+      if (!shades) {
+        shades = PALETTES.indigo.shades;
+        displayName = "Indigo";
+        currentPaletteName = 'indigo';
+      }
+
+      const root = document.documentElement;
+      Object.keys(shades).forEach(shade => {
+        root.style.setProperty(`--brand-${shade}`, shades[shade]);
+      });
+
+      const activeNameEl = document.getElementById('active-palette-name');
+      if (activeNameEl) activeNameEl.textContent = `Active: ${displayName}`;
+      if (notify) showToast(`Palette: ${displayName}`);
+    }
+
+    let ACTIVE_DATA = null;
+    let CV_DATA = [];
+    let PROFILE_DATA = {};
+    let CATEGORIES_META = {
+      work: { title: "Professional Experience", badge: "Work" },
+      projects: { title: "Key Projects & Builds", badge: "Projects" },
+      learning: { title: "Education & Learning", badge: "Learning" },
+      certifications: { title: "Certifications & Credentials", badge: "Certifications" },
+      volunteering: { title: "Community & Volunteering", badge: "Volunteering" },
+      hobbies: { title: "Interests & Pursuits", badge: "Hobbies" }
+    };
+    const CATEGORY_ORDER = ['work', 'projects', 'learning', 'certifications', 'volunteering', 'hobbies'];
+
+    function applyData(config) {
+      ACTIVE_DATA = config;
+      if (config.theme) applyPalette(config.theme.palette);
+      if (config.profile) renderProfile(config.profile);
+      if (Array.isArray(config.items)) CV_DATA = config.items;
+      renderVerticalCategoryTabs();
+      updateCategoryCounts();
+      initModalChecklist();
+      renderCV();
+    }
+
+    function renderProfile(p) {
+      PROFILE_DATA = p;
+      document.getElementById('profile-name').textContent = p.name || 'Alex Morgan';
+      document.getElementById('profile-suffix').textContent = p.suffix ? `, ${p.suffix}` : '';
+      document.getElementById('profile-title').textContent = p.title || '';
+      document.getElementById('profile-bio').textContent = p.bio || '';
+      document.getElementById('profile-status').textContent = p.status || 'Available';
+      document.getElementById('header-avatar').textContent = p.initials || 'AM';
+      document.getElementById('header-name').textContent = p.name || 'Alex Morgan';
+
+      const contacts = document.getElementById('profile-contacts-container');
+      if (contacts) {
+        contacts.innerHTML = '';
+        if (p.email) contacts.innerHTML += `<a href="mailto:${p.email}" class="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 transition">${p.email}</a>`;
+        if (p.github) contacts.innerHTML += `<a href="${p.github}" target="_blank" class="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 transition">GitHub</a>`;
+        if (p.linkedin) contacts.innerHTML += `<a href="${p.linkedin}" target="_blank" class="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 transition">LinkedIn</a>`;
+        if (p.scholar) contacts.innerHTML += `<a href="${p.scholar}" target="_blank" class="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 transition">Scholar</a>`;
+      }
+
+      const metrics = document.getElementById('profile-metrics-container');
+      if (metrics && Array.isArray(p.metrics)) {
+        metrics.innerHTML = p.metrics.map(m => `
+          <div class="p-2.5 bg-slate-50 dark:bg-slate-800/80 rounded-xl border border-slate-100 dark:border-slate-800">
+            <span class="text-xl font-black text-brand-600 dark:text-brand-400 font-mono block">${m.value}</span>
+            <span class="text-[11px] font-medium text-slate-500">${m.label}</span>
+          </div>
+        `).join('');
+      }
+    }
+
+    function renderVerticalCategoryTabs() {
+      const container = document.getElementById('category-tabs');
+      if (!container) return;
+
+      let html = `
+        <button type="button" data-category="all" class="category-sidebar-btn ${state.activeCategory === 'all' ? 'active' : ''} w-full text-left px-3 py-2 rounded-xl text-xs font-semibold flex items-center justify-between transition">
+          <span>All Categories</span>
+          <span id="count-all" class="font-mono text-[11px] px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800">0</span>
+        </button>
+      `;
+
+      CATEGORY_ORDER.forEach(cat => {
+        const meta = CATEGORIES_META[cat];
+        html += `
+          <button type="button" data-category="${cat}" class="category-sidebar-btn ${state.activeCategory === cat ? 'active' : ''} w-full text-left px-3 py-2 rounded-xl text-xs font-semibold flex items-center justify-between transition">
+            <span>${meta.badge}</span>
+            <span id="count-${cat}" class="font-mono text-[11px] px-2 py-0.5 rounded-md bg-slate-100 dark:bg-slate-800">0</span>
+          </button>
+        `;
+      });
+
+      container.innerHTML = html;
+
+      container.querySelectorAll('.category-sidebar-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          state.activeCategory = btn.getAttribute('data-category');
+          container.querySelectorAll('.category-sidebar-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          renderCV();
+        });
+      });
+    }
+
+    const state = {
+      activeCategory: 'all',
+      searchQuery: '',
+      featuredOnly: false,
+      selectedTag: null,
+      urlCategoryFilter: [],
+      urlIdFilter: [],
+      recipientName: '',
+      customContext: ''
+    };
+
+    function parseUrlParameters() {
+      const params = new URLSearchParams(window.location.search);
+      if (params.has('categories')) state.urlCategoryFilter = params.get('categories').split(',').map(c => c.trim().toLowerCase());
+      if (params.has('ids')) state.urlIdFilter = params.get('ids').split(',').map(i => i.trim());
+      if (params.get('featured') === 'true') {
+        state.featuredOnly = true;
+        document.getElementById('featured-toggle').checked = true;
+      }
+      if (params.has('tag')) state.selectedTag = params.get('tag').trim();
+      if (params.has('recipient')) state.recipientName = params.get('recipient').trim();
+      if (params.has('palette')) applyPalette(params.get('palette').trim());
+      updateTailoredBanner();
+    }
+
+    function updateTailoredBanner() {
+      const banner = document.getElementById('tailored-view-banner');
+      if (!banner) return;
+      if (state.urlIdFilter.length > 0 || state.urlCategoryFilter.length > 0 || state.recipientName) {
+        banner.classList.remove('hidden');
+        document.getElementById('tailored-banner-title').textContent = state.recipientName ? `Custom CV View for ${state.recipientName}` : `Custom Curated Portfolio View`;
+      } else {
+        banner.classList.add('hidden');
+      }
+    }
+
+    function parseMarkdown(text) {
+      if (!text) return '';
+      return text
+        .replace(/`([^`]+)`/g, '<code class="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-brand-600 font-mono text-xs">$1</code>')
+        .replace(/\*\*([^*]+)\*\*/g, '<strong class="font-semibold text-slate-900 dark:text-white">$1</strong>')
+        .replace(/\*([^*]+)\*/g, '<em class="italic">$1</em>')
+        .replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, '<a href="$2" target="_blank" class="text-brand-600 underline">$1</a>');
+    }
+
+    function getFilteredEntries() {
+      return CV_DATA.filter(item => {
+        if (state.urlIdFilter.length > 0 && !state.urlIdFilter.includes(item.id)) return false;
+        if (state.urlCategoryFilter.length > 0 && !state.urlCategoryFilter.includes(item.category)) return false;
+        if (state.activeCategory !== 'all' && item.category !== state.activeCategory) return false;
+        if (state.featuredOnly && !item.featured) return false;
+        if (state.selectedTag && !item.tags.some(t => t.toLowerCase() === state.selectedTag.toLowerCase())) return false;
+        if (state.searchQuery) {
+          const q = state.searchQuery.toLowerCase();
+          const match = item.title.toLowerCase().includes(q) || item.organization.toLowerCase().includes(q) || item.description.toLowerCase().includes(q) || item.tags.some(t => t.toLowerCase().includes(q));
+          if (!match) return false;
+        }
+        return true;
+      });
+    }
+
+    function updateCategoryCounts() {
+      const counts = { all: 0 };
+      CATEGORY_ORDER.forEach(cat => counts[cat] = 0);
+      CV_DATA.forEach(item => {
+        if (state.urlIdFilter.length > 0 && !state.urlIdFilter.includes(item.id)) return;
+        counts.all++;
+        if (counts[item.category] !== undefined) counts[item.category]++;
+      });
+      const elAll = document.getElementById('count-all');
+      if (elAll) elAll.textContent = counts.all;
+      CATEGORY_ORDER.forEach(cat => {
+        const el = document.getElementById(`count-${cat}`);
+        if (el) el.textContent = counts[cat];
+      });
+    }
+
+    function renderCV() {
+      const container = document.getElementById('cv-content-area');
+      const emptyState = document.getElementById('empty-state');
+      if (!container) return;
+      container.innerHTML = '';
+
+      const filtered = getFilteredEntries();
+      if (filtered.length === 0) {
+        emptyState.classList.remove('hidden');
+        return;
+      }
+      emptyState.classList.add('hidden');
+
+      const categoriesToShow = state.activeCategory === 'all' ? CATEGORY_ORDER : [state.activeCategory];
+
+      categoriesToShow.forEach(catKey => {
+        const catMeta = CATEGORIES_META[catKey];
+        const items = filtered.filter(i => i.category === catKey);
+        if (items.length === 0) return;
+
+        const sec = document.createElement('section');
+        sec.className = 'space-y-4';
+        sec.innerHTML = `
+          <div class="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-800">
+            <div class="flex items-center gap-3">
+              <h3 class="text-xl font-bold text-slate-900 dark:text-white">${catMeta.title}</h3>
+              <span class="text-xs px-2.5 py-0.5 rounded-full font-mono bg-slate-100 dark:bg-slate-800 text-slate-500">${items.length}</span>
+            </div>
+            <button type="button" onclick="shareCategoryDirectly('${catKey}')" class="text-xs font-semibold text-slate-500 hover:text-brand-600 transition">
+              Share ${catMeta.badge} →
+            </button>
+          </div>
+          <div class="grid grid-cols-1 xl:grid-cols-2 gap-4" id="grid-${catKey}"></div>
+        `;
+
+        const grid = sec.querySelector(`#grid-${catKey}`);
+        items.forEach(item => {
+          const card = document.createElement('article');
+          card.className = "cv-card page-break-avoid rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 p-5 shadow-sm hover:shadow-md hover:border-slate-300 dark:hover:border-slate-700 transition flex flex-col justify-between";
+
+          const desc = parseMarkdown(item.description);
+          const tags = item.tags.map(t => `<button type="button" onclick="filterByTag('${t}')" class="text-xs px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-brand-50 hover:text-brand-700 font-mono">#${t}</button>`).join('');
+
+          card.innerHTML = `
+            <div class="space-y-2">
+              <div class="flex items-start justify-between gap-2">
+                <div>
+                  <h4 class="text-base font-bold text-slate-900 dark:text-white">${item.title}</h4>
+                  <div class="text-xs font-semibold text-brand-600 dark:text-brand-400 mt-0.5">${item.organization} ${item.location ? `• <span class="text-slate-500 font-normal">${item.location}</span>` : ''}</div>
+                </div>
+                <span class="text-xs font-mono text-slate-500 px-2 py-0.5 rounded-lg bg-slate-100 dark:bg-slate-800 shrink-0">${item.date}</span>
+              </div>
+              <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">${desc}</p>
+            </div>
+            <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between gap-2">
+              <div class="flex flex-wrap gap-1.5">${tags}</div>
+              <button type="button" onclick="shareSingleItem('${item.id}')" title="Copy item link" class="p-1.5 rounded-lg text-slate-400 hover:text-brand-600 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
+              </button>
+            </div>
+          `;
+          grid.appendChild(card);
+        });
+
+        container.appendChild(sec);
+      });
+    }
+
+    function filterByTag(tag) {
+      state.selectedTag = tag;
+      const bar = document.getElementById('active-tags-bar');
+      const chips = document.getElementById('active-filter-chips');
+      bar.classList.remove('hidden');
+      chips.innerHTML = `<span class="px-2 py-0.5 rounded-lg bg-brand-100 dark:bg-brand-950 text-brand-700 text-xs font-semibold">#${tag} <button type="button" onclick="clearTag()">✕</button></span>`;
+      renderCV();
+    }
+    function clearTag() {
+      state.selectedTag = null;
+      document.getElementById('active-tags-bar').classList.add('hidden');
+      renderCV();
+    }
+
+    function resetFilters(e) {
+      if (e) e.preventDefault();
+      state.activeCategory = 'all';
+      state.searchQuery = '';
+      state.featuredOnly = false;
+      state.selectedTag = null;
+      state.urlIdFilter = [];
+      state.urlCategoryFilter = [];
+      state.recipientName = '';
+      document.getElementById('search-input').value = '';
+      document.getElementById('featured-toggle').checked = false;
+      document.querySelectorAll('.category-sidebar-btn').forEach(b => {
+        if (b.getAttribute('data-category') === 'all') b.classList.add('active');
+        else b.classList.remove('active');
+      });
+      updateTailoredBanner();
+      updateCategoryCounts();
+      renderCV();
+      showToast("Reset to full view");
+    }
+
+    // Modal & Sharing functions
+    const shareModal = document.getElementById('share-modal');
+    function openShareModal() {
+      initModalChecklist();
+      updateModalUrl();
+      shareModal.showModal();
+    }
+    function closeShareModal() { shareModal.close(); }
+
+    let modalSelectedIds = new Set();
+    function initModalChecklist() {
+      const container = document.getElementById('modal-checklist-container');
+      if (!container) return;
+      container.innerHTML = '';
+      CV_DATA.forEach(item => modalSelectedIds.add(item.id));
+      CATEGORY_ORDER.forEach(cat => {
+        const items = CV_DATA.filter(i => i.category === cat);
+        const div = document.createElement('div');
+        div.className = "border border-slate-200 dark:border-slate-800 rounded-xl p-3 space-y-2";
+        div.innerHTML = `<span class="font-bold text-xs block text-slate-700 dark:text-slate-300">${CATEGORIES_META[cat].title}</span>`;
+        items.forEach(i => {
+          div.innerHTML += `
+            <label class="flex items-center gap-2 text-xs cursor-pointer">
+              <input type="checkbox" value="${i.id}" checked class="modal-cb rounded text-brand-600">
+              <span class="flex-1">${i.title} (${i.organization})</span>
+            </label>
+          `;
+        });
+        container.appendChild(div);
+      });
+      container.querySelectorAll('.modal-cb').forEach(cb => {
+        cb.addEventListener('change', () => {
+          if (cb.checked) modalSelectedIds.add(cb.value);
+          else modalSelectedIds.delete(cb.value);
+          updateModalUrl();
+        });
+      });
+    }
+
+    function updateModalUrl() {
+      const baseUrl = window.location.origin + window.location.pathname;
+      const params = new URLSearchParams();
+      const rec = document.getElementById('modal-recipient-input').value.trim();
+      if (rec) params.set('recipient', rec);
+      if (modalSelectedIds.size < CV_DATA.length) {
+        params.set('ids', Array.from(modalSelectedIds).join(','));
+      }
+      const q = params.toString();
+      document.getElementById('modal-url-output').value = q ? `${baseUrl}?${q}` : baseUrl;
+      document.getElementById('modal-selection-count').textContent = `${modalSelectedIds.size} of ${CV_DATA.length} selected`;
+    }
+
+    function copyShareUrl() {
+      navigator.clipboard.writeText(document.getElementById('modal-url-output').value).then(() => {
+        showToast("Link copied to clipboard!");
+      });
+    }
+
+    function shareSingleItem(id) {
+      const url = `${window.location.origin}${window.location.pathname}?ids=${id}`;
+      navigator.clipboard.writeText(url).then(() => showToast("Item link copied!"));
+    }
+
+    function shareCategoryDirectly(cat) {
+      const url = `${window.location.origin}${window.location.pathname}?categories=${cat}`;
+      navigator.clipboard.writeText(url).then(() => showToast(`Category link for ${cat} copied!`));
+    }
+
+    function applySharePreset(p) {
+      modalSelectedIds.clear();
+      if (p === 'all') CV_DATA.forEach(i => modalSelectedIds.add(i.id));
+      if (p === 'featured') CV_DATA.filter(i => i.featured).forEach(i => modalSelectedIds.add(i.id));
+      if (p === 'engineering') CV_DATA.filter(i => ['work', 'projects'].includes(i.category)).forEach(i => modalSelectedIds.add(i.id));
+      if (p === 'academic') CV_DATA.filter(i => ['learning', 'certifications'].includes(i.category)).forEach(i => modalSelectedIds.add(i.id));
+      document.querySelectorAll('.modal-cb').forEach(cb => cb.checked = modalSelectedIds.has(cb.value));
+      updateModalUrl();
+    }
+
+    // Customize Modal
+    const customizeModal = document.getElementById('customize-modal');
+    function openCustomizeModal() {
+      const grid = document.getElementById('palette-buttons-grid');
+      grid.innerHTML = Object.keys(PALETTES).map(k => `
+        <button type="button" onclick="applyPalette('${k}', true)" class="p-2 rounded-xl border border-slate-200 dark:border-slate-800 text-xs font-semibold flex items-center gap-2 hover:bg-slate-50 dark:hover:bg-slate-800">
+          <span class="w-3.5 h-3.5 rounded-full" style="background-color: ${PALETTES[k].previewHex}"></span>
+          ${PALETTES[k].name}
+        </button>
+      `).join('');
+      customizeModal.showModal();
+    }
+    function closeCustomizeModal() { customizeModal.close(); }
+
+    function showToast(msg) {
+      const c = document.getElementById('toast-container');
+      const t = document.createElement('div');
+      t.className = 'bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-4 py-2 rounded-xl text-xs font-bold shadow-lg';
+      t.textContent = msg;
+      c.appendChild(t);
+      setTimeout(() => t.remove(), 2500);
+    }
+
+    async function loadExternalConfig() {
+      try {
+        const res = await fetch('data.json', { cache: 'no-cache' });
+        const json = await res.json();
+        applyData(json);
+      } catch (e) {
+        console.warn("Using embedded fallback data", e);
+        applyData({
+          theme: { palette: 'indigo' },
+          profile: { name: 'Alex Morgan', suffix: 'M.Sc.', initials: 'AM', title: 'Senior AI Systems Engineer', bio: 'Specializing in high-throughput distributed AI pipelines and agentic systems.' },
+          items: []
+        });
+      }
+    }
+
+    // Theme toggles
+    function setTheme(t) {
+      localStorage.setItem('cv_theme', t);
+      const isDark = t === 'dark' || (t === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+      if (isDark) document.documentElement.classList.add('dark');
+      else document.documentElement.classList.remove('dark');
+      document.getElementById('theme-dropdown').classList.add('hidden');
+    }
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      document.getElementById('theme-toggle-btn').addEventListener('click', () => {
+        document.getElementById('theme-dropdown').classList.toggle('hidden');
+      });
+      document.getElementById('open-share-btn').addEventListener('click', openShareModal);
+      document.getElementById('open-customize-btn').addEventListener('click', openCustomizeModal);
+      document.getElementById('print-cv-btn').addEventListener('click', () => window.print());
+      
+      const search = document.getElementById('search-input');
+      search.addEventListener('input', (e) => {
+        state.searchQuery = e.target.value.trim();
+        renderCV();
+      });
+      document.getElementById('featured-toggle').addEventListener('change', (e) => {
+        state.featuredOnly = e.target.checked;
+        renderCV();
+      });
+
+      await loadExternalConfig();
+      parseUrlParameters();
+    });
+  </script>
+
+  <!-- Sidebar active style -->
+  <style>
+    .category-sidebar-btn {
+      color: #64748b;
+    }
+    .dark .category-sidebar-btn {
+      color: #94a3b8;
+    }
+    .category-sidebar-btn:hover {
+      background-color: #f1f5f9;
+      color: #0f172a;
+    }
+    .dark .category-sidebar-btn:hover {
+      background-color: #1e293b;
+      color: #f8fafc;
+    }
+    .category-sidebar-btn.active {
+      background-color: rgb(var(--brand-50));
+      color: rgb(var(--brand-700));
+      font-weight: 700;
+    }
+    .dark .category-sidebar-btn.active {
+      background-color: rgba(99, 102, 241, 0.15);
+      color: rgb(var(--brand-300));
+    }
+  </style>
+
+</body>
+</html>

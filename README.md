@@ -1,6 +1,20 @@
 # Interactive CV & Portfolio Web Application
 
-A modern, responsive, single-page interactive CV and portfolio web application built with **HTML5**, **Tailwind CSS (CDN)**, and **Vanilla JavaScript**. Designed for engineers, researchers, and technical leaders who need a fast, zero-dependency portfolio with JSON data customization and granular link-based filtering.
+A modern, responsive, single-page interactive CV and portfolio web application built with **HTML5**, **Tailwind CSS (CDN)**, and **Vanilla JavaScript**. Designed for engineers, researchers, and technical leaders who need a fast, zero-dependency portfolio with JSON data customization, granular link-based filtering, and dedicated device-optimized layouts.
+
+---
+
+## 📱 Two Purpose-Built Editions
+
+The application provides dedicated layouts tailored for both smartphones and wide desktop displays:
+
+| Edition | File | Best For | Architecture & Highlights |
+| :--- | :--- | :--- | :--- |
+| **🖥️ Desktop Edition** | [`desktop.html`](file:///home/peipr/gits/new_website/desktop.html) | Desktops, laptops & ultrawide monitors | **Full-width 2-column layout:**<br>• **Left Column:** Sticky sidebar with profile hero, contacts, metrics, search, and vertical category navigation.<br>• **Right Column:** Spacious responsive card grid making full use of horizontal space. |
+| **📱 Smartphone Edition** | [`mobile.html`](file:///home/peipr/gits/new_website/mobile.html) | Mobile phones & small viewports | **Touch-first mobile ergonomics:**<br>• Compact sticky top bar and expandable bio (`Read more...`).<br>• Sticky horizontal category scroll pill bar.<br>• Floating bottom action bar within thumb reach for instant link sharing. |
+| **⚡ Responsive Unified** | [`index.html`](file:///home/peipr/gits/new_website/index.html) | Universal browsing | Automatically adapts between mobile and desktop with an interactive view switcher in the header. |
+
+> All three editions read directly from the same [`data.json`](file:///home/peipr/gits/new_website/data.json) file. Changing your data or palette updates all editions simultaneously.
 
 ---
 
@@ -27,24 +41,12 @@ Open [`data.json`](file:///home/peipr/gits/new_website/data.json) and set the `t
 - `"rose"` (Bold crimson / ruby)
 - `"amber"` (Warm gold / energetic)
 - `"cyan"` (High-tech / cyber cyan)
-
-#### Custom Hex Palette:
-You can also set `palette` to any custom Hex code (e.g. `"#0284c7"`), or define precise custom shades:
-```json
-{
-  "theme": {
-    "palette": "#0ea5e9"
-  }
-}
-```
-The application dynamically computes the entire 50–950 tint and shade scale and applies it across all buttons, badges, gradients, and focus rings.
-
-You can also test palettes on the fly or via URL parameter (e.g. `?palette=emerald`).
+- Or any custom Hex color e.g. `"#0ea5e9"`.
 
 ---
 
 ### 2. Customizing CV Items
-Entries in [`data.json`](file:///home/peipr/gits/new_website/data.json) under `items` adhere to the clean schema:
+Entries in [`data.json`](file:///home/peipr/gits/new_website/data.json) under `items` adhere to the schema:
 
 ```json
 {
@@ -71,15 +73,6 @@ Entries in [`data.json`](file:///home/peipr/gits/new_website/data.json) under `i
 
 ---
 
-### 3. In-Browser Palette & JSON Modal
-In the top header, click **"Palette & JSON"** (or **"Theme"** on mobile) to:
-- Instantly switch between color palettes and see changes live.
-- Upload any `.json` file from your computer to preview new data immediately.
-- Inspect and tweak the JSON in the live in-browser editor and click **"Apply JSON Changes"**.
-- Download the current configuration as a new `data.json` file.
-
----
-
 ## 🔗 Granular Link-Based Filtering
 
 - **URL Parameter Engine:**
@@ -88,41 +81,26 @@ In the top header, click **"Palette & JSON"** (or **"Theme"** on mobile) to:
   - Tailored Recipient Banner: `?recipient=DeepMind&context=Staff+Research+Engineer`
   - Tag & Featured Filters: `?tag=Rust`, `?featured=true`
   - Palette Override: `?palette=emerald`
-- **Tailored View Banner:** Automatically activates when URL parameters are present, displaying a personalized header with quick buttons to modify filters or reset to the full CV.
-
----
-
-## 🌓 Dark / Light / System Theme
-
-- Supports **Light**, **Dark**, and **System** preference.
-- Stored in `localStorage`.
-- Includes an early `<script>` in `<head>` to prevent Flash of Unstyled Content (FOUC).
-- Synchronizes with native `<meta name="color-scheme">` for browser controls and scrollbars.
-
----
-
-## 🖨️ Print & PDF Export
-
-- Dedicated `@media print` stylesheet.
-- Strips interactive controls (modals, search bars, theme toggles, buttons).
-- Formats cards with `page-break-inside: avoid` for clean, professional 1-2 page PDF export.
-- Preserves whatever customized selection is currently active on the page.
 
 ---
 
 ## 🚀 Local Preview & GitHub Pages Deployment
 
 ### Local Preview:
+Run a local server from the project directory:
 ```bash
 python3 -m http.server 8000
 ```
-Open `http://localhost:8000/` in your browser.
+Open any of the versions in your browser:
+- **Responsive / Unified:** `http://localhost:8000/`
+- **Desktop (2-Column Full-Width):** `http://localhost:8000/desktop.html`
+- **Smartphone Edition:** `http://localhost:8000/mobile.html`
 
 ### Deploy to GitHub Pages:
 1. Push this repository to GitHub:
    ```bash
    git add .
-   git commit -m "feat: customize content and palette via JSON"
+   git commit -m "feat: add smartphone edition and full-width two-column desktop edition"
    git push origin main
    ```
 2. In your GitHub repository:
